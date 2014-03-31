@@ -1,12 +1,12 @@
-# puppetdashboard
+# Puppet Dashboard Module
 
-This is a puppetdashboard puppet module.
+This is a Puppet module to manage the [Puppet Dashboard](http://projects.puppetlabs.com/projects/dashboard) that is compatible with the [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) and the [NeSI Puppet Module](https://github.com/nesi/puppet-puppet).
 
-# Licensing
+# Introduction
 
-Update your license details here.
+The purpose of this module is to install the [Puppet Dashboard](http://projects.puppetlabs.com/projects/dashboard) using the [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache), but without explicitly installing or configuring the Apache installation and optionally declaring an Apache virtual host.
 
-# Attribution
+This separation should allow the Puppet Dashboard application to share the Apache web service with other services and applications.
 
 ## puppet-blank
 
