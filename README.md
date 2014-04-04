@@ -1,5 +1,7 @@
 # Puppet Dashboard Module
 
+[![Build Status](https://travis-ci.org/Aethylred/puppet-puppetdashboard.svg?branch=master)](https://travis-ci.org/Aethylred/puppet-puppetdashboard)
+
 This is a Puppet module to manage the [Puppet Dashboard](http://projects.puppetlabs.com/projects/dashboard) that is compatible with the [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) and the [NeSI Puppet Module](https://github.com/nesi/puppet-puppet).
 
 # Introduction
