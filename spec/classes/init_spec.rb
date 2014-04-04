@@ -19,7 +19,7 @@ describe 'puppetdashboard', :type => :class do
     it do
       expect {
         should include_class('puppetdashboard::params')
-      }.to raise_error(Puppet::Error, /The NeSI Puppet Puppet module does not support RedHat family of operating systems/)
+      }.to raise_error(Puppet::Error, /The NeSI Puppet Dashboard Puppet module does not support RedHat family of operating systems/)
     end
   end
   context "on an Unknown OS" do
@@ -31,7 +31,7 @@ describe 'puppetdashboard', :type => :class do
     it do
       expect {
         should include_class('puppet::params')
-      }.to raise_error(Puppet::Error, /The NeSI Puppet Puppet module does not support Unknown family of operating systems/)
+      }.to raise_error(Puppet::Error, /The NeSI Puppet Dashboard Puppet module does not support Unknown family of operating systems/)
     end
   end
 end
