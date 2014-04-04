@@ -10,6 +10,14 @@ The purpose of this module is to install the [Puppet Dashboard](http://projects.
 
 This separation should allow the Puppet Dashboard application to share the Apache web service with other services and applications.
 
+# Installation
+
+## Git Provisoner
+
+The git provisioner installs the puppet-dashboard from the Puppetlabs git repository on GitHub. This allows the dashboard installation from unpackaged versions and onto Linux distributions that do not have packages availible to them (e.g. Saucy Salamander, Raring Ringtail). Using the git provisioner requires the git package to be installed, and that the Puppetlabs vcsrepo module is installed.
+
+# Acknowledgements
+
 ## puppet-blank
 
 This module is derived from the [puppet-blank](https://github.com/Aethylred/puppet-blank) module by Aaron Hicks (aethylred@gmail.com)

@@ -15,6 +15,7 @@ describe 'puppetdashboard', :type => :class do
       end
       describe "with no parameters" do
         it { should contain_class('puppetdashboard::params') }
+        it { should contain_class('puppetdashboard::install::package') }
       end
     end
   end
