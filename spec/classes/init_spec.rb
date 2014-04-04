@@ -4,10 +4,18 @@ describe 'puppetdashboard', :type => :class do
     let :facts do
       {
         :osfamily   => 'Debian',
+        :operatingsystemrelease => '6',
+        :concat_basedir         => '/dne',
+        :fqdn                   => 'test.example.org',
       }
     end
-    describe "with no parameters" do
-      it { should include_class('puppetdasboard::params') }
+    describe 'with default puppet, and apache and mod_passenger' do
+      let :pre_condition do 
+        "include puppet\nclass { 'apache': }\nclass { 'apache::mod::passenger': passenger_high_performance => 'on', passenger_max_pool_size => 12, passenger_pool_idle_time => 1500, passenger_stat_throttle_rate => 120, rack_autodetect => 'off', rails_autodetect => 'off',}"
+      end
+      describe "with no parameters" do
+        it { should include_class('puppetdasboard::params') }
+      end
     end
   end
   context "on a RedHat OS" do
