@@ -11,6 +11,9 @@ class puppetdashboard(
   case $provider {
     'git': {
       # Do git install
+      class{'puppetdashboard::install::git':
+        ensure => $ensure,
+      }
     }
     default: {
       # Do package install

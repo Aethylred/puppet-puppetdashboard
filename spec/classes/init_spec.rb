@@ -15,7 +15,20 @@ describe 'puppetdashboard', :type => :class do
       end
       describe "with no parameters" do
         it { should contain_class('puppetdashboard::params') }
-        it { should contain_class('puppetdashboard::install::package') }
+        it { should contain_class('puppetdashboard::install::package').with(
+          'ensure' => 'installed'
+        ) }
+      end
+      describe "with the git provider, provider => 'git'" do
+        let :params do
+          {
+            :provider => 'git',
+          }
+        end
+        it { should contain_class('puppetdashboard::params') }
+        it { should contain_class('puppetdashboard::install::git').with(
+          'ensure' => 'installed'
+        ) }
       end
     end
   end
