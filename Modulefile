@@ -10,4 +10,4 @@ project_page 'https://github.com/Aethylred/puppet-puppetdashboard'
 ## Add dependencies, if any:
 # dependency 'username/name', '>= 1.2.0'
 dependency 'puppetlabs/apache', '>= 1.0.1'
-dependency 'Aethylred/puppet', '>= 0.2.2'
+dependency 'puppetlabs/mysql', '>= 2.2.3'

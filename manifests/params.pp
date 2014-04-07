@@ -3,7 +3,10 @@
 class puppetdashboard::params {
 
   # OS independent variables
-  $package = 'puppet-dashboard'
+  $package      = 'puppet-dashboard'
+  $db_user      = 'puppetdashboard'
+  $db_name      = 'puppetdashboard'
+  $install_dir  = '/usr/share/puppet-dashboard'
 
   case $::osfamily {
     Debian:{

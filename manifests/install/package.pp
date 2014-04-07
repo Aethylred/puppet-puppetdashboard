@@ -6,6 +6,12 @@ class puppetdashboard::install::package (
   package{'puppet-dashboard':
     ensure => $ensure,
     name   => $puppetdashboard::params::package,
+    notify => Service['apache'],
+  }
+
+  file{'dashboard_install_dir':
+    ensure  => directory,
+    path    => $puppetdashboard::params::install_dir
   }
 
 }

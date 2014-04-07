@@ -12,6 +12,18 @@ This separation should allow the Puppet Dashboard application to share the Apach
 
 # Installation
 
+## Dependencies
+
+The Puppet-Dashboard Module has been written such that its component classes can be installed on different servers. Hence the dependencies are not across all classes and allows the installation of the database on a database server without a web service, while the web application can be installed on a web server with without a database service.
+
+In all cases, these modules should be installed and be available on the Puppet Master, though not necessarily installed on each host using classes and resources from the Puppet-Dashboard Module.
+
+### Required Puppet Module Depenencies
+* **apache**: The [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) is required for most classes in this module. This module is not required when calling the `puppetdashboard::db::mysql` class.
+
+### Optional Puppet Module Depenencies
+* **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql).Only required if the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class (this is the default behaviour).
+
 ## Git Provisoner
 
 The git provisioner installs the puppet-dashboard from the Puppetlabs git repository on GitHub. This allows the dashboard installation from unpackaged versions and onto Linux distributions that do not have packages availible to them (e.g. Saucy Salamander, Raring Ringtail). Using the git provisioner requires the git package to be installed, and that the Puppetlabs vcsrepo module is installed.

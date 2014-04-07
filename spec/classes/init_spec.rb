@@ -18,6 +18,11 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::install::package').with(
           'ensure' => 'installed'
         ) }
+        it { should contain_class('puppetdashboard::db::mysql').with(
+          'db_name'       => 'puppetdashboard',
+          'db_user'       => 'puppetdashboard',
+          'db_password'   => 'veryunsafeword'
+        ) }
       end
       describe "with the git provider, provider => 'git'" do
         let :params do
@@ -27,7 +32,8 @@ describe 'puppetdashboard', :type => :class do
         end
         it { should contain_class('puppetdashboard::params') }
         it { should contain_class('puppetdashboard::install::git').with(
-          'ensure' => 'installed'
+          'ensure'      => 'installed',
+          'install_dir' => '/usr/share/puppet-dashboard'
         ) }
       end
     end
