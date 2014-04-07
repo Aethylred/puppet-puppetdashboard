@@ -8,6 +8,7 @@ describe 'puppetdashboard::install::package', :type => :class do
     end
     describe "with no parameters" do
       it { should contain_class('puppetdashboard::params') }
+      it { should contain_package('puppet-dashboard') }
     end
   end
   context "on a RedHat OS" do
