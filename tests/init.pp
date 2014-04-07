@@ -12,4 +12,11 @@
 #
 #     You should have received a copy of the GNU General Public License
 #     along with the puppetdashboard Puppet module.  If not, see <http://www.gnu.org/licenses/>.
+class {'mysql::server':
+  override_options => {
+    'mysqld' => {
+      'max_allowed_packet' => '32M',
+    }
+  }
+}
 include puppetdashboard

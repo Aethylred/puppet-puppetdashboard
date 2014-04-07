@@ -8,7 +8,10 @@ describe 'puppetdashboard::install::package', :type => :class do
     end
     describe "with no parameters" do
       it { should contain_class('puppetdashboard::params') }
-      it { should contain_package('puppet-dashboard') }
+      it { should contain_package('puppet-dashboard').with(
+        'ensure'  => 'installed',
+        'name'    => 'puppet-dashboard'
+      ) }
       it { should contain_file('dashboard_install_dir').with(
         'ensure'  => 'directory',
         'path'    => '/usr/share/puppet-dashboard'

@@ -20,10 +20,10 @@ class puppetdashboard(
 
   # Check exclusive parameters
   if $config_database_content and $config_database_source{
-    fail("The parameters config_database_source and config_database_content are exclusive, only one can be set.")
+    fail('The parameters config_database_source and config_database_content are exclusive, only one can be set.')
   }
   if $config_settings_content and $config_settings_source{
-    fail("The parameters config_settings_source and config_settings_content are exclusive, only one can be set.")
+    fail('The parameters config_settings_source and config_settings_content are exclusive, only one can be set.')
   }
 
   # Puppet dashboard can be installed from packages or directly from a git repository
@@ -35,11 +35,11 @@ class puppetdashboard(
         install_dir => $install_dir,
       }
       class{'puppetdashboard::config':
-        conf_dir    => "${install_dir}/config",
-        config_settings_source   => $config_settings_source,
-        config_database_source   => $config_database_source,
-        config_settings_content  => $config_settings_content,
-        config_database_content  => $config_database_content,
+        conf_dir                  => "${install_dir}/config",
+        config_settings_source    => $config_settings_source,
+        config_database_source    => $config_database_source,
+        config_settings_content   => $config_settings_content,
+        config_database_content   => $config_database_content,
       }
     }
     default: {
@@ -48,10 +48,10 @@ class puppetdashboard(
         ensure => $ensure,
       }
       class{'puppetdashboard::config':
-        config_settings_source   => $config_settings_source,
-        config_database_source   => $config_database_source,
-        config_settings_content  => $config_settings_content,
-        config_database_content  => $config_database_content,
+        config_settings_source    => $config_settings_source,
+        config_database_source    => $config_database_source,
+        config_settings_content   => $config_settings_content,
+        config_database_content   => $config_database_content,
       }
     }
   }

@@ -18,11 +18,27 @@ The Puppet-Dashboard Module has been written such that its component classes can
 
 In all cases, these modules should be installed and be available on the Puppet Master, though not necessarily installed on each host using classes and resources from the Puppet-Dashboard Module.
 
-### Required Puppet Module Depenencies
+### Required Puppet Module Dependencies
 * **apache**: The [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) is required for most classes in this module. This module is not required when calling the `puppetdashboard::db::mysql` class.
 
-### Optional Puppet Module Depenencies
+### Optional Puppet Module Dependencies
 * **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql).Only required if the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class (this is the default behaviour).
+
+## MySQL Database Server Configuration
+
+This module does not require the MySQL server to be running or configured locally.
+
+This module does not install or manage the MySQL server. This is in order to maintain isolation of the MySQL service and the Dashboard application so that the Puppet Dashboard does not interfere with the installation and configuration of a MySQL server. Puppet Dashboard does require that the MySQL server is configured to allow large (at least 32MB) packet sizes using the `max_allowed_packet` setting. A minimal MySQL server configuration using the [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is given below:
+
+```puppet
+class {'mysql::server':
+  override_options => {
+    'mysqld' => {
+      'max_allowed_packet' => '32M',
+    }
+  }
+}
+```
 
 ## Git Provisoner
 
