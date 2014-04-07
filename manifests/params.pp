@@ -7,6 +7,7 @@ class puppetdashboard::params {
   $db_user      = 'puppetdashboard'
   $db_name      = 'puppetdashboard'
   $install_dir  = '/usr/share/puppet-dashboard'
+  $config_dir   = "${install_dir}/config"
 
   case $::osfamily {
     Debian:{

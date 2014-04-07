@@ -1,17 +1,30 @@
 # Class: puppetdashboard
+# NOTE: It is strongly recommended that security tokens, like passwords, are called from an external source, like Hiera
 class puppetdashboard(
-  $ensure       = installed,
-  $provider     = undef,
-  $install_dir  = $puppetdashboard::params::install_dir,
-  $manage_vhost = true,
-  $manage_db    = true,
-  $db_server    = undef,
-  $db_name      = $puppetdashboard::params::db_name,
-  $db_user      = $puppetdashboard::params::db_user,
-  $db_password  = 'veryunsafeword'
+  $ensure                   = installed,
+  $provider                 = undef,
+  $install_dir              = $puppetdashboard::params::install_dir,
+  $manage_vhost             = true,
+  $manage_db                = true,
+  $db_server                = undef,
+  $db_name                  = $puppetdashboard::params::db_name,
+  $db_user                  = $puppetdashboard::params::db_user,
+  $db_password              = 'veryunsafeword',
+  $config_settings_source   = undef,
+  $config_database_source   = undef,
+  $config_settings_content  = undef,
+  $config_database_content  = undef
 ) inherits puppetdashboard::params {
   require apache
   require puppet
+
+  # Check exclusive parameters
+  if $config_database_content and $config_database_source{
+    fail("The parameters config_database_source and config_database_content are exclusive, only one can be set.")
+  }
+  if $config_settings_content and $config_settings_source{
+    fail("The parameters config_settings_source and config_settings_content are exclusive, only one can be set.")
+  }
 
   # Puppet dashboard can be installed from packages or directly from a git repository
   case $provider {
@@ -21,11 +34,24 @@ class puppetdashboard(
         ensure      => $ensure,
         install_dir => $install_dir,
       }
+      class{'puppetdashboard::config':
+        conf_dir    => "${install_dir}/config",
+        config_settings_source   => $config_settings_source,
+        config_database_source   => $config_database_source,
+        config_settings_content  => $config_settings_content,
+        config_database_content  => $config_database_content,
+      }
     }
     default: {
       # Do package install
       class{'puppetdashboard::install::package':
         ensure => $ensure,
+      }
+      class{'puppetdashboard::config':
+        config_settings_source   => $config_settings_source,
+        config_database_source   => $config_database_source,
+        config_settings_content  => $config_settings_content,
+        config_database_content  => $config_database_content,
       }
     }
   }
