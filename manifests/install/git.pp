@@ -9,4 +9,6 @@ class puppetdashboard::install::git (
     path    => $install_dir,
   }
 
+  notice('The git provisioner for the Puppet Dashboard is not yet implemented.')
+
 }

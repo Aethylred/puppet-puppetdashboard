@@ -28,7 +28,7 @@ In all cases, these modules should be installed and be available on the Puppet M
 
 This module does not require the MySQL server to be running or configured locally.
 
-This module does not install or manage the MySQL server. This is in order to maintain isolation of the MySQL service and the Dashboard application so that the Puppet Dashboard does not interfere with the installation and configuration of a MySQL server. Puppet Dashboard does require that the MySQL server is configured to allow large (at least 32MB) packet sizes using the `max_allowed_packet` setting. A minimal MySQL server configuration using the [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is given below:
+This module does not install or manage the MySQL server. This is in order to maintain isolation of the MySQL service and the Dashboard application so that the Puppet Dashboard does not interfere with the installation and configuration of a MySQL server. Puppet Dashboard  requires that the MySQL server is configured to allow large (at least 32MB) packet sizes using the `max_allowed_packet` setting. A minimal MySQL server configuration using the [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is given below:
 
 ```puppet
 class {'mysql::server':
