@@ -13,7 +13,8 @@ class puppetdashboard::db::mysql (
   require ::mysql::server
 
   mysql_database{$db_name:
-    ensure => 'present',
+    ensure  => 'present',
+    charset => 'utf8',
   }
 
   $real_db_user = "${db_user}@${db_user_host}"

@@ -9,7 +9,8 @@ describe 'puppetdashboard::db::mysql', :type => :class do
     describe "with no parameters" do
       it { should contain_class('puppetdashboard::params') }
       it { should contain_mysql_database('puppetdashboard').with(
-        'ensure'        => 'present'
+        'ensure'        => 'present',
+        'charset'       => 'utf8'
       ) }
       it { should contain_mysql_user('puppetdashboard@localhost').with(
         'ensure'        => 'present',
@@ -22,6 +23,7 @@ describe 'puppetdashboard::db::mysql', :type => :class do
         'options'       => 'GRANT',
         'privileges'    => 'ALL'
       ) }
+      # These don't work on single element arrays, as something converts them to bare strings, need to be checked with longer arrays.
       # it { should contain_mysql_grant('puppetdashboard@localhost/puppetdashboard.*').with_options match_array(['GRANT']) }
       # it { should contain_mysql_grant('puppetdashboard@localhost/puppetdashboard.*').with_privileges match_array(['ALL']) }
     end

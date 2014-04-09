@@ -7,4 +7,68 @@ class puppetdashboard::config (
   $config_database_content  = undef
 ) inherits puppetdashboard::params {
 
+  if $config_settings_content {
+    file{'puppet_dashboard_settings':
+      ensure  => file,
+      path    => '/etc/puppet-dashboard/settings.yml',
+      owner   => $::apache::user,
+      group   => $::apache::group,
+      content => $config_settings_content,
+    }
+  } elsif $config_settings_source {
+    file{'puppet_dashboard_settings':
+      ensure  => file,
+      path    => '/etc/puppet-dashboard/settings.yml',
+      owner   => $::apache::user,
+      group   => $::apache::group,
+      source  => $config_settings_source,
+    }
+  } else {
+    file{'puppet_dashboard_settings':
+      ensure  => file,
+      path    => '/etc/puppet-dashboard/settings.yml',
+      owner   => $::apache::user,
+      group   => $::apache::group,
+      content => template('puppetdashboard/settings.yml.erb'),
+    }
+  }
+
+  if $config_database_content {
+    file{'puppet_dashboard_database':
+      ensure  => file,
+      path    => '/etc/puppet-dashboard/database.yml',
+      owner   => $::apache::user,
+      group   => $::apache::group,
+      content => $config_database_content,
+    }
+  } elsif $config_database_source {
+    file{'puppet_dashboard_database':
+      ensure  => file,
+      path    => '/etc/puppet-dashboard/database.yml',
+      owner   => $::apache::user,
+      group   => $::apache::group,
+      source  => $config_database_source,
+    }
+  } else {
+    file{'puppet_dashboard_database':
+      ensure  => file,
+      path    => '/etc/puppet-dashboard/database.yml',
+      owner   => $::apache::user,
+      group   => $::apache::group,
+      content => template('puppetdashboard/database.yml.erb'),
+    }
+  }
+
+  file{"${conf_dir}/settings.yml":
+    ensure  => link,
+    target  => '/etc/puppet-dashboard/settings.yml',
+    require => File['puppet_dashboard_settings'],
+  }
+
+  file{"${conf_dir}/database.yml":
+    ensure  => link,
+    target  => '/etc/puppet-dashboard/database.yml',
+    require => File['puppet_dashboard_database'],
+  }
+
 }
