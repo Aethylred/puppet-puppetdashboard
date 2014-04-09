@@ -3,15 +3,19 @@
 class puppetdashboard::params {
 
   # OS independent variables
-  $package      = 'puppet-dashboard'
-  $db_user      = 'puppetdashboard'
-  $db_name      = 'puppetdashboard'
-  $install_dir  = '/usr/share/puppet-dashboard'
-  $config_dir   = "${install_dir}/config"
+  $package            = 'puppet-dashboard'
+  $db_user            = 'puppetdashboard'
+  $db_name            = 'puppetdashboard'
+  $install_dir        = '/usr/share/puppet-dashboard'
+  $config_dir         = "${install_dir}/config"
+  $cn_name            = 'dashboard'
+  $ca_server          = 'puppet'
+  $inventory_server   = 'puppet'
+  $file_bucket_server = 'puppet'
 
   case $::osfamily {
     Debian:{
-
+      # Nothing special happens here yet
     }
     default:{
       fail("The NeSI Puppet Dashboard Puppet module does not support ${::osfamily} family of operating systems")

@@ -1,3 +1,5 @@
+# This file is managed by Puppet, changes may be overwritten.
+#
 #===[ Settings ]=========================================================
 #
 # This file is meant for storing setting information that is never
@@ -10,7 +12,7 @@
 
 # Node name to use when contacting the puppet master.  This is the
 # CN that is used in Dashboard's certificate.
-cn_name: 'dashboard'
+cn_name: '<%= @cn_name %>'
 
 ca_crl_path: 'certs/dashboard.ca_crl.pem'
 
@@ -23,7 +25,7 @@ private_key_path: 'certs/dashboard.private_key.pem'
 public_key_path: 'certs/dashboard.public_key.pem'
 
 # Hostname of the certificate authority.
-ca_server: 'puppet'
+ca_server: '<%= @ca_server %>'
 
 # Port for the certificate authority.
 ca_port: 8140
@@ -35,7 +37,7 @@ key_length: 1024
 enable_inventory_service: false
 
 # Hostname of the inventory server.
-inventory_server: 'puppet'
+inventory_server: '<%= @inventory_server %>'
 
 # Port for the inventory server.
 inventory_port: 8140
@@ -45,7 +47,7 @@ inventory_port: 8140
 use_file_bucket_diffs: false
 
 # Hostname of the file bucket server.
-file_bucket_server: 'puppet'
+file_bucket_server: '<%= @file_bucket_server %>'
 
 # Port for the file bucket server.
 file_bucket_port: 8140
@@ -61,6 +63,9 @@ use_external_node_classification: true
 # Uncomment the following line to set a local time zone.  Run
 # "rake time:zones:local" for the name of your local time zone.
 #time_zone: 'Pacific Time (US & Canada)'
+<% if @time_zone -%>
+time_zone: '<%= @time_zone %>'
+<% end -%>
 
 # Look at http://ruby-doc.org/core/classes/Time.html#M000298 for the strftime formatting
 datetime_format: '%Y-%m-%d %H:%M %Z'
@@ -75,10 +80,18 @@ custom_logo_alt_text: 'Puppet Dashboard'
 # We will be deprecating using "http://dashboard_servername/reports" as the puppet master's reporturl.
 # Set this to 'true' once you have changed all your puppet masters to send reports to
 # "http://dashboard_servername/reports/upload"
+<% if @disable_legacy_report_upload_url -%>
+disable_legacy_report_upload_url: true
+<% else -%>
 disable_legacy_report_upload_url: false
+<% end -%>
 
 # Disables the UI and controller actions for editing nodes, classes, groups and reports.  Report submission is still allowed
+<% if @read_only_mode -%>
+enable_read_only_mode: true
+<% else -%>
 enable_read_only_mode: false
+<% end -%>
 
 # Default number of items of each kind to display per page
 nodes_per_page: 20
