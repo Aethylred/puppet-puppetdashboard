@@ -1,19 +1,26 @@
 # Class: puppetdashboard
 # NOTE: It is strongly recommended that security tokens, like passwords, are called from an external source, like Hiera
 class puppetdashboard(
-  $ensure                   = installed,
-  $provider                 = undef,
-  $install_dir              = $puppetdashboard::params::install_dir,
-  $manage_vhost             = true,
-  $manage_db                = true,
-  $db_server                = undef,
-  $db_name                  = $puppetdashboard::params::db_name,
-  $db_user                  = $puppetdashboard::params::db_user,
-  $db_password              = 'veryunsafeword',
-  $config_settings_source   = undef,
-  $config_database_source   = undef,
-  $config_settings_content  = undef,
-  $config_database_content  = undef
+  $ensure                           = installed,
+  $provider                         = undef,
+  $install_dir                      = $puppetdashboard::params::install_dir,
+  $manage_vhost                     = true,
+  $manage_db                        = true,
+  $db_server                        = undef,
+  $db_name                          = $puppetdashboard::params::db_name,
+  $db_user                          = $puppetdashboard::params::db_user,
+  $db_password                      = 'veryunsafeword',
+  $config_settings_source           = undef,
+  $config_database_source           = undef,
+  $config_settings_content          = undef,
+  $config_database_content          = undef,
+  $time_zone                        = undef,
+  $read_only_mode                   = undef,
+  $disable_legacy_report_upload_url = undef,
+  $cn_name                          = $puppetdashboard::params::cn_name,
+  $ca_server                        = $puppetdashboard::params::ca_server,
+  $inventory_server                 = $puppetdashboard::params::inventory_server,
+  $file_bucket_server               = $puppetdashboard::params::file_bucket_server
 ) inherits puppetdashboard::params {
   require apache
   require puppet
@@ -66,7 +73,8 @@ class puppetdashboard(
     class { 'puppetdashboard::db::mysql':
       db_user     => $db_user,
       db_name     => $db_name,
-      db_password => $db_password
+      db_password => $db_password,
+      install_dir => $install_dir,
     }
   }
 }

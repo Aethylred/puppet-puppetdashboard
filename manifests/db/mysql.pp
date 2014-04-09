@@ -5,7 +5,8 @@ class puppetdashboard::db::mysql (
   $db_user_host   = 'localhost',
   $db_name        = $puppetdashboard::params::db_name,
   $db_password    = 'veryunsafeword',
-  $db_passwd_hash = undef
+  $db_passwd_hash = undef,
+  $install_dir    = $puppetdashboard::params::install_dir
 ) inherits puppetdashboard::params {
 
   # This class requires the puppetlabs mysql module
@@ -38,6 +39,19 @@ class puppetdashboard::db::mysql (
     user        => $real_db_user,
   }
 
-  # IMPROVEMENT: A future option to consider is replimplemeting to create the database as an exported resource to be collected on a remote MySQL server
+  # IMPROVEMENT: A future option to consider is repimplemeting to create the database as an exported resource to be collected on a remote MySQL server. Would require the dashboard to support a remote server...
+
+  exec { 'puppetdashboard_dbmigrate':
+    cwd         => $install_dir,
+    command     => 'rake db:migrate',
+    environment => ['HOME=/root','RAILS_ENV=production'],
+    require     => [
+      Mysql_grant["${real_db_user}/${db_name}.*"],
+      File['puppet_dashboard_database','puppet_dashboard_settings'],
+    ],
+    refreshonly => true,
+    path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+    subscribe   => Mysql_database[$db_name],
+  }
 
 }
