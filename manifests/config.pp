@@ -4,7 +4,10 @@ class puppetdashboard::config (
   $config_settings_source   = undef,
   $config_database_source   = undef,
   $config_settings_content  = undef,
-  $config_database_content  = undef
+  $config_database_content  = undef,
+  $db_user                  = $puppetdashboard::params::db_user,
+  $db_name                  = $puppetdashboard::params::db_name,
+  $db_password              = 'veryunsafeword',
 ) inherits puppetdashboard::params {
 
   if $config_settings_content {
