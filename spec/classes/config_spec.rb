@@ -41,6 +41,9 @@ describe 'puppetdashboard::config', :type => :class do
           'mode'    => '0660',
           'require' => 'File[puppet_dashboard_database]'
         ) }
+        it { should contain_file('puppet_dashboard_database').with_content(/^  database: puppetdashboard$/)}
+        it { should contain_file('puppet_dashboard_database').with_content(/^  username: puppetdashboard$/)}
+        it { should contain_file('puppet_dashboard_database').with_content(/^  password: veryunsafeword$/)}
       end
       describe 'when using a custom install directory' do
         let :params do
@@ -82,6 +85,30 @@ describe 'puppetdashboard::config', :type => :class do
           }
         end
         it { should contain_file('puppet_dashboard_database').with_source('http://example.org/database.yml')}
+      end
+      describe 'when given a custom db_user' do
+        let :params do
+          {
+            :db_user => 'dashboard-production'
+          }
+        end
+        it { should contain_file('puppet_dashboard_database').with_content(/^  username: dashboard-production$/)}
+      end
+      describe 'when given a custom db_name' do
+        let :params do
+          {
+            :db_name => 'dashboard-production'
+          }
+        end
+        it { should contain_file('puppet_dashboard_database').with_content(/^  database: dashboard-production$/)}
+      end
+      describe 'when given a custom db_password' do
+        let :params do
+          {
+            :db_password => 'notsecureatall'
+          }
+        end
+        it { should contain_file('puppet_dashboard_database').with_content(/^  password: notsecureatall$/)}
       end
     end
   end
