@@ -51,6 +51,38 @@ describe 'puppetdashboard::config', :type => :class do
         it { should contain_file('/opt/dashboard/config/settings.yml')}
         it { should contain_file('/opt/dashboard/config/database.yml')}
       end
+      describe 'when given content for settings.yml' do
+        let :params do
+          {
+            :config_settings_content => 'A short test file'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_content('A short test file')}
+      end
+      describe 'when given content for database.yml' do
+        let :params do
+          {
+            :config_database_content => 'A short test file'
+          }
+        end
+        it { should contain_file('puppet_dashboard_database').with_content('A short test file')}
+      end
+      describe 'when given source for settings.yml' do
+        let :params do
+          {
+            :config_settings_source => 'http://example.org/settings.yml'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_source('http://example.org/settings.yml')}
+      end
+      describe 'when given source for database.yml' do
+        let :params do
+          {
+            :config_database_source => 'http://example.org/database.yml'
+          }
+        end
+        it { should contain_file('puppet_dashboard_database').with_source('http://example.org/database.yml')}
+      end
     end
   end
   context "on a RedHat OS" do
