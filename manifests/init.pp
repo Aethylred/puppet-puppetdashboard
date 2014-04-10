@@ -10,6 +10,7 @@ class puppetdashboard(
   $db_name                          = $puppetdashboard::params::db_name,
   $db_user                          = $puppetdashboard::params::db_user,
   $db_password                      = 'veryunsafeword',
+  $db_passwd_hash                   = undef,
   $config_settings_source           = undef,
   $config_database_source           = undef,
   $config_settings_content          = undef,
@@ -70,11 +71,20 @@ class puppetdashboard(
   }
 
   if $manage_db {
-    class { 'puppetdashboard::db::mysql':
-      db_user     => $db_user,
-      db_name     => $db_name,
-      db_password => $db_password,
-      install_dir => $install_dir,
+    if $db_passwd_hash {
+      class { 'puppetdashboard::db::mysql':
+        db_user         => $db_user,
+        db_name         => $db_name,
+        db_passwd_hash  => $db_passwd_hash,
+        install_dir     => $install_dir,
+      }
+    } else {
+      class { 'puppetdashboard::db::mysql':
+        db_user     => $db_user,
+        db_name     => $db_name,
+        db_password => $db_password,
+        install_dir => $install_dir,
+      }
     }
   }
 }

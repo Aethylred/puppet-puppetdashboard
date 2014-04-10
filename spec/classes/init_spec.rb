@@ -21,8 +21,10 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::db::mysql').with(
           'db_name'       => 'puppetdashboard',
           'db_user'       => 'puppetdashboard',
-          'db_password'   => 'veryunsafeword'
+          'db_password'   => 'veryunsafeword',
+          'install_dir'   => '/usr/share/puppet-dashboard'
         ) }
+        it { should contain_class('puppetdashboard::db::mysql').without_db_passwd_hash }
       end
       describe "with the git provider, provider => 'git'" do
         let :params do
@@ -34,6 +36,64 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::install::git').with(
           'ensure'      => 'installed',
           'install_dir' => '/usr/share/puppet-dashboard'
+        ) }
+      end
+      describe "with the git provider, and a custom install directory" do
+        let :params do
+          {
+            :provider     => 'git',
+            :install_dir  => '/opt/dashboard'
+          }
+        end
+        it { should contain_class('puppetdashboard::params') }
+        it { should contain_class('puppetdashboard::install::git').with(
+          'install_dir' => '/opt/dashboard'
+        ) }
+        it { should contain_class('puppetdashboard::db::mysql').with(
+          'install_dir' => '/opt/dashboard'
+        ) }
+      end
+      describe "when not managing the database" do
+        let :params do
+          {
+            :manage_db => false,
+          }
+        end
+        it { should_not contain_class('puppetdashboard::db::mysql') }
+      end
+      describe "when using a custom database, user, and password" do
+        let :params do
+          {
+            :db_user      => 'dashboard-production',
+            :db_name      => 'dashboard-production',
+            :db_password  => 'notsecureatall'
+          }
+        end
+        it { should contain_class('puppetdashboard::db::mysql').with(
+          'db_user'       => 'dashboard-production',
+          'db_name'       => 'dashboard-production',
+          'db_password'   => 'notsecureatall'
+        ) }
+        it { should contain_class('puppetdashboard::db::mysql').without_db_passwd_hash }
+      end
+      describe "when using a database password hash" do
+        let :params do
+          {
+            :db_passwd_hash  => '*E35ABBADA04F2712E8D5D65C9AB521945FF1F238'
+          }
+        end
+        it { should contain_class('puppetdashboard::db::mysql').with(
+          'db_passwd_hash'   => '*E35ABBADA04F2712E8D5D65C9AB521945FF1F238'
+        ) }
+      end
+      describe "when passing a custom install directory" do
+        let :params do
+          {
+            :install_dir      => '/opt/dashboard',
+          }
+        end
+        it { should contain_class('puppetdashboard::db::mysql').with(
+          'install_dir' => '/opt/dashboard'
         ) }
       end
     end
