@@ -1,12 +1,12 @@
 require 'spec_helper'
 describe 'puppetdashboard::db::mysql', :type => :class do
-  context "on a Debian OS" do
+  context 'on a Debian OS' do
     let :facts do
       {
         :osfamily   => 'Debian',
       }
     end
-    describe "with no parameters" do
+    describe 'with no parameters' do
       it { should contain_class('puppetdashboard::params') }
       it { should contain_mysql_database('puppetdashboard').with(
         'ensure'        => 'present',
@@ -36,8 +36,68 @@ describe 'puppetdashboard::db::mysql', :type => :class do
         ]
       ) }
     end
+    describe 'when setting custom user and hostname' do
+      let :params do
+        {
+          :db_user      => 'someone',
+          :db_user_host => 'example.org'
+        }
+      end
+      it { should contain_mysql_user('someone@example.org') }
+      it { should contain_mysql_grant('someone@example.org/puppetdashboard.*').with(
+        'user'          => 'someone@example.org'
+      ) }
+      it { should contain_exec('puppetdashboard_dbmigrate').with(
+        'require'     => [
+          'Mysql_grant[someone@example.org/puppetdashboard.*]',
+          'File[puppet_dashboard_database]',
+          'File[puppet_dashboard_settings]'
+        ]
+      ) }
+    end
+    describe 'when setting custom database name' do
+      let :params do
+        {
+          :db_name      => 'dashboard-production'
+        }
+      end
+      it { should contain_mysql_database('dashboard-production') }
+      it { should contain_mysql_grant('puppetdashboard@localhost/dashboard-production.*').with(
+        'table'         => 'dashboard-production.*'
+      ) }
+    end
+    describe 'when using a custom install directory' do
+      let :params do
+        {
+          :install_dir      => '/opt/dashboard'
+        }
+      end
+      it { should contain_exec('puppetdashboard_dbmigrate').with(
+        'cwd'         => '/opt/dashboard'
+      ) }
+    end
+    describe 'when setting a password' do
+      let :params do
+        {
+          :db_password      => 'notsecureatall'
+        }
+      end
+      it { should contain_mysql_user('puppetdashboard@localhost').with(
+        'password_hash' => '*E35ABBADA04F2712E8D5D65C9AB521945FF1F238'
+      ) }
+    end
+    describe 'when using a password hash' do
+      let :params do
+        {
+          :db_passwd_hash      => '*E35ABBADA04F2712E8D5D65C9AB521945FF1F238'
+        }
+      end
+      it { should contain_mysql_user('puppetdashboard@localhost').with(
+        'password_hash' => '*E35ABBADA04F2712E8D5D65C9AB521945FF1F238'
+      ) }
+    end
   end
-  context "on a RedHat OS" do
+  context 'on a RedHat OS' do
     let :facts do
       {
         :osfamily               => 'RedHat',
@@ -49,7 +109,7 @@ describe 'puppetdashboard::db::mysql', :type => :class do
       }.to raise_error(Puppet::Error, /The NeSI Puppet Dashboard Puppet module does not support RedHat family of operating systems/)
     end
   end
-  context "on an Unknown OS" do
+  context 'on an Unknown OS' do
     let :facts do
       {
         :osfamily   => 'Unknown',
