@@ -119,6 +119,64 @@ describe 'puppetdashboard::config', :type => :class do
         end
         it { should contain_file('puppet_dashboard_database').with_content(/^  password: notsecureatall$/)}
       end
+      describe 'when given a custom cn_name' do
+        let :params do
+          {
+            :cn_name => 'dashboard.example.org'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_content(/^cn_name: 'dashboard.example.org'$/)}
+      end
+      describe 'when given a custom ca_server' do
+        let :params do
+          {
+            :ca_server => 'ca.example.org'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_content(/^ca_server: 'ca.example.org'$/)}
+      end
+      describe 'when given a custom inventory_server' do
+        let :params do
+          {
+            :inventory_server => 'inventory.example.org'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_content(/^inventory_server: 'inventory.example.org'$/)}
+      end
+      describe 'when given a custom file_bucket_server' do
+        let :params do
+          {
+            :file_bucket_server => 'bucket.example.org'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_content(/^file_bucket_server: 'bucket.example.org'$/)}
+      end
+      describe 'when given a custom time_zone' do
+        let :params do
+          {
+            :time_zone => 'eternal monday'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_content(/^time_zone: 'eternal monday'$/)}
+      end
+      describe 'when read only mode is set' do
+        let :params do
+          {
+            :read_only_mode => true
+          }
+        end
+        it { should_not contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: false$/)}
+        it { should contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: true$/)}
+      end
+      describe 'when legacy report mode is disabled' do
+        let :params do
+          {
+            :disable_legacy_report_upload_url => true
+          }
+        end
+        it { should_not contain_file('puppet_dashboard_settings').with_content(/^disable_legacy_report_upload_url: false$/)}
+        it { should contain_file('puppet_dashboard_settings').with_content(/^disable_legacy_report_upload_url: true$/)}
+      end
     end
   end
   context "on a RedHat OS" do
