@@ -23,9 +23,18 @@ describe 'puppetdashboard::db::mysql', :type => :class do
         'options'       => 'GRANT',
         'privileges'    => 'ALL'
       ) }
-      # These don't work on single element arrays, as something converts them to bare strings, need to be checked with longer arrays.
-      # it { should contain_mysql_grant('puppetdashboard@localhost/puppetdashboard.*').with_options match_array(['GRANT']) }
-      # it { should contain_mysql_grant('puppetdashboard@localhost/puppetdashboard.*').with_privileges match_array(['ALL']) }
+      it { should contain_exec('puppetdashboard_dbmigrate').with(
+        'cwd'         => '/usr/share/puppet-dashboard',
+        'command'     => 'rake db:migrate',
+        'refreshonly' => true,
+        'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
+        'environment' => ['HOME=/root','RAILS_ENV=production'],
+        'require'     => [
+          'Mysql_grant[puppetdashboard@localhost/puppetdashboard.*]',
+          'File[puppet_dashboard_database]',
+          'File[puppet_dashboard_settings]'
+        ]
+      ) }
     end
   end
   context "on a RedHat OS" do
