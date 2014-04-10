@@ -17,6 +17,16 @@ describe 'puppetdashboard::install::package', :type => :class do
         'path'    => '/usr/share/puppet-dashboard'
       ) }
     end
+    describe 'when ensure is absent' do
+      let :params do
+        {
+          :ensure => 'absent'
+        }
+      end
+      it { should contain_package('puppet-dashboard').with(
+        'ensure'  => 'absent'
+      ) }
+    end
   end
   context "on a RedHat OS" do
     let :facts do
