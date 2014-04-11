@@ -89,12 +89,38 @@ describe 'puppetdashboard', :type => :class do
       describe "when passing a custom install directory" do
         let :params do
           {
-            :install_dir      => '/opt/dashboard',
+            :install_dir      => '/opt/dashboard'
           }
         end
         it { should contain_class('puppetdashboard::db::mysql').with(
           'install_dir' => '/opt/dashboard'
         ) }
+      end
+      describe "when setting source and content of database.yml" do
+        let :params do
+          {
+            :config_database_content  => 'A short database.yml file',
+            :config_database_source   => 'http://example.org/database.yml',
+          }
+        end
+        it do
+          expect {
+            should include_class('puppetdashboard::params')
+          }.to raise_error(Puppet::Error, /The parameters config_database_source and config_database_content are exclusive, only one can be set./)
+        end
+      end
+      describe "when setting source and content of settings.yml" do
+        let :params do
+          {
+            :config_settings_content  => 'A short settings.yml file',
+            :config_settings_source   => 'http://example.org/settings.yml',
+          }
+        end
+        it do
+          expect {
+            should include_class('puppetdashboard::params')
+          }.to raise_error(Puppet::Error, /The parameters config_settings_source and config_settings_content are exclusive, only one can be set./)
+        end
       end
     end
   end
