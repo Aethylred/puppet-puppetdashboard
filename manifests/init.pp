@@ -6,7 +6,6 @@ class puppetdashboard(
   $install_dir                      = $puppetdashboard::params::install_dir,
   $manage_vhost                     = true,
   $manage_db                        = true,
-  $db_server                        = undef,
   $db_name                          = $puppetdashboard::params::db_name,
   $db_user                          = $puppetdashboard::params::db_user,
   $db_password                      = 'veryunsafeword',
@@ -23,8 +22,6 @@ class puppetdashboard(
   $inventory_server                 = $puppetdashboard::params::inventory_server,
   $file_bucket_server               = $puppetdashboard::params::file_bucket_server
 ) inherits puppetdashboard::params {
-  require apache
-  require puppet
 
   # Check exclusive parameters
   if $config_database_content and $config_database_source{

@@ -25,6 +25,34 @@ describe 'puppetdashboard', :type => :class do
           'install_dir'   => '/usr/share/puppet-dashboard'
         ) }
         it { should contain_class('puppetdashboard::db::mysql').without_db_passwd_hash }
+        it { should contain_class('puppetdashboard::config').with(
+          'conf_dir'                  => '/usr/share/puppet-dashboard/config',
+          'db_user'                   => 'puppetdashboard',
+          'db_name'                   => 'puppetdashboard',
+          'db_password'               => 'veryunsafeword',
+          'cn_name'                   => 'dashboard',
+          'ca_server'                 => 'puppet',
+          'inventory_server'          => 'puppet',
+          'file_bucket_server'        => 'puppet'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_settings_source'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_database_source'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_settings_content'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_database_content'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'read_only_mode'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'disable_legacy_report_upload_url'
+        ) }
       end
       describe "with the git provider, provider => 'git'" do
         let :params do
@@ -36,6 +64,34 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::install::git').with(
           'ensure'      => 'installed',
           'install_dir' => '/usr/share/puppet-dashboard'
+        ) }
+        it { should contain_class('puppetdashboard::config').with(
+          'conf_dir'                  => '/usr/share/puppet-dashboard/config',
+          'db_user'                   => 'puppetdashboard',
+          'db_name'                   => 'puppetdashboard',
+          'db_password'               => 'veryunsafeword',
+          'cn_name'                   => 'dashboard',
+          'ca_server'                 => 'puppet',
+          'inventory_server'          => 'puppet',
+          'file_bucket_server'        => 'puppet'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_settings_source'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_database_source'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_settings_content'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'config_database_content'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'read_only_mode'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'disable_legacy_report_upload_url'
         ) }
       end
       describe "with the git provider, and a custom install directory" do
@@ -51,6 +107,9 @@ describe 'puppetdashboard', :type => :class do
         ) }
         it { should contain_class('puppetdashboard::db::mysql').with(
           'install_dir' => '/opt/dashboard'
+        ) }
+        it { should contain_class('puppetdashboard::config').with(
+          'conf_dir'                  => '/opt/dashboard/config'
         ) }
       end
       describe "when not managing the database" do
@@ -105,7 +164,7 @@ describe 'puppetdashboard', :type => :class do
         end
         it do
           expect {
-            should include_class('puppetdashboard::params')
+            should contain_class('puppetdashboard::params')
           }.to raise_error(Puppet::Error, /The parameters config_database_source and config_database_content are exclusive, only one can be set./)
         end
       end
@@ -118,9 +177,49 @@ describe 'puppetdashboard', :type => :class do
         end
         it do
           expect {
-            should include_class('puppetdashboard::params')
+            should contain_class('puppetdashboard::params')
           }.to raise_error(Puppet::Error, /The parameters config_settings_source and config_settings_content are exclusive, only one can be set./)
         end
+      end
+      describe "when setting source for database.yml" do
+        let :params do
+          {
+            :config_database_source   => 'http://example.org/database.yml'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'config_database_source' => 'http://example.org/database.yml'
+        ) }
+      end
+      describe "when setting content for database.yml" do
+        let :params do
+          {
+            :config_database_content   => 'A short database.yml file'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'config_database_content' => 'A short database.yml file'
+        ) }
+      end
+      describe "when setting source for settings.yml" do
+        let :params do
+          {
+            :config_settings_source   => 'http://example.org/settings.yml'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'config_settings_source' => 'http://example.org/settings.yml'
+        ) }
+      end
+      describe "when setting content for settings.yml" do
+        let :params do
+          {
+            :config_settings_content   => 'A short settings.yml file'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'config_settings_content' => 'A short settings.yml file'
+        ) }
       end
     end
   end
@@ -135,7 +234,7 @@ describe 'puppetdashboard', :type => :class do
     end
     it do
       expect {
-        should include_class('puppetdashboard::params')
+        should contain_class('puppetdashboard::params')
       }.to raise_error(Puppet::Error, /The NeSI Puppet Dashboard Puppet module does not support RedHat family of operating systems/)
     end
   end
@@ -147,7 +246,7 @@ describe 'puppetdashboard', :type => :class do
     end
     it do
       expect {
-        should include_class('puppet::params')
+        should contain_class('puppet::params')
       }.to raise_error(Puppet::Error, /The NeSI Puppet Dashboard Puppet module does not support Unknown family of operating systems/)
     end
   end
