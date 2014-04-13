@@ -155,6 +155,46 @@ describe 'puppetdashboard', :type => :class do
           'install_dir' => '/opt/dashboard'
         ) }
       end
+      describe "when given a cn_name" do
+        let :params do
+          {
+            :cn_name      => 'dashboard.example.com'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'cn_name'       => 'dashboard.example.com'
+        ) }
+      end
+      describe "when given a CA server" do
+        let :params do
+          {
+            :ca_server      => 'ca.example.com'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'ca_server'       => 'ca.example.com'
+        ) }
+      end
+      describe "when given an inventory server" do
+        let :params do
+          {
+            :inventory_server      => 'inventory.example.com'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'inventory_server'       => 'inventory.example.com'
+        ) }
+      end
+      describe "when given a file bucket server" do
+        let :params do
+          {
+            :file_bucket_server      => 'bucket.example.com'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'file_bucket_server'       => 'bucket.example.com'
+        ) }
+      end
       describe "when setting source and content of database.yml" do
         let :params do
           {

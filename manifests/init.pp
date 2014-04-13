@@ -47,7 +47,11 @@ class puppetdashboard(
         config_database_content   => $config_database_content,
         db_user                   => $db_user,
         db_name                   => $db_name,
-        db_password               => $db_password
+        db_password               => $db_password,
+        cn_name                   => $cn_name,
+        ca_server                 => $ca_server,
+        inventory_server          => $inventory_server,
+        file_bucket_server        => $file_bucket_server,
       }
     }
     default: {
@@ -62,7 +66,11 @@ class puppetdashboard(
         config_database_content   => $config_database_content,
         db_user                   => $db_user,
         db_name                   => $db_name,
-        db_password               => $db_password
+        db_password               => $db_password,
+        cn_name                   => $cn_name,
+        ca_server                 => $ca_server,
+        inventory_server          => $inventory_server,
+        file_bucket_server        => $file_bucket_server,
       }
     }
   }
