@@ -3,7 +3,7 @@ describe 'puppetdashboard::config', :type => :class do
   context "on a Debian OS" do
     let :facts do
       {
-        :osfamily   => 'Debian',
+        :osfamily               => 'Debian',
         :operatingsystemrelease => '6',
         :concat_basedir         => '/dne',
         :fqdn                   => 'test.example.org',
