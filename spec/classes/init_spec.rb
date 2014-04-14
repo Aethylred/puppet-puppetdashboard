@@ -53,6 +53,11 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::config').without(
           'disable_legacy_report_upload_url'
         ) }
+        it { should contain_class('puppetdashboard::site::apache').with(
+          'docroot'     => '/usr/share/puppet-dashboard/public',
+          'port'        => '80',
+          'servername'  => 'test.example.org'
+        ) }
       end
       describe "with the git provider, provider => 'git'" do
         let :params do
@@ -93,6 +98,11 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::config').without(
           'disable_legacy_report_upload_url'
         ) }
+        it { should contain_class('puppetdashboard::site::apache').with(
+          'docroot'     => '/usr/share/puppet-dashboard/public',
+          'port'        => '80',
+          'servername'  => 'test.example.org'
+        ) }
       end
       describe "with the git provider, and a custom install directory" do
         let :params do
@@ -119,6 +129,14 @@ describe 'puppetdashboard', :type => :class do
           }
         end
         it { should_not contain_class('puppetdashboard::db::mysql') }
+      end
+      describe "when not managing the web site vhost configuration" do
+        let :params do
+          {
+            :manage_vhost => false,
+          }
+        end
+        it { should_not contain_class('puppetdashboard::site::apache') }
       end
       describe "when using a custom database, user, and password" do
         let :params do

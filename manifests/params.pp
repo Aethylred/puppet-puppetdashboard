@@ -12,6 +12,7 @@ class puppetdashboard::params {
   $ca_server          = 'puppet'
   $inventory_server   = 'puppet'
   $file_bucket_server = 'puppet'
+  $docroot            = '/usr/share/puppet-dashboard/public'
 
   case $::osfamily {
     Debian:{

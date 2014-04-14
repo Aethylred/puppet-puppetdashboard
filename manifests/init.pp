@@ -20,7 +20,10 @@ class puppetdashboard(
   $cn_name                          = $puppetdashboard::params::cn_name,
   $ca_server                        = $puppetdashboard::params::ca_server,
   $inventory_server                 = $puppetdashboard::params::inventory_server,
-  $file_bucket_server               = $puppetdashboard::params::file_bucket_server
+  $file_bucket_server               = $puppetdashboard::params::file_bucket_server,
+  $docroot                          = $puppetdashboard::params::docroot,
+  $port                             = '80',
+  $servername                       = $::fqdn
 ) inherits puppetdashboard::params {
 
   # Check exclusive parameters
@@ -90,6 +93,14 @@ class puppetdashboard(
         db_password => $db_password,
         install_dir => $install_dir,
       }
+    }
+  }
+
+  if $manage_vhost {
+    class { 'puppetdashboard::site::apache':
+      docroot     => $docroot,
+      port        => $port,
+      servername  => $servername,
     }
   }
 }
