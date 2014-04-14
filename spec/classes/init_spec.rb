@@ -9,7 +9,10 @@ describe 'puppetdashboard', :type => :class do
         :fqdn                   => 'test.example.org',
       }
     end
-    describe 'with default apache and recommended mod_passenger' do
+    describe 'with default apache' do
+      let :pre_condition do 
+        "class { 'apache': }"
+      end
       describe "with no parameters" do
         it { should contain_class('puppetdashboard::params') }
         it { should contain_class('puppetdashboard::install::package').with(
@@ -51,9 +54,10 @@ describe 'puppetdashboard', :type => :class do
           'disable_legacy_report_upload_url'
         ) }
         it { should contain_class('puppetdashboard::site::apache').with(
-          'docroot'     => '/usr/share/puppet-dashboard/public',
-          'port'        => '80',
-          'servername'  => 'test.example.org'
+          'docroot'         => '/usr/share/puppet-dashboard/public',
+          'port'            => '80',
+          'servername'      => 'test.example.org',
+          'error_log_file'  => 'dashboard.test.example.org_error.log'
         ) }
       end
       describe "with the git provider, provider => 'git'" do
@@ -98,7 +102,8 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::site::apache').with(
           'docroot'     => '/usr/share/puppet-dashboard/public',
           'port'        => '80',
-          'servername'  => 'test.example.org'
+          'servername'  => 'test.example.org',
+          'error_log_file'  => 'dashboard.test.example.org_error.log'
         ) }
       end
       describe "with the git provider, and a custom install directory" do
@@ -134,6 +139,22 @@ describe 'puppetdashboard', :type => :class do
           }
         end
         it { should_not contain_class('puppetdashboard::site::apache') }
+      end
+      describe "when using a given vhost settings" do
+        let :params do
+          {
+            :docroot        => '/opt/puppet-dashboard/public',
+            :port           => '8080',
+            :servername     => 'dashboard.example.com',
+            :error_log_file => 'dashboard_error.log'
+          }
+        end
+        it { should contain_class('puppetdashboard::site::apache').with(
+          'docroot'        => '/opt/puppet-dashboard/public',
+          'port'           => '8080',
+          'servername'     => 'dashboard.example.com',
+          'error_log_file' => 'dashboard_error.log'
+        ) }
       end
       describe "when using a custom database, user, and password" do
         let :params do
