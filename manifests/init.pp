@@ -23,7 +23,8 @@ class puppetdashboard(
   $file_bucket_server               = $puppetdashboard::params::file_bucket_server,
   $docroot                          = $puppetdashboard::params::docroot,
   $port                             = '80',
-  $servername                       = $::fqdn
+  $servername                       = $::fqdn,
+  $error_log_file                   = $puppetdashboard::params::error_log_file
 ) inherits puppetdashboard::params {
 
   # Check exclusive parameters
@@ -55,6 +56,7 @@ class puppetdashboard(
         ca_server                 => $ca_server,
         inventory_server          => $inventory_server,
         file_bucket_server        => $file_bucket_server,
+        require                   => Class['puppetdashboard::install::git']
       }
     }
     default: {
@@ -74,6 +76,7 @@ class puppetdashboard(
         ca_server                 => $ca_server,
         inventory_server          => $inventory_server,
         file_bucket_server        => $file_bucket_server,
+        require                   => Class['puppetdashboard::install::package'],
       }
     }
   }
@@ -98,9 +101,11 @@ class puppetdashboard(
 
   if $manage_vhost {
     class { 'puppetdashboard::site::apache':
-      docroot     => $docroot,
-      port        => $port,
-      servername  => $servername,
+      docroot         => $docroot,
+      port            => $port,
+      servername      => $servername,
+      error_log_file  => $error_log_file,
+      require         => Class['puppetdashboard::config','puppetdashboard::db::mysql'],
     }
   }
 }

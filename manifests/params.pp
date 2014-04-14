@@ -13,6 +13,7 @@ class puppetdashboard::params {
   $inventory_server   = 'puppet'
   $file_bucket_server = 'puppet'
   $docroot            = '/usr/share/puppet-dashboard/public'
+  $error_log_file     = "dashboard.${::fqdn}_error.log"
 
   case $::osfamily {
     Debian:{

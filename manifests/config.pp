@@ -17,6 +17,8 @@ class puppetdashboard::config (
   $db_password                      = 'veryunsafeword'
 ) inherits puppetdashboard::params {
 
+  # require apache
+
   if $config_settings_content {
     file{'puppet_dashboard_settings':
       ensure  => file,
