@@ -1,4 +1,5 @@
 # This class manages the configuration and state of the puppet dashboard workers services
+# The webrick service should really have it's own class...
 class puppetdashboard::workers::debian (
   $disable_webrick    = true,
   $enable_workers     = true,
@@ -6,7 +7,7 @@ class puppetdashboard::workers::debian (
   $apache_user        = $puppetdashboard::params::apache_user,
   $ruby_bin           = $puppetdashboard::params::ruby_bin,
   $address            = '0.0.0.0',
-  $port               = $puppetdashboard::params::port,
+  $port               = $puppetdashboard::params::apache_port,
   $number_of_workers  = 2
 ) inherits puppetdashboard::params {
 

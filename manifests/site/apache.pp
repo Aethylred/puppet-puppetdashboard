@@ -2,7 +2,7 @@
 # using the puppetlans Apache module
 class puppetdashboard::site::apache (
   $docroot        = $puppetdashboard::params::docroot,
-  $port           = '80',
+  $port           = $puppetdashboard::params::apache_port,
   $servername     = $::fqdn,
   $error_log_file = $puppetdashboard::params::error_log_file
 ) inherits puppetdashboard::params {

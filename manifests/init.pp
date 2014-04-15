@@ -22,7 +22,7 @@ class puppetdashboard(
   $inventory_server                 = $puppetdashboard::params::inventory_server,
   $file_bucket_server               = $puppetdashboard::params::file_bucket_server,
   $docroot                          = $puppetdashboard::params::docroot,
-  $port                             = '80',
+  $port                             = $puppetdashboard::params::apache_port,
   $servername                       = $::fqdn,
   $error_log_file                   = $puppetdashboard::params::error_log_file,
   $number_of_workers                = 2,

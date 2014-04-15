@@ -16,6 +16,7 @@ class puppetdashboard::params {
   $error_log_file     = "dashboard.${::fqdn}_error.log"
   $apache_user        = $::apache::user
   $apache_group       = $::apache::group
+  $apache_port        = '80'
 
   case $::osfamily {
     Debian:{
