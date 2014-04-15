@@ -15,6 +15,28 @@ describe 'puppetdashboard::site::apache', :type => :class do
       end
       describe "with no parameters" do
         it { should contain_class('puppetdashboard::params') }
+        it { should contain_apache__vhost('puppet-dashboard').with(
+          'servername'      => 'test.example.org',
+          'port'            => '80',
+          'docroot'         => '/usr/share/puppet-dashboard/public',
+          'error_log_file'  => 'dashboard.test.example.org_error.log'
+        )}
+      end
+      describe "when not given default parameters" do
+        let :params do
+          {
+            :servername     => 'test.example.com',
+            :port           => '8080',
+            :docroot        => '/opt/puppetdashboard/public',
+            :error_log_file => 'dashboard_error.log'
+          }
+        end
+        it { should contain_apache__vhost('puppet-dashboard').with(
+          'servername'      => 'test.example.com',
+          'port'            => '8080',
+          'docroot'         => '/opt/puppetdashboard/public',
+          'error_log_file'  => 'dashboard_error.log'
+        )}
       end
     end
   end
