@@ -24,7 +24,11 @@ class puppetdashboard(
   $docroot                          = $puppetdashboard::params::docroot,
   $port                             = '80',
   $servername                       = $::fqdn,
-  $error_log_file                   = $puppetdashboard::params::error_log_file
+  $error_log_file                   = $puppetdashboard::params::error_log_file,
+  $number_of_workers                = 2,
+  $apache_user                      = $puppetdashboard::params::apache_user,
+  $disable_webrick                  = true,
+  $enable_workers                   = true
 ) inherits puppetdashboard::params {
 
   # Check exclusive parameters
@@ -108,4 +112,15 @@ class puppetdashboard(
       require         => Class['puppetdashboard::config','puppetdashboard::db::mysql'],
     }
   }
+
+  class{'puppetdashboard::workers::debian':
+    disable_webrick   => $disable_webrick,
+    enable_workers    => $enable_workers,
+    install_dir       => $install_dir,
+    apache_user       => $apache_user,
+    port              => $port,
+    number_of_workers => $number_of_workers,
+    require           => Class['puppetdashboard::config'],
+  }
+
 }
