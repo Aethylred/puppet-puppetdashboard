@@ -14,10 +14,12 @@ class puppetdashboard::params {
   $file_bucket_server = 'puppet'
   $docroot            = '/usr/share/puppet-dashboard/public'
   $error_log_file     = "dashboard.${::fqdn}_error.log"
+  $apache_user        = $::apache::user
+  $apache_group       = $::apache::group
 
   case $::osfamily {
     Debian:{
-      # Nothing special happens here yet
+      $ruby_bin = '/usr/bin/ruby'
     }
     default:{
       fail("The NeSI Puppet Dashboard Puppet module does not support ${::osfamily} family of operating systems")

@@ -23,8 +23,8 @@ class puppetdashboard::config (
     file{'puppet_dashboard_settings':
       ensure  => file,
       path    => '/etc/puppet-dashboard/settings.yml',
-      owner   => $::apache::user,
-      group   => $::apache::group,
+      owner   => $puppetdashboard::params::apache_user,
+      group   => $puppetdashboard::params::apache_group,
       mode    => '0660',
       content => $config_settings_content,
     }
@@ -32,8 +32,8 @@ class puppetdashboard::config (
     file{'puppet_dashboard_settings':
       ensure  => file,
       path    => '/etc/puppet-dashboard/settings.yml',
-      owner   => $::apache::user,
-      group   => $::apache::group,
+      owner   => $puppetdashboard::params::apache_user,
+      group   => $puppetdashboard::params::apache_group,
       mode    => '0660',
       source  => $config_settings_source,
     }
@@ -41,8 +41,8 @@ class puppetdashboard::config (
     file{'puppet_dashboard_settings':
       ensure  => file,
       path    => '/etc/puppet-dashboard/settings.yml',
-      owner   => $::apache::user,
-      group   => $::apache::group,
+      owner   => $puppetdashboard::params::apache_user,
+      group   => $puppetdashboard::params::apache_group,
       mode    => '0660',
       content => template('puppetdashboard/settings.yml.erb'),
     }
@@ -52,8 +52,8 @@ class puppetdashboard::config (
     file{'puppet_dashboard_database':
       ensure  => file,
       path    => '/etc/puppet-dashboard/database.yml',
-      owner   => $::apache::user,
-      group   => $::apache::group,
+      owner   => $puppetdashboard::params::apache_user,
+      group   => $puppetdashboard::params::apache_group,
       mode    => '0660',
       content => $config_database_content,
     }
@@ -61,8 +61,8 @@ class puppetdashboard::config (
     file{'puppet_dashboard_database':
       ensure  => file,
       path    => '/etc/puppet-dashboard/database.yml',
-      owner   => $::apache::user,
-      group   => $::apache::group,
+      owner   => $puppetdashboard::params::apache_user,
+      group   => $puppetdashboard::params::apache_group,
       mode    => '0660',
       source  => $config_database_source,
     }
@@ -70,8 +70,8 @@ class puppetdashboard::config (
     file{'puppet_dashboard_database':
       ensure  => file,
       path    => '/etc/puppet-dashboard/database.yml',
-      owner   => $::apache::user,
-      group   => $::apache::group,
+      owner   => $puppetdashboard::params::apache_user,
+      group   => $puppetdashboard::params::apache_group,
       mode    => '0660',
       content => template('puppetdashboard/database.yml.erb'),
     }

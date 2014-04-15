@@ -29,4 +29,6 @@ class { 'apache::mod::passenger':
   passenger_stat_throttle_rate => 120,
   rails_autodetect => 'on',
 }
-include puppetdashboard
+class { 'puppetdashboard':
+  require => Class['apache::mod::passenger'],
+}

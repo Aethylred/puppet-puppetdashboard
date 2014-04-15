@@ -12,6 +12,31 @@ This separation should allow the Puppet Dashboard application to share the Apach
 
 # Installation
 
+The following Puppet snippet will do a default install of the Puppet Dashboard as the default site on port 80:
+
+```puppet
+class {'mysql::server':
+  override_options => {
+    'mysqld' => {
+      'max_allowed_packet' => '32M',
+    }
+  }
+}
+class {'apache':
+  default_vhost => false,
+}
+class { 'apache::mod::passenger':
+  passenger_high_performance => 'on',
+  passenger_max_pool_size => 12,
+  passenger_pool_idle_time => 1500,
+  passenger_stat_throttle_rate => 120,
+  rails_autodetect => 'on',
+}
+class { 'puppetdashboard':
+  require => Class['apache::mod::passenger'],
+}
+```
+
 ## Dependencies
 
 The Puppet-Dashboard Module has been written such that its component classes can be installed on different servers. Hence the dependencies are not across all classes and allows the installation of the database on a database server without a web service, while the web application can be installed on a web server with without a database service.
