@@ -105,6 +105,15 @@ describe 'puppetdashboard', :type => :class do
           'servername'  => 'test.example.org',
           'error_log_file'  => 'dashboard.test.example.org_error.log'
         ) }
+        it { should contain_class('puppetdashboard::workers::debian').with(
+          'disable_webrick'   => true,
+          'enable_workers'    => true,
+          'install_dir'       => '/usr/share/puppet-dashboard',
+          'apache_user'       => 'www-data',
+          'port'              => '80',
+          'number_of_workers' => '2',
+          'require'           => 'Class[Puppetdashboard::Config]'
+        ) }
       end
       describe "with the git provider, and a custom install directory" do
         let :params do
