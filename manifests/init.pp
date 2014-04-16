@@ -114,12 +114,19 @@ class puppetdashboard(
   }
 
   class{'puppetdashboard::workers::debian':
-    disable_webrick   => $disable_webrick,
     enable_workers    => $enable_workers,
     install_dir       => $install_dir,
     apache_user       => $apache_user,
     port              => $port,
     number_of_workers => $number_of_workers,
+    require           => Class['puppetdashboard::config'],
+  }
+
+  class{'puppetdashboard::site::webrick':
+    disable_webrick   => $disable_webrick,
+    install_dir       => $install_dir,
+    apache_user       => $apache_user,
+    port              => $port,
     require           => Class['puppetdashboard::config'],
   }
 

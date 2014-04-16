@@ -60,12 +60,18 @@ describe 'puppetdashboard', :type => :class do
           'error_log_file'  => 'dashboard.test.example.org_error.log'
         ) }
         it { should contain_class('puppetdashboard::workers::debian').with(
-          'disable_webrick'   => true,
           'enable_workers'    => true,
           'install_dir'       => '/usr/share/puppet-dashboard',
           'apache_user'       => 'www-data',
           'port'              => '80',
           'number_of_workers' => '2',
+          'require'           => 'Class[Puppetdashboard::Config]'
+        ) }
+        it { should contain_class('puppetdashboard::site::webrick').with(
+          'disable_webrick'   => true,
+          'install_dir'       => '/usr/share/puppet-dashboard',
+          'apache_user'       => 'www-data',
+          'port'              => '80',
           'require'           => 'Class[Puppetdashboard::Config]'
         ) }
       end
@@ -115,12 +121,18 @@ describe 'puppetdashboard', :type => :class do
           'error_log_file'  => 'dashboard.test.example.org_error.log'
         ) }
         it { should contain_class('puppetdashboard::workers::debian').with(
-          'disable_webrick'   => true,
           'enable_workers'    => true,
           'install_dir'       => '/usr/share/puppet-dashboard',
           'apache_user'       => 'www-data',
           'port'              => '80',
           'number_of_workers' => '2',
+          'require'           => 'Class[Puppetdashboard::Config]'
+        ) }
+        it { should contain_class('puppetdashboard::site::webrick').with(
+          'disable_webrick'   => true,
+          'install_dir'       => '/usr/share/puppet-dashboard',
+          'apache_user'       => 'www-data',
+          'port'              => '80',
           'require'           => 'Class[Puppetdashboard::Config]'
         ) }
       end
@@ -142,6 +154,9 @@ describe 'puppetdashboard', :type => :class do
           'conf_dir'                  => '/opt/dashboard/config'
         ) }
         it { should contain_class('puppetdashboard::workers::debian').with(
+          'install_dir'       => '/opt/dashboard'
+        ) }
+        it { should contain_class('puppetdashboard::site::webrick').with(
           'install_dir'       => '/opt/dashboard'
         ) }
       end
@@ -180,7 +195,6 @@ describe 'puppetdashboard', :type => :class do
       describe "when using a custom worker settings" do
         let :params do
           {
-            :disable_webrick   => false,
             :enable_workers    => false,
             :apache_user       => 'nobody',
             :port              => '8080',
@@ -188,11 +202,24 @@ describe 'puppetdashboard', :type => :class do
           }
         end
         it { should contain_class('puppetdashboard::workers::debian').with(
-          'disable_webrick'   => false,
           'enable_workers'    => false,
           'apache_user'       => 'nobody',
           'port'              => '8080',
           'number_of_workers' => '24'
+        ) }
+      end
+      describe "when using a custom webrick settings" do
+        let :params do
+          {
+            :disable_webrick   => false,
+            :apache_user       => 'nobody',
+            :port              => '8080',
+          }
+        end
+        it { should contain_class('puppetdashboard::site::webrick').with(
+          'disable_webrick'   => false,
+          'apache_user'       => 'nobody',
+          'port'              => '8080'
         ) }
       end
       describe "when using a custom database, user, and password" do
