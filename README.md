@@ -4,13 +4,11 @@
 
 This is a Puppet module to manage the [Puppet Dashboard](http://projects.puppetlabs.com/projects/dashboard) that is compatible with the [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) and the [NeSI Puppet Module](https://github.com/nesi/puppet-puppet).
 
-# Introduction
+### Introduction
 
-The purpose of this module is to install the [Puppet Dashboard](http://projects.puppetlabs.com/projects/dashboard) using the [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache), but without explicitly installing or configuring the Apache installation and optionally declaring an Apache virtual host.
+The purpose of this module is to install the [Puppet Dashboard](http://projects.puppetlabs.com/projects/dashboard) using the [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache), but without explicitly installing or configuring any other services or resources. This separation of concerns should allow the Puppet Dashboard to be installed independently of puppet and puppet-master services and should allow the Puppet Dashboard to not interfere with the web server and database if they are used by other applications or services.
 
-This separation should allow the Puppet Dashboard application to share the Apache web service with other services and applications.
-
-# Installation
+## Installation
 
 The following Puppet snippet will do a default install of the Puppet Dashboard as the default site on port 80:
 
@@ -39,17 +37,32 @@ class { 'puppetdashboard':
 
 ## Dependencies
 
-The Puppet-Dashboard Module has been written such that its component classes can be installed on different servers. Hence the dependencies are not across all classes and allows the installation of the database on a database server without a web service, while the web application can be installed on a web server with without a database service.
+The Puppet-Dashboard Module has been written such that its component classes can be installed on different servers. Hence the dependencies are not across all classes and allows the installation of the database on a database server without a web service, while the web application can be installed on a web server with without a database service. The current version of the Puppet Dashboard does not yet support a remote database.
 
 In all cases, these modules should be installed and be available on the Puppet Master, though not necessarily installed on each host using classes and resources from the Puppet-Dashboard Module.
 
 ### Required Puppet Module Dependencies
 * **apache**: The [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) is required for most classes in this module. This module is not required when calling the `puppetdashboard::db::mysql` class.
+* **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is required to set up the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class (this is the default behaviour). This module could be used to set up the database on a remote server, but the Puppet Dashboard application does not yet support a remote database.
 
-### Optional Puppet Module Dependencies
-* **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql).Only required if the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class (this is the default behaviour).
+#### Apache Web Server Configuration
 
-## MySQL Database Server Configuration
+This module requires that the Apache web server is installed and configured to run with Passenger. The following Puppet snippet is the recommended minimal configuration for Apache running the Puppet Dashboard that produces a virtual host configuration that matches the Puppet Dashboard documentation:
+
+```puppet
+class {'apache':
+  default_vhost => false,
+}
+class { 'apache::mod::passenger':
+  passenger_high_performance => 'on',
+  passenger_max_pool_size => 12,
+  passenger_pool_idle_time => 1500,
+  passenger_stat_throttle_rate => 120,
+  rails_autodetect => 'on',
+}
+```
+
+#### MySQL Database Server Configuration
 
 This module does not require the MySQL server to be running or configured locally.
 
@@ -65,18 +78,139 @@ class {'mysql::server':
 }
 ```
 
-## Git Provisoner
+## Classes and Resources
 
-The git provisioner installs the puppet-dashboard from the Puppetlabs git repository on GitHub. This allows the dashboard installation from unpackaged versions and onto Linux distributions that do not have packages availible to them (e.g. Saucy Salamander, Raring Ringtail). Using the git provisioner requires the git package to be installed, and that the Puppetlabs vcsrepo module is installed.
+The base class can be used to manage all the other classes provided by this module. It does provide the option to not manage some classes so that those classes can be instanced seperately, or the resources that they manage can be defined independently.
 
-# To Do
+The parameters are described in the base class and the default values given are the same in the other classes. As the parameter names are consistent across classes the other classes will simply list the parameters they can use.
+
+Some classes have been created as sub-classes to simplfy the addition of future classes to support alternative services (e.g. PosgreSQL or Ngnix) or operating systems (e.g. RedHat). For example, the database class has been created as `puppetdashboard::db::mysql` to allow for the future creation of a `puppetdashboard::db::posgres` class.
+
+### The base `puppetdashboard` class
+
+* **ensure**: This ensure statement is passed to the installation provided and should accept any standard `package` ensure statement including `latest` and specifying a version. The default value is `installed`.
+* **provider**: If set an alternative installation provide will be used. Currently the only alternative provider that is recongnised is `git`, and this provider has not been completed. The default value is undefined which will use the default package provider.
+* **install_dir**: This sets the directory in which the Puppet Dashboard application is installed. This parameter is intended to be passed to alternative providers and it is not recommended that this parameter is used if the default package provider is used. The default value is `/usr/share/puppet-dashboard`.
+* **manage_vhost**: If this is `true` then an Apache virtual host will be defined using the Puppetlabs Apache Module. The default value is `true`.
+* **manage_db**: If this is `true` then a MySQL database will be defined using the Puppetlabs MySQL Module and initialised with the Puppet Dashboard database schema. The default vaue is `true`.
+* **db_name**: This value is used as the name of the Puppet Dashboard MySQL database. The default value is `puppetdashboard`.
+* **db_user**: This value is used as the name of the Puppet Dashboard MySQL database user. The default value is `puppetdashboard`.
+* **db_password**: This value is used to set the password of the Puppet Dashboard MySQL database user. It is strongly recommended that passwords are not included in a Puppet manifest in clear text, consider storing them seperately in Hiera. The default value is `veryunsafeword`.
+* **db_passwd_hash**: This value is used to set the password of the Puppet Dashboard MySQL database user by directly providing a pre-salted and encrypted hash. It is strongly recommended that password hashes are not included in a Puppet manifest in clear text, consider storing them seperately in Hiera. Setting the `db_passwd_hash` parameter will overide the `db_password` parameter. The default value is undefined.
+* **config_settings_source**: This parameter sets a source URL, as per using the source parameter of a `file` resource, that is used to supply a `settings.yml` file. The default value is undefined.
+* **config_database_source**: This parameter sets a source URL, as per using the source parameter of a `file` resource, that is used to supply a `database.yml` file. The default value is undefined.
+* **config_settings_content**: This parameter sets the content, as per using the source parameter of a `file` resource, that is used to supply a `settings.yml` file. The default value is undefined.
+* **config_database_content**: This parameter sets the content, as per using the source parameter of a `file` resource, that is used to supply a `database.yml` file. The default value is undefined.
+* **time_zone**: This sets the default time zone the application will run in. The correct time zone can be discovered by running `rake time:zones:local` in the Puppet Dashboard install directory. The default is undefined.
+* **read_only_mode**: Setting this to `true` will put the Puppet Dashboard in to read-only mode. The default value is undefined.
+* **disable_legacy_report_upload_url**: Setting this to `true` will disable the legacy report upload mode. The default value is undefined.
+* **cn_name**: This sets the `cn_name` of the puppet dashboard in the `settings.yml` file. The default value os `dashboard`.
+* **ca_server**: This sets the `ca_server` for the puppet dashboard in the `settings.yml` file. The default value os `puppet`.
+* **inventory_server**: This sets the `inventory_server` for the puppet dashboard in the `settings.yml` file. The default value os `puppet`.
+* **file_bucket_server**: This sets the `file_bucket_server` for the puppet dashboard in the `settings.yml` file. The default value os `puppet`.
+* **docroot**: This sets the document root directory for the Puppet Dashboard web application. This parameter is intended to be used with alternative providers and it is not recommended that this parameter is used with the default package provider is used. The default value is `/usr/share/puppet-dashboard/public`.
+* **port**: This sets the listen port for the Puppet Dashboard site Apache virtual host configuration. It is not passed to the webrick service if that is enabled. The default value is `80`.
+* **servername**: This sets the servername passed to the Puppet Dashboard site Apache virtual host configuration. It is not passed to the webrick service if that is enabled. The default value is the fully qualified domain name of the node as provided by the `fqdn` fact.
+* **error_log_file**: This sets the error log file name passed to the Puppet Dashboard site Apache virtual host configuration. It is not passed to the webrick service if that is enabled. The default value is based on the fully qualified domain name of the node as provided by the `fqdn` fact, in the form of `dashboard.${fqdn}_error.log`.
+* **number_of_workers**: This sets the number of Puppet Dashboard worker processes to be run by the Puppet Dashboard Workers service. The default value is `2`.
+* **apache_user**: This sets the user that the web server runs as. The default value is provided by the Puppetlabs Apache Module.
+* **disable_webrick**: If this parameter is set to `true` the Puppet Dashboard webrick service is disabled. Enabling this service is not recommended. Using both webrick and Apache is probably dangerous. The default value is `true`.
+* **enable_workers**: If this parameter is set to `true` then the Puppet Dasboard Worker process management service will be enabled and configured. The default value is true.
+
+### The `puppetdashboard::config` class
+
+* **conf_dir**: This sets the path to the Puppet Dashboard application configuration directory. This parameter is intended to be passed to alternative providers and it is not recommended that this parameter is used if the default package provider is used. The default value is `/usr/share/puppet-dashboard/config`.
+* **config_settings_source**
+* **config_database_source**
+* **config_settings_content**
+* **config_database_content**
+* **cn_name**
+* **ca_server**
+* **inventory_server**
+* **file_bucket_server**
+* **time_zone**
+* **read_only_mode**
+* **disable_legacy_report_upload_url**
+* **db_user**
+* **db_name**
+* **db_password**
+
+### The `puppetdashboard::db::mysql` class
+
+* **db_user**
+* **db_user_host**
+* **db_name**
+* **db_password**
+* **db_passwd_hash**
+* **install_dir**
+
+### The `puppetdashboard::install::git` class
+
+* **ensure**
+* **install_dir**
+
+### The `puppetdashboard::install::package` class
+
+* **ensure**
+
+### The `puppetdashboard::site::apache` class
+
+* **docroot**
+* **port**
+* **servername**
+* **error_log_file**
+
+### The `puppetdashboard::site::webrick` class
+
+* **disable_webrick**
+* **install_dir**
+* **apache_user**
+* **ruby_bin**
+* **address**
+* **port**
+
+### The `puppetdashboard::workers::debian` class
+
+* **enable_workers**
+* **install_dir**
+* **apache_user**
+* **ruby_bin**
+* **address**
+* **port**
+* **number_of_workers**
+
+## Other Features
+
+### Managing Puppet Dashboard on webrick
+
+This module can be used to set up the Puppet Dashboard on webrick, though this is not recommended and not well tested. Use the following Puppet snippet:
+
+```puppet
+class {'mysql::server':
+  override_options => {
+    'mysqld' => {
+      'max_allowed_packet' => '32M',
+    }
+  }
+}
+class { 'puppetdashboard':
+  manage_vhost    => false,
+  disable_webrick => false,
+}
+```
+
+## To Do
 
 * Secure access to Puppet Dashboard via HTTPS, ideally this should still allow read-only access via HTTP.
 * [Optimse and maintain the Puppet Dashboard Database](http://docs.puppetlabs.com/dashboard/manual/1.2/maintaining.html)
 
-# Acknowledgements
+### Git Provisoner
 
-## puppet-blank
+The git provisioner installs the puppet-dashboard from the Puppetlabs git repository on GitHub. This allows the dashboard installation from unpackaged versions and onto Linux distributions that do not have packages availible to them (e.g. Saucy Salamander, Raring Ringtail). Using the git provisioner requires the git package to be installed, and that the Puppetlabs vcsrepo module is installed. This feature is not fully functional.
+
+## Acknowledgements
+
+### puppet-blank
 
 This module is derived from the [puppet-blank](https://github.com/Aethylred/puppet-blank) module by Aaron Hicks (aethylred@gmail.com)
 
@@ -84,7 +218,7 @@ This module has been developed for the use with Open Source Puppet (Apache 2.0 l
 
 * http://puppetlabs.com/puppet/puppet-open-source/
 
-## rspec-puppet-augeas
+### rspec-puppet-augeas
 
 This module includes the [Travis](https://travis-ci.org) configuration to use [`rspec-puppet-augeas`](https://github.com/domcleal/rspec-puppet-augeas) to test and verify changes made to files using the [`augeas` resource](http://docs.puppetlabs.com/references/latest/type.html#augeas) available in Puppet. Check the `rspec-puppet-augeas` [documentation](https://github.com/domcleal/rspec-puppet-augeas/blob/master/README.md) for usage.
 
@@ -96,9 +230,9 @@ This will require a copy of the original input files to `spec/fixtures/augeas` u
         `-- ssh
             `-- sshd_config
 
-# Gnu General Public License
+## Gnu General Public License
 
-[![GPL3](http://www.gnu.org/graphics/gplv3-127x51.png)]](http://www.gnu.org/licenses)
+[![GPL3](http://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses)
 
 This file is part of the puppetdashboard Puppet module.
 
