@@ -23,6 +23,7 @@ class puppetdashboard::workers::debian (
       enable      => true,
       hasstatus   => true,
       hasrestart  => true,
+      require     => [Package['rake'],Class['puppetdashboard::db::mysql']],
     }
   } else {
     service { 'puppet-dashboard-workers':
@@ -30,6 +31,7 @@ class puppetdashboard::workers::debian (
       enable      => false,
       hasstatus   => true,
       hasrestart  => true,
+      require     => [Package['rake'],Class['puppetdashboard::db::mysql']],
     }
   }
 
