@@ -32,7 +32,8 @@ describe 'puppetdashboard::db::mysql', :type => :class do
         'require'     => [
           'Mysql_grant[puppetdashboard@localhost/puppetdashboard.*]',
           'File[puppet_dashboard_database]',
-          'File[puppet_dashboard_settings]'
+          'File[puppet_dashboard_settings]',
+          'Package[rake]',
         ]
       ) }
     end
@@ -51,7 +52,8 @@ describe 'puppetdashboard::db::mysql', :type => :class do
         'require'     => [
           'Mysql_grant[someone@example.org/puppetdashboard.*]',
           'File[puppet_dashboard_database]',
-          'File[puppet_dashboard_settings]'
+          'File[puppet_dashboard_settings]',
+          'Package[rake]',
         ]
       ) }
     end

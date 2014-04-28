@@ -32,7 +32,11 @@ describe 'puppetdashboard::workers::debian', :type => :class do
           'ensure'      => 'running',
           'enable'      => true,
           'hasstatus'   => true,
-          'hasrestart'  => true
+          'hasrestart'  => true,
+          'require'     => [
+            'Package[rake]',
+            'Class[Puppetdashboard::Db::Mysql]',
+          ]
         ) }
       end
       describe "when disabling the worker service" do
