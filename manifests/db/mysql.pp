@@ -48,6 +48,7 @@ class puppetdashboard::db::mysql (
     require     => [
       Mysql_grant["${real_db_user}/${db_name}.*"],
       File['puppet_dashboard_database','puppet_dashboard_settings'],
+      Package['rake'],
     ],
     refreshonly => true,
     path        => '/usr/bin:/bin:/usr/sbin:/sbin',
