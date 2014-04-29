@@ -7,6 +7,7 @@ describe 'puppetdashboard', :type => :class do
         :operatingsystemrelease => '6',
         :concat_basedir         => '/dne',
         :fqdn                   => 'test.example.org',
+        :processorcount         => '2',
       }
     end
     describe 'with default apache' do
@@ -375,6 +376,7 @@ describe 'puppetdashboard', :type => :class do
         :operatingsystemrelease => '6',
         :concat_basedir         => '/dne',
         :fqdn                   => 'test.example.org',
+        :processor_count        => 2,
       }
     end
     it do

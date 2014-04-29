@@ -7,6 +7,7 @@ describe 'puppetdashboard::workers::debian', :type => :class do
         :operatingsystemrelease => '6',
         :concat_basedir         => '/dne',
         :fqdn                   => 'test.example.org',
+        :processorcount         => '2',
       }
     end
     describe 'with default apache' do
@@ -35,7 +36,7 @@ describe 'puppetdashboard::workers::debian', :type => :class do
           'hasrestart'  => true,
           'require'     => [
             'Package[rake]',
-            'Class[Puppetdashboard::Db::Mysql]',
+            'Exec[puppetdashboard_dbmigrate]',
           ]
         ) }
       end
@@ -99,6 +100,7 @@ describe 'puppetdashboard::workers::debian', :type => :class do
         :operatingsystemrelease => '6',
         :concat_basedir         => '/dne',
         :fqdn                   => 'test.example.org',
+        :processor_count        => 2,
       }
     end
     it do

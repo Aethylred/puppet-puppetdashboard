@@ -3,7 +3,8 @@ describe 'puppetdashboard::db::mysql', :type => :class do
   context 'on a Debian OS' do
     let :facts do
       {
-        :osfamily   => 'Debian',
+        :osfamily                       => 'Debian',
+        :database_db_scripts_timestamp  => '1234567890',
       }
     end
     describe 'with no parameters' do
@@ -26,7 +27,7 @@ describe 'puppetdashboard::db::mysql', :type => :class do
       it { should contain_exec('puppetdashboard_dbmigrate').with(
         'cwd'         => '/usr/share/puppet-dashboard',
         'command'     => 'rake db:migrate',
-        'refreshonly' => true,
+        'onlyif'      => "test 'rake db:version 2> /dev/null|cut -c 18-' != 1234567890",
         'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
         'environment' => ['HOME=/root','RAILS_ENV=production'],
         'require'     => [
