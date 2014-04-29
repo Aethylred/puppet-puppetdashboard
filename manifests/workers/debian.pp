@@ -6,7 +6,7 @@ class puppetdashboard::workers::debian (
   $ruby_bin           = $puppetdashboard::params::ruby_bin,
   $address            = '0.0.0.0',
   $port               = $puppetdashboard::params::apache_port,
-  $number_of_workers  = 2
+  $number_of_workers  = $::processorcount
 ) inherits puppetdashboard::params {
 
   file { 'puppet-dashboard-workers-defaults':
@@ -23,7 +23,7 @@ class puppetdashboard::workers::debian (
       enable      => true,
       hasstatus   => true,
       hasrestart  => true,
-      require     => [Package['rake'],Class['puppetdashboard::db::mysql']],
+      require     => [Package['rake'],Exec['puppetdashboard_dbmigrate']],
     }
   } else {
     service { 'puppet-dashboard-workers':
@@ -31,7 +31,7 @@ class puppetdashboard::workers::debian (
       enable      => false,
       hasstatus   => true,
       hasrestart  => true,
-      require     => [Package['rake'],Class['puppetdashboard::db::mysql']],
+      require     => [Package['rake'],Exec['puppetdashboard_dbmigrate']],
     }
   }
 

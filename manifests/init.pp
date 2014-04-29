@@ -25,7 +25,7 @@ class puppetdashboard(
   $port                             = $puppetdashboard::params::apache_port,
   $servername                       = $::fqdn,
   $error_log_file                   = $puppetdashboard::params::error_log_file,
-  $number_of_workers                = 2,
+  $number_of_workers                = $::processorcount,
   $apache_user                      = $puppetdashboard::params::apache_user,
   $disable_webrick                  = true,
   $enable_workers                   = true
