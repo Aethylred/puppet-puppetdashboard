@@ -1,5 +1,5 @@
 name    'Aethylred-puppetdashboard'
-version '0.1.2'
+version '0.1.3'
 source 'https://github.com/Aethylred/puppet-puppetdashboard'
 author 'Aethylred'
 license 'GPL3'

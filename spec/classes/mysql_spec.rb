@@ -4,7 +4,7 @@ describe 'puppetdashboard::db::mysql', :type => :class do
     let :facts do
       {
         :osfamily                       => 'Debian',
-        :database_db_scripts_timestamp  => '1234567890',
+        :dashboard_db_scripts_timestamp => '1234567890',
       }
     end
     describe 'with no parameters' do
@@ -35,6 +35,7 @@ describe 'puppetdashboard::db::mysql', :type => :class do
           'Mysql_database[puppetdashboard]',
           'File[puppet_dashboard_database]',
           'File[puppet_dashboard_settings]',
+          'File[puppet-dashboard-workers-defaults]',
           'Package[rake]',
         ]
       ) }
@@ -53,8 +54,10 @@ describe 'puppetdashboard::db::mysql', :type => :class do
       it { should contain_exec('puppetdashboard_dbmigrate').with(
         'require'     => [
           'Mysql_grant[someone@example.org/puppetdashboard.*]',
+          'Mysql_database[puppetdashboard]',
           'File[puppet_dashboard_database]',
           'File[puppet_dashboard_settings]',
+          'File[puppet-dashboard-workers-defaults]',
           'Package[rake]',
         ]
       ) }
@@ -68,6 +71,16 @@ describe 'puppetdashboard::db::mysql', :type => :class do
       it { should contain_mysql_database('dashboard-production') }
       it { should contain_mysql_grant('puppetdashboard@localhost/dashboard-production.*').with(
         'table'         => 'dashboard-production.*'
+      ) }
+      it { should contain_exec('puppetdashboard_dbmigrate').with(
+        'require'     => [
+          'Mysql_grant[puppetdashboard@localhost/dashboard-production.*]',
+          'Mysql_database[dashboard-production]',
+          'File[puppet_dashboard_database]',
+          'File[puppet_dashboard_settings]',
+          'File[puppet-dashboard-workers-defaults]',
+          'Package[rake]',
+        ]
       ) }
     end
     describe 'when using a custom install directory' do
