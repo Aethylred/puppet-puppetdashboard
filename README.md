@@ -199,6 +199,10 @@ class { 'puppetdashboard':
 }
 ```
 
+## Troubleshooting
+
+Make sure the installed Ruby, Ruby development libraries, and Rubygems are all compatible. Using a [module to manage Ruby](https://github.com/puppetlabs/puppetlabs-ruby) is recommended.
+
 ## To Do
 
 * Secure access to Puppet Dashboard via HTTPS, ideally this should still allow read-only access via HTTP.

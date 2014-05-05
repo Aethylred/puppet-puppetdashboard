@@ -27,11 +27,12 @@ describe 'puppetdashboard::db::mysql', :type => :class do
       it { should contain_exec('puppetdashboard_dbmigrate').with(
         'cwd'         => '/usr/share/puppet-dashboard',
         'command'     => 'rake db:migrate',
-        'onlyif'      => "test 'rake db:version 2> /dev/null|cut -c 18-' != 1234567890",
+        'onlyif'      => "test `rake db:version 2> /dev/null|cut -c 18-` != 1234567890",
         'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
         'environment' => ['HOME=/root','RAILS_ENV=production'],
         'require'     => [
           'Mysql_grant[puppetdashboard@localhost/puppetdashboard.*]',
+          'Mysql_database[puppetdashboard]',
           'File[puppet_dashboard_database]',
           'File[puppet_dashboard_settings]',
           'Package[rake]',
