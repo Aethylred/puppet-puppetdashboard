@@ -41,11 +41,18 @@ class puppetdashboard::db::mysql (
 
   # IMPROVEMENT: A future option to consider is repimplemeting to create the database as an exported resource to be collected on a remote MySQL server. Would require the dashboard to support a remote server...
 
+  # This catches the situation where the fact isn't installed yet
+  if $::dashboard_db_scripts_timestamp {
+    $timestamp = $::dashboard_db_scripts_timestamp
+  } else {
+    $timestamp = 'Nil, Empty String, Zero or Undefined.'
+  }
+
   exec { 'puppetdashboard_dbmigrate':
     cwd         => $install_dir,
     command     => 'rake db:migrate',
     environment => ['HOME=/root','RAILS_ENV=production'],
-    onlyif      => "test `rake db:version 2> /dev/null|tail -1|cut -c 18-` != ${::dashboard_db_scripts_timestamp}",
+    unless      => "rake db:version && test `rake db:version 2> /dev/null|tail -1|cut -c 18-` = '${timestamp}'",
     require     => [
       Mysql_grant["${real_db_user}/${db_name}.*"],
       Mysql_database[$db_name],
