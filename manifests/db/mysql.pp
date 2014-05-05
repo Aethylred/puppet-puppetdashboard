@@ -45,7 +45,7 @@ class puppetdashboard::db::mysql (
     cwd         => $install_dir,
     command     => 'rake db:migrate',
     environment => ['HOME=/root','RAILS_ENV=production'],
-    onlyif      => "test `rake db:version 2> /dev/null|cut -c 18-` != ${::dashboard_db_scripts_timestamp}",
+    onlyif      => "test `rake db:version 2> /dev/null|tail -1|cut -c 18-` != ${::dashboard_db_scripts_timestamp}",
     require     => [
       Mysql_grant["${real_db_user}/${db_name}.*"],
       Mysql_database[$db_name],
