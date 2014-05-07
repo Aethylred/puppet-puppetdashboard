@@ -11,6 +11,12 @@ class puppetdashboard::site::apache (
     servername      => $servername,
     port            => $port,
     docroot         => $docroot,
+    directories     => [
+      { path              => $docroot,
+        passenger_enabled => 'on',
+      },
+    ],
+    custom_fragment => 'RailsBaseURI /',
     error_log_file  => $error_log_file,
   }
 

@@ -109,7 +109,10 @@ class puppetdashboard(
       port            => $port,
       servername      => $servername,
       error_log_file  => $error_log_file,
-      require         => Class['puppetdashboard::config','puppetdashboard::db::mysql'],
+      require         => Class[
+        'puppetdashboard::config',
+        'puppetdashboard::db::mysql'
+      ],
     }
   }
 
