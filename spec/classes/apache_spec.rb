@@ -19,6 +19,7 @@ describe 'puppetdashboard::site::apache', :type => :class do
           'servername'      => 'test.example.org',
           'port'            => '80',
           'docroot'         => '/usr/share/puppet-dashboard/public',
+          'custom_fragment' => 'RailsBaseURI /',
           'error_log_file'  => 'dashboard.test.example.org_error.log'
         )}
       end
