@@ -14,6 +14,7 @@ class puppetdashboard::params {
   $file_bucket_server = 'puppet'
   $docroot            = '/usr/share/puppet-dashboard/public'
   $error_log_file     = "dashboard.${::fqdn}_error.log"
+  $access_log_file    = "dashboard.${::fqdn}_access.log"
   $apache_user        = $::apache::user
   $apache_group       = $::apache::group
   $apache_port        = '80'

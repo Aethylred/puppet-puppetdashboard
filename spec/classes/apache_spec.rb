@@ -20,23 +20,26 @@ describe 'puppetdashboard::site::apache', :type => :class do
           'port'            => '80',
           'docroot'         => '/usr/share/puppet-dashboard/public',
           'custom_fragment' => 'RailsBaseURI /',
-          'error_log_file'  => 'dashboard.test.example.org_error.log'
+          'error_log_file'  => 'dashboard.test.example.org_error.log',
+          'access_log_file' => 'dashboard.test.example.org_access.log'
         )}
       end
       describe "when not given default parameters" do
         let :params do
           {
-            :servername     => 'test.example.com',
-            :port           => '8080',
-            :docroot        => '/opt/puppetdashboard/public',
-            :error_log_file => 'dashboard_error.log'
+            :servername       => 'test.example.com',
+            :port             => '8080',
+            :docroot          => '/opt/puppetdashboard/public',
+            :error_log_file   => 'dashboard_error.log',
+            :access_log_file  => 'dashboard_access.log'
           }
         end
         it { should contain_apache__vhost('puppet-dashboard').with(
           'servername'      => 'test.example.com',
           'port'            => '8080',
           'docroot'         => '/opt/puppetdashboard/public',
-          'error_log_file'  => 'dashboard_error.log'
+          'error_log_file'  => 'dashboard_error.log',
+          'access_log_file' => 'dashboard_access.log'
         )}
       end
     end
