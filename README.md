@@ -208,7 +208,9 @@ Make sure the installed Ruby, Ruby development libraries, and Rubygems are all c
 * Secure access to Puppet Dashboard via HTTPS, ideally this should still allow read-only access via HTTP.
 * [Optimse and maintain the Puppet Dashboard Database](http://docs.puppetlabs.com/dashboard/manual/1.2/maintaining.html)
 
-### Git Provisoner
+### Git Provider
+
+The git provider requires that the system version of Ruby is 1.9.3 or later, and uses bundler. These requirements are currently holding up development.
 
 The git provisioner installs the puppet-dashboard from the Puppetlabs git repository on GitHub. This allows the dashboard installation from unpackaged versions and onto Linux distributions that do not have packages availible to them (e.g. Saucy Salamander, Raring Ringtail). Using the git provisioner requires the git package to be installed, and that the Puppetlabs vcsrepo module is installed. This feature is not fully functional.
 

@@ -18,6 +18,8 @@ class puppetdashboard::params {
   $apache_user        = $::apache::user
   $apache_group       = $::apache::group
   $apache_port        = '80'
+  $repo_url           = 'https://github.com/sodabrew/puppet-dashboard.git'
+  $repo_ref           = '2.0.0-beta2'
 
   case $::osfamily {
     Debian:{

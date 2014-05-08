@@ -10,7 +10,13 @@ class puppetdashboard::install::package (
 
   file{'dashboard_install_dir':
     ensure  => directory,
-    path    => $puppetdashboard::params::install_dir
+    path    => $puppetdashboard::params::install_dir,
+    require => Package['puppet-dashboard'],
+  }
+
+  file { '/etc/puppet-dashboard':
+    ensure  => 'directory',
+    require => Package['puppet-dashboard'],
   }
 
 }
