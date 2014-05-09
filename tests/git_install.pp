@@ -23,8 +23,10 @@ class {'mysql::server':
   }
 }
 class {'mysql::bindings':
-  ruby_enable         => true,
-  ruby_package_ensure => 'latest',
+  ruby_enable               => true,
+  ruby_package_ensure       => 'latest',
+  client_dev                => true,
+  client_dev_package_ensure => 'latest',
 }
 class {'apache':
   default_vhost => false,
@@ -38,13 +40,18 @@ class { 'apache::mod::passenger':
   require                       => Class['ruby::dev'],
 }
 include nodejs
+package{'libpq-dev': ensure => 'latest'}
+package{'libsqlite3-dev': ensure => 'latest'}
 class { 'puppetdashboard':
   provider  => 'git',
-  require   => Class[
-    'apache::mod::passenger',
-    'git',
-    'ruby::dev',
-    'mysql::bindings',
-    'nodejs'
+  require   => [
+    Class[
+      'apache::mod::passenger',
+      'git',
+      'ruby::dev',
+      'mysql::bindings',
+      'nodejs'
+    ],
+    Package['libpq-dev','libsqlite3-dev']
   ],
 }
