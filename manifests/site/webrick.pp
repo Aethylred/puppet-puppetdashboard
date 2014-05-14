@@ -16,12 +16,20 @@ class puppetdashboard::site::webrick (
     notify      => Service['puppet-dashboard'],
   }
 
+  file { 'puppet-dashboard-webrick-init':
+    ensure      => 'file',
+    path        => '/etc/init.d/puppet-dashboard',
+    mode        => '0755',
+    source      => 'puppet:///modules/puppetdashboard/puppet-dashboard',
+  }
+
   if $disable_webrick {
     service { 'puppet-dashboard':
       ensure      => 'stopped',
       enable      => false,
       hasstatus   => true,
       hasrestart  => true,
+      require     => File['puppet-dashboard-webrick-init'],
     }
   } else {
     service { 'puppet-dashboard':
@@ -29,6 +37,7 @@ class puppetdashboard::site::webrick (
       enable      => true,
       hasstatus   => true,
       hasrestart  => true,
+      require     => File['puppet-dashboard-webrick-init'],
     }
   }
 

@@ -17,6 +17,13 @@ class puppetdashboard::workers::debian (
     notify      => Service['puppet-dashboard-workers'],
   }
 
+  file { 'puppet-dashboard-workers-init':
+    ensure      => 'file',
+    path        => '/etc/init.d/puppet-dashboard-workers',
+    mode        => '0755',
+    source      => 'puppet:///modules/puppetdashboard/puppet-dashboard-workers',
+  }
+
   if $enable_workers {
     service { 'puppet-dashboard-workers':
       ensure      => 'running',

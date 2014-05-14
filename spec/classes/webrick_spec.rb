@@ -21,6 +21,12 @@ describe 'puppetdashboard::site::webrick', :type => :class do
           'mode'        => '0644',
           'notify'      => 'Service[puppet-dashboard]'
         ) }
+        it { should contain_file('puppet-dashboard-webrick-init').with(
+          'ensure'      => 'file',
+          'path'        => '/etc/init.d/puppet-dashboard',
+          'mode'        => '0755',
+          'source'      => 'puppet:///modules/puppetdashboard/puppet-dashboard'
+        ) }
         it { should contain_file('puppet-dashboard-webrick-defaults').with_content(/^START=no$/) }
         it { should contain_file('puppet-dashboard-webrick-defaults').with_content(/^DASHBOARD_HOME=\/usr\/share\/puppet-dashboard$/) }
         it { should contain_file('puppet-dashboard-webrick-defaults').with_content(/^DASHBOARD_USER=www-data$/) }

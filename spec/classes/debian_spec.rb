@@ -22,6 +22,12 @@ describe 'puppetdashboard::workers::debian', :type => :class do
           'mode'        => '0644',
           'notify'      => 'Service[puppet-dashboard-workers]'
         ) }
+        it { should contain_file('puppet-dashboard-workers-init').with(
+          'ensure'      => 'file',
+          'path'        => '/etc/init.d/puppet-dashboard-workers',
+          'mode'        => '0755',
+          'source'      => 'puppet:///modules/puppetdashboard/puppet-dashboard-workers'
+        ) }
         it { should contain_file('puppet-dashboard-workers-defaults').with_content(/^START=yes$/) }
         it { should contain_file('puppet-dashboard-workers-defaults').with_content(/^DASHBOARD_HOME=\/usr\/share\/puppet-dashboard$/) }
         it { should contain_file('puppet-dashboard-workers-defaults').with_content(/^DASHBOARD_USER=www-data$/) }
