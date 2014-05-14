@@ -30,7 +30,11 @@ class puppetdashboard::workers::debian (
       enable      => true,
       hasstatus   => true,
       hasrestart  => true,
-      require     => [Package['rake'],Exec['puppetdashboard_dbmigrate']],
+      require     => [
+        Package['rake'],
+        Exec['puppetdashboard_dbmigrate'],
+        File['puppet-dashboard-workers-init'],
+      ],
     }
   } else {
     service { 'puppet-dashboard-workers':
@@ -38,7 +42,11 @@ class puppetdashboard::workers::debian (
       enable      => false,
       hasstatus   => true,
       hasrestart  => true,
-      require     => [Package['rake'],Exec['puppetdashboard_dbmigrate']],
+      require     => [
+        Package['rake'],
+        Exec['puppetdashboard_dbmigrate'],
+        File['puppet-dashboard-workers-init'],
+      ],
     }
   }
 

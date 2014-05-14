@@ -63,7 +63,7 @@ class puppetdashboard::db::mysql (
       ],
       Package['rake'],
     ],
-    path        => '/usr/bin:/bin:/usr/sbin:/sbin',
+    path        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
   }
 
 }

@@ -14,7 +14,9 @@ class puppetdashboard::config (
   $disable_legacy_report_upload_url = undef,
   $db_user                          = $puppetdashboard::params::db_user,
   $db_name                          = $puppetdashboard::params::db_name,
-  $db_password                      = 'veryunsafeword'
+  $db_password                      = 'veryunsafeword',
+  $db_adapter                       = $puppetdashboard::params::db_adapter,
+  $secret_token                     = undef
 ) inherits puppetdashboard::params {
 
   # require apache

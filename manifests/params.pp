@@ -6,6 +6,7 @@ class puppetdashboard::params {
   $package            = 'puppet-dashboard'
   $db_user            = 'puppetdashboard'
   $db_name            = 'puppetdashboard'
+  $db_adapter         = 'mysql'
   $install_dir        = '/usr/share/puppet-dashboard'
   $config_dir         = "${install_dir}/config"
   $cn_name            = 'dashboard'

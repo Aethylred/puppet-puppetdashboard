@@ -98,5 +98,7 @@ nodes_per_page: 20
 classes_per_page: 50
 groups_per_page: 50
 reports_per_page: 20
-
+<% if @secret_token -%>
+secret_token: '<%= @secret_token %>'
+<% end -%>
 #===[ fin ]=============================================================

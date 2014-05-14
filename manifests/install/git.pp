@@ -24,4 +24,14 @@ class puppetdashboard::install::git (
     require => Vcsrepo[$install_dir],
   }
 
+  exec {'puppet_dashboard_bundle_install':
+    command     => 'bundle install --path vendor/bundle',
+    unless      => 'bundle check | grep \'The Gemfile\\\'s dependencies are satisfied\'',
+    cwd         => $install_dir,
+    path        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
+    environment => ['HOME=/root','RAILS_ENV=production'],
+    require     => Vcsrepo[$install_dir],
+    timeout     => 900,
+  }
+
 }

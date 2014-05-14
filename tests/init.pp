@@ -12,6 +12,18 @@
 #
 #     You should have received a copy of the GNU General Public License
 #     along with the puppetdashboard Puppet module.  If not, see <http://www.gnu.org/licenses/>.
+class{'ruby':
+    version         => '1.8.7',
+    latest_release  => true,
+  }
+class { 'ruby::dev':
+  require => Class['ruby'],
+}
+# gems has to be _reverted_ to 1.8.25
+exec{'gem update --system 1.8.25':
+  path    => ['/usr/bin','/bin'],
+  unless  => 'gem --version|grep 1.8.25',
+}
 class {'mysql::server':
   override_options => {
     'mysqld' => {
@@ -28,9 +40,6 @@ class { 'apache::mod::passenger':
   passenger_pool_idle_time      => 1500,
   passenger_stat_throttle_rate  => 120,
   rails_autodetect              => 'on',
-}
-package{'rake':
-  ensure => installed,
 }
 class { 'puppetdashboard':
   require => Class['apache::mod::passenger'],

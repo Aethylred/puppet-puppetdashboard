@@ -8,6 +8,7 @@ class puppetdashboard(
   $manage_db                        = true,
   $db_name                          = $puppetdashboard::params::db_name,
   $db_user                          = $puppetdashboard::params::db_user,
+  $db_adapter                       = $puppetdashboard::params::db_adapter,
   $db_password                      = 'veryunsafeword',
   $db_passwd_hash                   = undef,
   $config_settings_source           = undef,
@@ -28,7 +29,8 @@ class puppetdashboard(
   $number_of_workers                = $::processorcount,
   $apache_user                      = $puppetdashboard::params::apache_user,
   $disable_webrick                  = true,
-  $enable_workers                   = true
+  $enable_workers                   = true,
+  $secret_token                     = undef
 ) inherits puppetdashboard::params {
 
   # Check exclusive parameters
@@ -55,11 +57,13 @@ class puppetdashboard(
         config_database_content   => $config_database_content,
         db_user                   => $db_user,
         db_name                   => $db_name,
+        db_adapter                => $db_adapter,
         db_password               => $db_password,
         cn_name                   => $cn_name,
         ca_server                 => $ca_server,
         inventory_server          => $inventory_server,
         file_bucket_server        => $file_bucket_server,
+        secret_token              => $secret_token,
         require                   => Class['puppetdashboard::install::git']
       }
     }
@@ -80,6 +84,7 @@ class puppetdashboard(
         ca_server                 => $ca_server,
         inventory_server          => $inventory_server,
         file_bucket_server        => $file_bucket_server,
+        secret_token              => $secret_token,
         require                   => Class['puppetdashboard::install::package'],
       }
     }

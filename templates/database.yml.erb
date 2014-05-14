@@ -50,7 +50,7 @@ production:
   username: <%= @db_user %>
   password: <%= @db_password %>
   encoding: utf8
-  adapter:  mysql
+  adapter:  <%= @db_adapter %>
 
 development:
   database: dashboard_development
