@@ -31,6 +31,7 @@ describe 'puppetdashboard', :type => :class do
           'db_user'                   => 'puppetdashboard',
           'db_name'                   => 'puppetdashboard',
           'db_password'               => 'veryunsafeword',
+          'db_adapter'                => 'mysql',
           'cn_name'                   => 'dashboard',
           'ca_server'                 => 'puppet',
           'inventory_server'          => 'puppet',
@@ -53,6 +54,9 @@ describe 'puppetdashboard', :type => :class do
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'disable_legacy_report_upload_url'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'secret_token'
         ) }
         it { should contain_class('puppetdashboard::site::apache').with(
           'docroot'         => '/usr/share/puppet-dashboard/public',
@@ -92,6 +96,7 @@ describe 'puppetdashboard', :type => :class do
           'db_user'                   => 'puppetdashboard',
           'db_name'                   => 'puppetdashboard',
           'db_password'               => 'veryunsafeword',
+          'db_adapter'                => 'mysql',
           'cn_name'                   => 'dashboard',
           'ca_server'                 => 'puppet',
           'inventory_server'          => 'puppet',
@@ -114,6 +119,9 @@ describe 'puppetdashboard', :type => :class do
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'disable_legacy_report_upload_url'
+        ) }
+        it { should contain_class('puppetdashboard::config').without(
+          'secret_token'
         ) }
         it { should contain_class('puppetdashboard::site::apache').with(
           'docroot'     => '/usr/share/puppet-dashboard/public',
@@ -365,6 +373,48 @@ describe 'puppetdashboard', :type => :class do
         end
         it { should contain_class('puppetdashboard::config').with(
           'config_settings_content' => 'A short settings.yml file'
+        ) }
+      end
+      describe "when given a secret token" do
+        let :params do
+          {
+            :secret_token   => '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'secret_token' => '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313'
+        ) }
+      end
+      describe "when given a secret token using the git provider" do
+        let :params do
+          {
+            :provider       => 'git',
+            :secret_token   => '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'secret_token' => '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313'
+        ) }
+      end
+      describe "when changing the database adapter" do
+        let :params do
+          {
+            :db_adapter   => 'postgresql'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'db_adapter' => 'postgresql'
+        ) }
+      end
+      describe "when changing the database adapter with the git provider" do
+        let :params do
+          {
+            :db_adapter   => 'postgresql',
+            :provider     => 'git'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'db_adapter' => 'postgresql'
         ) }
       end
     end

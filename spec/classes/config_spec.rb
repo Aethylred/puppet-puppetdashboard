@@ -44,6 +44,7 @@ describe 'puppetdashboard::config', :type => :class do
         it { should contain_file('puppet_dashboard_database').with_content(/^  database: puppetdashboard$/)}
         it { should contain_file('puppet_dashboard_database').with_content(/^  username: puppetdashboard$/)}
         it { should contain_file('puppet_dashboard_database').with_content(/^  password: veryunsafeword$/)}
+        it { should contain_file('puppet_dashboard_database').with_content(/^  adapter:  mysql$/)}
         it { should contain_file('puppet_dashboard_settings').with_content(/^cn_name: 'dashboard'$/)}
         it { should contain_file('puppet_dashboard_settings').with_content(/^ca_server: 'puppet'$/)}
         it { should contain_file('puppet_dashboard_settings').with_content(/^inventory_server: 'puppet'$/)}
@@ -119,6 +120,14 @@ describe 'puppetdashboard::config', :type => :class do
         end
         it { should contain_file('puppet_dashboard_database').with_content(/^  password: notsecureatall$/)}
       end
+      describe 'when given a custom database adapter' do
+        let :params do
+          {
+            :db_adapter => 'postgresql'
+          }
+        end
+        it { should contain_file('puppet_dashboard_database').with_content(/^  adapter:  postgresql$/)}
+      end
       describe 'when given a custom cn_name' do
         let :params do
           {
@@ -158,6 +167,14 @@ describe 'puppetdashboard::config', :type => :class do
           }
         end
         it { should contain_file('puppet_dashboard_settings').with_content(/^time_zone: 'eternal monday'$/)}
+      end
+      describe 'when given a secret token' do
+        let :params do
+          {
+            :secret_token => '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313'
+          }
+        end
+        it { should contain_file('puppet_dashboard_settings').with_content(/^secret_token: '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313'$/)}
       end
       describe 'when read only mode is set' do
         let :params do

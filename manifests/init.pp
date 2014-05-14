@@ -79,6 +79,7 @@ class puppetdashboard(
         config_database_content   => $config_database_content,
         db_user                   => $db_user,
         db_name                   => $db_name,
+        db_adapter                => $db_adapter,
         db_password               => $db_password,
         cn_name                   => $cn_name,
         ca_server                 => $ca_server,

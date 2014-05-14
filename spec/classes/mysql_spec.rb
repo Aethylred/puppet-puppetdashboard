@@ -28,7 +28,7 @@ describe 'puppetdashboard::db::mysql', :type => :class do
         'cwd'         => '/usr/share/puppet-dashboard',
         'command'     => 'rake db:migrate',
         'unless'      => "rake db:version && test `rake db:version 2> /dev/null|tail -1|cut -c 18-` = '1234567890'",
-        'path'        => '/usr/bin:/bin:/usr/sbin:/sbin',
+        'path'        => ['/usr/bin', '/bin', '/usr/sbin', '/sbin'],
         'environment' => ['HOME=/root','RAILS_ENV=production'],
         'require'     => [
           'Mysql_grant[puppetdashboard@localhost/puppetdashboard.*]',

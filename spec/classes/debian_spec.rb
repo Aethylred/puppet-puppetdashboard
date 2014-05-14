@@ -43,6 +43,7 @@ describe 'puppetdashboard::workers::debian', :type => :class do
           'require'     => [
             'Package[rake]',
             'Exec[puppetdashboard_dbmigrate]',
+            'File[puppet-dashboard-workers-init]'
           ]
         ) }
       end

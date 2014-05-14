@@ -16,6 +16,9 @@ describe 'puppetdashboard::install::package', :type => :class do
         'ensure'  => 'directory',
         'path'    => '/usr/share/puppet-dashboard'
       ) }
+      it { should contain_file('/etc/puppet-dashboard').with(
+        'ensure'  => 'directory'
+      ) }
     end
     describe 'when ensure is absent' do
       let :params do
