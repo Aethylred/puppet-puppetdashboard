@@ -48,11 +48,19 @@ class puppetdashboard::db::mysql (
     $timestamp = 'Nil, Empty String, Zero or Undefined.'
   }
 
+  if versioncmp($::dashboard_version, '1.2.23') > 0 {
+    $rake_command     = 'bundle exec rake'
+    $db_setup_command = 'db:setup'
+  } else {
+    $rake_command     = 'rake'
+    $db_setup_command = 'db:migrate'
+  }
+
   exec { 'puppetdashboard_dbmigrate':
     cwd         => $install_dir,
-    command     => 'rake db:migrate',
+    command     => "${rake_command} ${db_setup_command}",
     environment => ['HOME=/root','RAILS_ENV=production'],
-    unless      => "rake db:version && test `rake db:version 2> /dev/null|tail -1|cut -c 18-` = '${timestamp}'",
+    unless      => "${rake_command} db:version && test `${rake_command} db:version 2> /dev/null|tail -1|cut -c 18-` = '${timestamp}'",
     require     => [
       Mysql_grant["${real_db_user}/${db_name}.*"],
       Mysql_database[$db_name],
