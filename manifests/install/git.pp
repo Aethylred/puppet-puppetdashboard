@@ -19,6 +19,7 @@ class puppetdashboard::install::git (
     ensure  => 'directory',
     path    => $install_dir,
     owner   => $user,
+    recurse => true,
     before  => Vcsrepo[$install_dir]
   }
 
