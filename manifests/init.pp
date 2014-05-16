@@ -48,6 +48,7 @@ class puppetdashboard(
       class{'puppetdashboard::install::git':
         ensure      => $ensure,
         install_dir => $install_dir,
+        user        => $apache_user,
       }
       class{'puppetdashboard::config':
         conf_dir                  => "${install_dir}/config",
@@ -91,6 +92,9 @@ class puppetdashboard(
     }
   }
 
+  Exec <| tag == 'post_config' |> ->
+  anchor{'post_config_exec': }
+
   if $manage_db {
     if $db_passwd_hash {
       class { 'puppetdashboard::db::mysql':
@@ -98,6 +102,7 @@ class puppetdashboard(
         db_name         => $db_name,
         db_passwd_hash  => $db_passwd_hash,
         install_dir     => $install_dir,
+        require         => Anchor['post_config_exec'],
       }
     } else {
       class { 'puppetdashboard::db::mysql':
@@ -105,21 +110,23 @@ class puppetdashboard(
         db_name     => $db_name,
         db_password => $db_password,
         install_dir => $install_dir,
+        require     => Anchor['post_config_exec'],
       }
     }
   }
 
-  if $manage_vhost {
-    class { 'puppetdashboard::site::apache':
-      docroot         => $docroot,
-      port            => $port,
-      servername      => $servername,
-      error_log_file  => $error_log_file,
-      require         => Class[
-        'puppetdashboard::config',
-        'puppetdashboard::db::mysql'
-      ],
-    }
+  file {'puppet_dashboard_log':
+    path    => "${install_dir}/log",
+    owner   => $apache_user,
+    recurse => true,
+    require => Class['puppetdashboard::config'],
+  }
+
+  file {'puppet_dashboard_tmp':
+    path    => "${install_dir}/tmp",
+    owner   => $apache_user,
+    recurse => true,
+    require => Class['puppetdashboard::config'],
   }
 
   class{'puppetdashboard::workers::debian':
@@ -128,7 +135,15 @@ class puppetdashboard(
     apache_user       => $apache_user,
     port              => $port,
     number_of_workers => $number_of_workers,
-    require           => Class['puppetdashboard::config'],
+    require           => [
+      Class['puppetdashboard::config'],
+      Anchor['post_config_exec'],
+      File[
+        'puppet_dashboard_log',
+        'puppet_dashboard_tmp',
+        $install_dir
+      ]
+    ],
   }
 
   class{'puppetdashboard::site::webrick':
@@ -136,7 +151,36 @@ class puppetdashboard(
     install_dir       => $install_dir,
     apache_user       => $apache_user,
     port              => $port,
-    require           => Class['puppetdashboard::config'],
+    require           => [
+      Class['puppetdashboard::config'],
+      Anchor['post_config_exec'],
+      File[
+        'puppet_dashboard_log',
+        'puppet_dashboard_tmp',
+        $install_dir
+      ]
+    ],
+  }
+
+  if $manage_vhost {
+    class { 'puppetdashboard::site::apache':
+      docroot         => $docroot,
+      port            => $port,
+      servername      => $servername,
+      error_log_file  => $error_log_file,
+      require         => [
+        Class[
+          'puppetdashboard::config',
+          'puppetdashboard::db::mysql'
+        ],
+        Anchor['post_config_exec'],
+        File[
+          'puppet_dashboard_log',
+          'puppet_dashboard_tmp',
+          $install_dir
+        ]
+      ]
+    }
   }
 
 }

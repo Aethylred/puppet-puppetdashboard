@@ -1,6 +1,7 @@
 # This class installs the puppet dashboard using a git repository
 class puppetdashboard::install::git (
   $ensure       = installed,
+  $user         = $puppetdashboard::params::apache_user,
   $install_dir  = $puppetdashboard::params::install_dir,
   $repo_url     = $puppetdashboard::params::repo_url,
   $repo_ref     = $puppetdashboard::params::repo_ref
@@ -9,6 +10,7 @@ class puppetdashboard::install::git (
   vcsrepo { $install_dir:
     ensure    => 'present',
     provider  => 'git',
+    user      => $user,
     source    => $repo_url,
     revision  => $repo_ref,
   }
@@ -16,7 +18,8 @@ class puppetdashboard::install::git (
   file { 'dashboard_install_dir':
     ensure  => 'directory',
     path    => $install_dir,
-    require => Vcsrepo[$install_dir],
+    owner   => $user,
+    before  => Vcsrepo[$install_dir]
   }
 
   file { '/etc/puppet-dashboard':
@@ -24,14 +27,26 @@ class puppetdashboard::install::git (
     require => Vcsrepo[$install_dir],
   }
 
-  exec {'puppet_dashboard_bundle_install':
-    command     => 'bundle install --path vendor/bundle',
-    unless      => 'bundle check | grep \'The Gemfile\\\'s dependencies are satisfied\'',
+  @exec {'puppet_dashboard_bundle_install':
+    command     => 'bundle install --deployment',
+    unless      => 'bundle check',
     cwd         => $install_dir,
     path        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
     environment => ['HOME=/root','RAILS_ENV=production'],
     require     => Vcsrepo[$install_dir],
     timeout     => 900,
+    tag         => 'post_config',
+  }
+
+  @exec {'puppet_dashboard_bundle_precompile_assets':
+    command     => 'bundle exec rake assets:precompile',
+    creates     => "${install_dir}/tmp/cache",
+    cwd         => $install_dir,
+    path        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
+    environment => ['HOME=/root','RAILS_ENV=production'],
+    require     => Exec['puppet_dashboard_bundle_install'],
+    timeout     => 900,
+    tag         => 'post_config',
   }
 
 }

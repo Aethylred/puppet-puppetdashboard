@@ -1,6 +1,7 @@
 # This class installs the puppet dashboard using packages
 class puppetdashboard::install::package (
-  $ensure = installed
+  $ensure = installed,
+  $user   = $puppetdashboard::params::apache_user
 ) inherits puppetdashboard::params {
 
   package{'puppet-dashboard':
@@ -10,6 +11,7 @@ class puppetdashboard::install::package (
 
   file{'dashboard_install_dir':
     ensure  => directory,
+    owner   => $user,
     path    => $puppetdashboard::params::install_dir,
     require => Package['puppet-dashboard'],
   }
