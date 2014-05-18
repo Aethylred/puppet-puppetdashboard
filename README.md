@@ -44,6 +44,15 @@ In all cases, these modules should be installed and be available on the Puppet M
 ### Required Puppet Module Dependencies
 * **apache**: The [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) is required for most classes in this module. This module is not required when calling the `puppetdashboard::db::mysql` class.
 * **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is required to set up the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class (this is the default behaviour). This module could be used to set up the database on a remote server, but the Puppet Dashboard application does not yet support a remote database.
+* **stdlib**: The [Puppetlabs Standard Library Module](https://forge.puppetlabs.com/puppetlabs/stdlib)
+
+### Optional Puppet Module Dependencies
+These modules can make using the puppetdashboard module easier, and some are required for the git provider (check the git provider documentation for details) :
+* **puppetlabs/vcsrepo**: Required by the git provider.
+* **puppetlabs/apt**
+* **puppetlabs/nodejs**
+* **Aethylred/git**
+* **puppetlabs/ruby**
 
 #### Apache Web Server Configuration
 
@@ -98,6 +107,7 @@ Some classes have been created as sub-classes to simplfy the addition of future 
 * **db_password**: This value is used to set the password of the Puppet Dashboard MySQL database user. It is strongly recommended that passwords are not included in a Puppet manifest in clear text, consider storing them seperately in Hiera. The default value is `veryunsafeword`.
 * **db_passwd_hash**: This value is used to set the password of the Puppet Dashboard MySQL database user by directly providing a pre-salted and encrypted hash. It is strongly recommended that password hashes are not included in a Puppet manifest in clear text, consider storing them seperately in Hiera. Setting the `db_passwd_hash` parameter will overide the `db_password` parameter. The default value is undefined.
 * **config_settings_source**: This parameter sets a source URL, as per using the source parameter of a `file` resource, that is used to supply a `settings.yml` file. The default value is undefined.
+* **db_adapter**: This parameter sets the database adapter used by the dashboard web application. The default value is to use `mysql`. Note: The package install of the Dashboard currently only supports MySQL.
 * **config_database_source**: This parameter sets a source URL, as per using the source parameter of a `file` resource, that is used to supply a `database.yml` file. The default value is undefined.
 * **config_settings_content**: This parameter sets the content, as per using the source parameter of a `file` resource, that is used to supply a `settings.yml` file. The default value is undefined.
 * **config_database_content**: This parameter sets the content, as per using the source parameter of a `file` resource, that is used to supply a `database.yml` file. The default value is undefined.
@@ -116,6 +126,7 @@ Some classes have been created as sub-classes to simplfy the addition of future 
 * **apache_user**: This sets the user that the web server runs as. The default value is provided by the Puppetlabs Apache Module.
 * **disable_webrick**: If this parameter is set to `true` the Puppet Dashboard webrick service is disabled. Enabling this service is not recommended. Using both webrick and Apache is probably dangerous. The default value is `true`.
 * **enable_workers**: If this parameter is set to `true` then the Puppet Dasboard Worker process management service will be enabled and configured. The default value is true.
+* **secret_token**: This parameter is used to set the secret token used to identify cookies used by the Dashboard web applications. Setting this as a parameter is preferable to using generating one randomly on each install using the bundle script (`echo "secret_token: '$(bundle exec rake secret)'" >> config/settings.yml`) as this ensures consistency when installing the Dashboard. The default is to leave this undefined, which results in no secret token being specified in the settings file.
 
 ### The `puppetdashboard::config` class
 
@@ -133,7 +144,9 @@ Some classes have been created as sub-classes to simplfy the addition of future 
 * **disable_legacy_report_upload_url**
 * **db_user**
 * **db_name**
+* **db_adapter**
 * **db_password**
+* **secret_token**
 
 ### The `puppetdashboard::db::mysql` class
 
@@ -198,6 +211,18 @@ class { 'puppetdashboard':
   disable_webrick => false,
 }
 ```
+### Git Provider
+
+The git provisioner installs the puppet-dashboard from the [Puppet Dashboad git repository on GitHub](https://github.com/sodabrew/puppet-dashboard). This allows the dashboard installation from unpackaged versions and onto Linux distributions that do not have packages available to them. Using the git provisioner requires the git package to be installed, and that the Puppetlabs vcsrepo module is installed. This feature is not fully functional.
+
+The git provider requires that:
+* the system version of Ruby is 1.9.1 or later, with bundler and development libraries.
+* git is installed
+* other module dependencies are met (see `Puppetfile`)
+
+A working manifest that can do this is given in `tests/git_install.pp`, a `Puppetfile` for [`librarian-puppet`](https://github.com/rodjek/librarian-puppet) is provided that will install the dependent Puppet Modules required to make this work. The script and Puppetfile have been tested on Ubuntu 12.04 LTS.
+
+It is recommended that the git provisioner is used as it is not dependent on end-of-life versions of Ruby, and can install the latest version of the Dashboard.
 
 ## Troubleshooting
 
@@ -207,12 +232,6 @@ Make sure the installed Ruby, Ruby development libraries, and Rubygems are all c
 
 * Secure access to Puppet Dashboard via HTTPS, ideally this should still allow read-only access via HTTP.
 * [Optimse and maintain the Puppet Dashboard Database](http://docs.puppetlabs.com/dashboard/manual/1.2/maintaining.html)
-
-### Git Provider
-
-The git provider requires that the system version of Ruby is 1.9.3 or later, and uses bundler. These requirements are currently holding up development.
-
-The git provisioner installs the puppet-dashboard from the Puppetlabs git repository on GitHub. This allows the dashboard installation from unpackaged versions and onto Linux distributions that do not have packages availible to them (e.g. Saucy Salamander, Raring Ringtail). Using the git provisioner requires the git package to be installed, and that the Puppetlabs vcsrepo module is installed. This feature is not fully functional.
 
 ## Acknowledgements
 

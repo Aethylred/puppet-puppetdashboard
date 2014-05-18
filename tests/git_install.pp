@@ -1,5 +1,5 @@
 # This tests installing with the git provider
-# or install the packages
+# or install the packages on Ubuntu 12.04
 # package{'git': ensure => 'installed'}
 include apt
 apt::ppa{ 'ppa:brightbox/ruby-ng':
