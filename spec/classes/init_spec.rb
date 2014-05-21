@@ -83,6 +83,7 @@ describe 'puppetdashboard', :type => :class do
           'install_dir'       => '/usr/share/puppet-dashboard',
           'apache_user'       => 'www-data',
           'port'              => '80',
+          
           'require'           => [
             'Class[Puppetdashboard::Config]',
             'Anchor[post_config_exec]',

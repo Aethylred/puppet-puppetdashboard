@@ -36,9 +36,10 @@ describe 'puppetdashboard::install::git', :type => :class do
       it { should contain_exec('puppet_dashboard_bundle_install').with(
         'command'     => 'bundle install --deployment',
         'unless'      => 'bundle check',
+        'user'        => 'www-data',
         'cwd'         => '/usr/share/puppet-dashboard',
         'path'        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
-        'environment' => ['HOME=/root','RAILS_ENV=production'],
+        'environment' => ['HOME=/var/www','RAILS_ENV=production'],
         'require'     => 'Vcsrepo[/usr/share/puppet-dashboard]',
         'timeout'     => '900',
         'tag'         => 'post_config'
@@ -47,8 +48,9 @@ describe 'puppetdashboard::install::git', :type => :class do
         'command'     => 'bundle exec rake assets:precompile',
         'creates'     => '/usr/share/puppet-dashboard/tmp/cache',
         'cwd'         => '/usr/share/puppet-dashboard',
+        'user'        => 'www-data',
         'path'        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
-        'environment' => ['HOME=/root','RAILS_ENV=production'],
+        'environment' => ['HOME=/var/www','RAILS_ENV=production'],
         'require'     => 'Exec[puppet_dashboard_bundle_install]',
         'timeout'     => '900',
         'tag'         => 'post_config'
@@ -75,8 +77,9 @@ describe 'puppetdashboard::install::git', :type => :class do
         'command'     => 'bundle install --deployment',
         'unless'      => 'bundle check',
         'cwd'         => '/opt/dashboard',
+        'user'        => 'www-data',
         'path'        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
-        'environment' => ['HOME=/root','RAILS_ENV=production'],
+        'environment' => ['HOME=/var/www','RAILS_ENV=production'],
         'require'     => 'Vcsrepo[/opt/dashboard]',
         'timeout'     => '900',
         'tag'         => 'post_config'
@@ -85,8 +88,9 @@ describe 'puppetdashboard::install::git', :type => :class do
         'command'     => 'bundle exec rake assets:precompile',
         'creates'     => "/opt/dashboard/tmp/cache",
         'cwd'         => '/opt/dashboard',
+        'user'        => 'www-data',
         'path'        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
-        'environment' => ['HOME=/root','RAILS_ENV=production'],
+        'environment' => ['HOME=/var/www','RAILS_ENV=production'],
         'require'     => 'Exec[puppet_dashboard_bundle_install]',
         'timeout'     => '900',
         'tag'         => 'post_config'
