@@ -1,10 +1,21 @@
 # This tests installing with the git provider
 # or install the packages on Ubuntu 12.04
 # package{'git': ensure => 'installed'}
+
+#Explicitly defining ordering as it seems to not get it right.
+Apt::Ppa['ppa:brightbox/ruby-ng'] ->
+Class['ruby'] ->
+Class['ruby::dev'] ->
+Class['mysql::bindings','apache::mod::passenger'] ->
+Class['puppetdashboard']
+
+Class['git','nodejs'] ->
+Class['puppetdashboard']
+
+#
 include apt
-apt::ppa{ 'ppa:brightbox/ruby-ng':
-  before => Class['ruby','ruby::dev','mysql::bindings','apache::mod::passenger','puppetdashboard','git'],
-}
+apt::ppa{ 'ppa:brightbox/ruby-ng': }
+include nodejs
 include git
 # Using a ruby module from: https://github.com/Aethylred/puppetlabs-ruby
 class{'ruby':
@@ -12,13 +23,7 @@ class{'ruby':
     switch          => true,
     latest_release  => true,
   }
-class { 'ruby::dev':
-  before  => [
-    Class['mysql::bindings','apache::mod::passenger','puppetdashboard'],
-    Package['passenger-common1.9.1']
-  ],
-  require => Class['ruby'],
-}
+class { 'ruby::dev': }
 class {'mysql::server':
   override_options => {
     'mysqld' => {
@@ -31,7 +36,6 @@ class {'mysql::bindings':
   ruby_package_ensure       => 'latest',
   client_dev                => true,
   client_dev_package_ensure => 'latest',
-  before                    => Class['puppetdashboard']
 }
 class {'apache':
   default_vhost => false,
@@ -42,24 +46,33 @@ class { 'apache::mod::passenger':
   passenger_pool_idle_time      => 1500,
   passenger_stat_throttle_rate  => 120,
   rails_autodetect              => 'on',
-  before                    => Class['puppetdashboard']
 }
+
 # apache::mod::passenger fails to install this!
 package{'passenger-common1.9.1':
-  ensure => 'latest',
+  ensure  => 'latest',
+  require => Apt::Ppa['ppa:brightbox/ruby-ng'],
 }
-include nodejs
+# dependent libraries for gems
 package{'libpq-dev': ensure => 'latest'}
 package{'libsqlite3-dev': ensure => 'latest'}
+package{'libxml2-dev': ensure => 'latest'}
+package{'libxslt1-dev': ensure => 'latest'}
+
+# Finally install the dashboard
 class { 'puppetdashboard':
   provider      => 'git',
   db_adapter    => 'mysql2',
   secret_token  => '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313',
   require       => [
-    Class[
-      'git',
-      'nodejs'
+    Package[
+      'libpq-dev',
+      'libsqlite3-dev',
+      'passenger-common1.9.1',
+      'libxml2-dev',
+      'libxslt1-dev',
+      'ruby-bundler',
+      'rake'
     ],
-    Package['libpq-dev','rake','libsqlite3-dev','passenger-common1.9.1']
   ],
 }

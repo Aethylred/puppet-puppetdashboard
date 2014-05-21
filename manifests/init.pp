@@ -129,23 +129,6 @@ class puppetdashboard(
     require => Class['puppetdashboard::config'],
   }
 
-  class{'puppetdashboard::workers::debian':
-    enable_workers    => $enable_workers,
-    install_dir       => $install_dir,
-    apache_user       => $apache_user,
-    port              => $port,
-    number_of_workers => $number_of_workers,
-    require           => [
-      Class['puppetdashboard::config'],
-      Anchor['post_config_exec'],
-      File[
-        'puppet_dashboard_log',
-        'puppet_dashboard_tmp',
-        $install_dir
-      ]
-    ],
-  }
-
   class{'puppetdashboard::site::webrick':
     disable_webrick   => $disable_webrick,
     install_dir       => $install_dir,
@@ -168,6 +151,7 @@ class puppetdashboard(
       port            => $port,
       servername      => $servername,
       error_log_file  => $error_log_file,
+      before          => Service['puppet-dashboard-workers'],
       require         => [
         Class[
           'puppetdashboard::config',
@@ -181,6 +165,25 @@ class puppetdashboard(
         ]
       ]
     }
+  }
+
+  class{'puppetdashboard::workers::debian':
+    enable_workers    => $enable_workers,
+    install_dir       => $install_dir,
+    apache_user       => $apache_user,
+    port              => $port,
+    number_of_workers => $number_of_workers,
+    require           => [
+      Class[
+        'puppetdashboard::config'
+      ],
+      Anchor['post_config_exec'],
+      File[
+        'puppet_dashboard_log',
+        'puppet_dashboard_tmp',
+        $install_dir
+      ]
+    ],
   }
 
 }
