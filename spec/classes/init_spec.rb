@@ -62,7 +62,9 @@ describe 'puppetdashboard', :type => :class do
           'docroot'         => '/usr/share/puppet-dashboard/public',
           'port'            => '80',
           'servername'      => 'test.example.org',
-          'error_log_file'  => 'dashboard.test.example.org_error.log'
+          'error_log_file'  => 'dashboard.test.example.org_error.log',
+          'access_log_file' => 'dashboard.test.example.org_access.log',
+          'before'          => 'Service[puppet-dashboard-workers]'
         ) }
         it { should contain_class('puppetdashboard::workers::debian').with(
           'enable_workers'    => true,
@@ -83,7 +85,6 @@ describe 'puppetdashboard', :type => :class do
           'install_dir'       => '/usr/share/puppet-dashboard',
           'apache_user'       => 'www-data',
           'port'              => '80',
-          
           'require'           => [
             'Class[Puppetdashboard::Config]',
             'Anchor[post_config_exec]',

@@ -26,6 +26,7 @@ class puppetdashboard(
   $port                             = $puppetdashboard::params::apache_port,
   $servername                       = $::fqdn,
   $error_log_file                   = $puppetdashboard::params::error_log_file,
+  $access_log_file                   = $puppetdashboard::params::access_log_file,
   $number_of_workers                = $::processorcount,
   $apache_user                      = $puppetdashboard::params::apache_user,
   $disable_webrick                  = true,
@@ -151,6 +152,7 @@ class puppetdashboard(
       port            => $port,
       servername      => $servername,
       error_log_file  => $error_log_file,
+      access_log_file => $access_log_file,
       before          => Service['puppet-dashboard-workers'],
       require         => [
         Class[
