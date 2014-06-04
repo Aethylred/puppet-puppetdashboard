@@ -9,6 +9,7 @@ class puppetdashboard(
   $db_host                  = undef,
   $db_name                  = $puppetdashboard::params::db_name,
   $db_user                  = $puppetdashboard::params::db_user,
+  $db_user_host             = undef,
   $db_adapter               = $puppetdashboard::params::db_adapter,
   $db_password              = 'veryunsafeword',
   $db_passwd_hash           = undef,
@@ -105,8 +106,8 @@ class puppetdashboard(
 
   class { 'puppetdashboard::db':
     manage_db       => $manage_db,
-    db_host         => $db_host,
     db_user         => $db_user,
+    db_user_host    => $db_user_host,
     db_name         => $db_name,
     db_adapter      => $db_adapter,
     db_password     => $db_password,

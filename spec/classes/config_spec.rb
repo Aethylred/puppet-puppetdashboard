@@ -54,6 +54,7 @@ describe 'puppetdashboard::config', :type => :class do
         it { should_not contain_file('puppet_dashboard_settings').with_content(/^disable_legacy_report_upload_url: true$/)}
         it { should contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: false$/)}
         it { should_not contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: true$/)}
+        it { should_not contain_file('puppet_dashboard_settings').with_content(/^host:.*$/)}
       end
       describe 'when using a custom install directory' do
         let :params do
@@ -96,13 +97,21 @@ describe 'puppetdashboard::config', :type => :class do
         end
         it { should contain_file('puppet_dashboard_database').with_source('http://example.org/database.yml')}
       end
-      describe 'when given a custom db_user' do
+      describe 'when given a custom database user' do
         let :params do
           {
             :db_user => 'dashboard-production'
           }
         end
         it { should contain_file('puppet_dashboard_database').with_content(/^  username: dashboard-production$/)}
+      end
+      describe 'when given a custom database host' do
+        let :params do
+          {
+            :db_host => 'database.example.org'
+          }
+        end
+        it { should contain_file('puppet_dashboard_database').with_content(/^  host:     database.example.org$/)}
       end
       describe 'when given a custom db_name' do
         let :params do

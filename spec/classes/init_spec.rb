@@ -26,7 +26,7 @@ describe 'puppetdashboard', :type => :class do
           'install_dir'   => '/usr/share/puppet-dashboard'
         ) }
         it { should contain_class('puppetdashboard::db').without_db_passwd_hash }
-        it { should contain_class('puppetdashboard::db').without_db_host }
+        it { should contain_class('puppetdashboard::db').without_db_user_host }
         it { should contain_class('puppetdashboard::config').with(
           'conf_dir'                  => '/usr/share/puppet-dashboard/config',
           'db_user'                   => 'puppetdashboard',
@@ -296,22 +296,43 @@ describe 'puppetdashboard', :type => :class do
           'port'              => '8080'
         ) }
       end
-      describe "when using a custom remote database, user, and password" do
+      describe "when using a custom database, user, and password" do
         let :params do
           {
-            :db_host      => 'database.example.org',
             :db_user      => 'dashboard-production',
+            :db_user_host => 'example.org',
             :db_name      => 'dashboard-production',
             :db_password  => 'notsecureatall'
           }
         end
         it { should contain_class('puppetdashboard::db').with(
-          'db_host'       => 'database.example.org',
           'db_user'       => 'dashboard-production',
+          'db_user_host'  => 'example.org',
           'db_name'       => 'dashboard-production',
           'db_password'   => 'notsecureatall'
         ) }
         it { should contain_class('puppetdashboard::db').without_db_passwd_hash }
+      end
+      describe "when using a remote database" do
+        let :params do
+          {
+            :db_host => 'database.example.org'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'db_host' => 'database.example.org'
+        ) }
+      end
+      describe "when using the git provider and a remote database" do
+        let :params do
+          {
+            :provider => 'git',
+            :db_host  => 'database.example.org'
+          }
+        end
+        it { should contain_class('puppetdashboard::config').with(
+          'db_host' => 'database.example.org'
+        ) }
       end
       describe "when using a database password hash" do
         let :params do

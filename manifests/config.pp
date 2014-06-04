@@ -20,7 +20,9 @@ class puppetdashboard::config (
   $secret_token             = undef
 ) inherits puppetdashboard::params {
 
-  # require apache
+  # Considering making subclasses for each config file.
+  # Considering moving webrick and worker config here.
+  # Consider merging webrick and worker default config.
 
   if $config_settings_content {
     file{'puppet_dashboard_settings':
