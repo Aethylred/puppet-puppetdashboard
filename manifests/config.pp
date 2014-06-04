@@ -12,6 +12,7 @@ class puppetdashboard::config (
   $time_zone                = undef,
   $read_only_mode           = undef,
   $legacy_report_upload_url = true,
+  $db_host                  = undef,
   $db_user                  = $puppetdashboard::params::db_user,
   $db_name                  = $puppetdashboard::params::db_name,
   $db_password              = 'veryunsafeword',

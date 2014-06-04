@@ -46,6 +46,9 @@
 # be "utf8".
 # 
 production:
+<% if @db_host -%>
+  host:     <%= @db_host %>
+<% end -%>
   database: <%= @db_name %>
   username: <%= @db_user %>
   password: <%= @db_password %>

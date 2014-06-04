@@ -19,13 +19,14 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::install::package').with(
           'ensure' => 'installed'
         ) }
-        it { should contain_class('puppetdashboard::db::mysql').with(
+        it { should contain_class('puppetdashboard::db').with(
           'db_name'       => 'puppetdashboard',
           'db_user'       => 'puppetdashboard',
           'db_password'   => 'veryunsafeword',
           'install_dir'   => '/usr/share/puppet-dashboard'
         ) }
-        it { should contain_class('puppetdashboard::db::mysql').without_db_passwd_hash }
+        it { should contain_class('puppetdashboard::db').without_db_passwd_hash }
+        it { should contain_class('puppetdashboard::db').without_db_host }
         it { should contain_class('puppetdashboard::config').with(
           'conf_dir'                  => '/usr/share/puppet-dashboard/config',
           'db_user'                   => 'puppetdashboard',
@@ -72,6 +73,7 @@ describe 'puppetdashboard', :type => :class do
           'number_of_workers' => '2',
           'require'           => [
             'Class[Puppetdashboard::Config]',
+            'Class[Puppetdashboard::Db]',
             'Anchor[post_config_exec]',
             'File[puppet_dashboard_log]',
             'File[puppet_dashboard_tmp]',
@@ -145,6 +147,14 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::config').without(
           'secret_token'
         ) }
+        it { should contain_class('puppetdashboard::db').with(
+          'db_name'       => 'puppetdashboard',
+          'db_user'       => 'puppetdashboard',
+          'db_password'   => 'veryunsafeword',
+          'install_dir'   => '/usr/share/puppet-dashboard'
+        ) }
+        it { should contain_class('puppetdashboard::db').without_db_passwd_hash }
+        it { should contain_class('puppetdashboard::db').without_db_host }
         it { should contain_class('puppetdashboard::site::apache').with(
           'docroot'     => '/usr/share/puppet-dashboard/public',
           'port'        => '80',
@@ -159,6 +169,7 @@ describe 'puppetdashboard', :type => :class do
           'number_of_workers' => '2',
           'require'           => [
             'Class[Puppetdashboard::Config]',
+            'Class[Puppetdashboard::Db]',
             'Anchor[post_config_exec]',
             'File[puppet_dashboard_log]',
             'File[puppet_dashboard_tmp]',
@@ -202,7 +213,7 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::install::git').with(
           'install_dir' => '/opt/dashboard'
         ) }
-        it { should contain_class('puppetdashboard::db::mysql').with(
+        it { should contain_class('puppetdashboard::db').with(
           'install_dir' => '/opt/dashboard'
         ) }
         it { should contain_class('puppetdashboard::config').with(
@@ -227,7 +238,9 @@ describe 'puppetdashboard', :type => :class do
             :manage_db => false,
           }
         end
-        it { should_not contain_class('puppetdashboard::db::mysql') }
+        it { should contain_class('puppetdashboard::db').with(
+          'manage_db' => false
+        ) }
       end
       describe "when not managing the web site vhost configuration" do
         let :params do
@@ -283,20 +296,22 @@ describe 'puppetdashboard', :type => :class do
           'port'              => '8080'
         ) }
       end
-      describe "when using a custom database, user, and password" do
+      describe "when using a custom remote database, user, and password" do
         let :params do
           {
+            :db_host      => 'database.example.org',
             :db_user      => 'dashboard-production',
             :db_name      => 'dashboard-production',
             :db_password  => 'notsecureatall'
           }
         end
-        it { should contain_class('puppetdashboard::db::mysql').with(
+        it { should contain_class('puppetdashboard::db').with(
+          'db_host'       => 'database.example.org',
           'db_user'       => 'dashboard-production',
           'db_name'       => 'dashboard-production',
           'db_password'   => 'notsecureatall'
         ) }
-        it { should contain_class('puppetdashboard::db::mysql').without_db_passwd_hash }
+        it { should contain_class('puppetdashboard::db').without_db_passwd_hash }
       end
       describe "when using a database password hash" do
         let :params do
@@ -304,7 +319,7 @@ describe 'puppetdashboard', :type => :class do
             :db_passwd_hash  => '*E35ABBADA04F2712E8D5D65C9AB521945FF1F238'
           }
         end
-        it { should contain_class('puppetdashboard::db::mysql').with(
+        it { should contain_class('puppetdashboard::db').with(
           'db_passwd_hash'   => '*E35ABBADA04F2712E8D5D65C9AB521945FF1F238'
         ) }
       end
@@ -314,7 +329,7 @@ describe 'puppetdashboard', :type => :class do
             :install_dir      => '/opt/dashboard'
           }
         end
-        it { should contain_class('puppetdashboard::db::mysql').with(
+        it { should contain_class('puppetdashboard::db').with(
           'install_dir' => '/opt/dashboard'
         ) }
         it { should contain_class('puppetdashboard::workers::debian').with(

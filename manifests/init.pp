@@ -6,6 +6,7 @@ class puppetdashboard(
   $install_dir              = $puppetdashboard::params::install_dir,
   $manage_vhost             = true,
   $manage_db                = true,
+  $db_host                  = undef,
   $db_name                  = $puppetdashboard::params::db_name,
   $db_user                  = $puppetdashboard::params::db_user,
   $db_adapter               = $puppetdashboard::params::db_adapter,
@@ -57,6 +58,7 @@ class puppetdashboard(
         config_database_source    => $config_database_source,
         config_settings_content   => $config_settings_content,
         config_database_content   => $config_database_content,
+        db_host                   => $db_host,
         db_user                   => $db_user,
         db_name                   => $db_name,
         db_adapter                => $db_adapter,
@@ -81,6 +83,7 @@ class puppetdashboard(
         config_database_source    => $config_database_source,
         config_settings_content   => $config_settings_content,
         config_database_content   => $config_database_content,
+        db_host                   => $db_host,
         db_user                   => $db_user,
         db_name                   => $db_name,
         db_adapter                => $db_adapter,
@@ -100,24 +103,16 @@ class puppetdashboard(
   Exec <| tag == 'post_config' |> ->
   anchor{'post_config_exec': }
 
-  if $manage_db {
-    if $db_passwd_hash {
-      class { 'puppetdashboard::db::mysql':
-        db_user         => $db_user,
-        db_name         => $db_name,
-        db_passwd_hash  => $db_passwd_hash,
-        install_dir     => $install_dir,
-        require         => Anchor['post_config_exec'],
-      }
-    } else {
-      class { 'puppetdashboard::db::mysql':
-        db_user     => $db_user,
-        db_name     => $db_name,
-        db_password => $db_password,
-        install_dir => $install_dir,
-        require     => Anchor['post_config_exec'],
-      }
-    }
+  class { 'puppetdashboard::db':
+    manage_db       => $manage_db,
+    db_host         => $db_host,
+    db_user         => $db_user,
+    db_name         => $db_name,
+    db_adapter      => $db_adapter,
+    db_password     => $db_password,
+    db_passwd_hash  => $db_passwd_hash,
+    install_dir     => $install_dir,
+    require         => Anchor['post_config_exec'],
   }
 
   file {'puppet_dashboard_log':
@@ -161,7 +156,7 @@ class puppetdashboard(
       require         => [
         Class[
           'puppetdashboard::config',
-          'puppetdashboard::db::mysql'
+          'puppetdashboard::db'
         ],
         Anchor['post_config_exec'],
         File[
@@ -181,7 +176,8 @@ class puppetdashboard(
     number_of_workers => $number_of_workers,
     require           => [
       Class[
-        'puppetdashboard::config'
+        'puppetdashboard::config',
+        'puppetdashboard::db'
       ],
       Anchor['post_config_exec'],
       File[
