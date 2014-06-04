@@ -35,7 +35,8 @@ describe 'puppetdashboard', :type => :class do
           'cn_name'                   => 'dashboard',
           'ca_server'                 => 'puppet',
           'inventory_server'          => 'puppet',
-          'file_bucket_server'        => 'puppet'
+          'file_bucket_server'        => 'puppet',
+          'legacy_report_upload_url'  => true
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'config_settings_source'
@@ -51,9 +52,6 @@ describe 'puppetdashboard', :type => :class do
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'read_only_mode'
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'disable_legacy_report_upload_url'
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'secret_token'
@@ -126,7 +124,8 @@ describe 'puppetdashboard', :type => :class do
           'cn_name'                   => 'dashboard',
           'ca_server'                 => 'puppet',
           'inventory_server'          => 'puppet',
-          'file_bucket_server'        => 'puppet'
+          'file_bucket_server'        => 'puppet',
+          'legacy_report_upload_url'  => true
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'config_settings_source'
@@ -142,9 +141,6 @@ describe 'puppetdashboard', :type => :class do
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'read_only_mode'
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'disable_legacy_report_upload_url'
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'secret_token'

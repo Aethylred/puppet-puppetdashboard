@@ -188,7 +188,7 @@ describe 'puppetdashboard::config', :type => :class do
       describe 'when legacy report mode is disabled' do
         let :params do
           {
-            :disable_legacy_report_upload_url => true
+            :legacy_report_upload_url => false
           }
         end
         it { should_not contain_file('puppet_dashboard_settings').with_content(/^disable_legacy_report_upload_url: false$/)}

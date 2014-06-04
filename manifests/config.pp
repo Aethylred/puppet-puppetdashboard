@@ -1,22 +1,22 @@
 # Manages the puppet dashboard configuration files
 class puppetdashboard::config (
-  $conf_dir                         = $puppetdashboard::params::config_dir,
-  $config_settings_source           = undef,
-  $config_database_source           = undef,
-  $config_settings_content          = undef,
-  $config_database_content          = undef,
-  $cn_name                          = $puppetdashboard::params::cn_name,
-  $ca_server                        = $puppetdashboard::params::ca_server,
-  $inventory_server                 = $puppetdashboard::params::inventory_server,
-  $file_bucket_server               = $puppetdashboard::params::file_bucket_server,
-  $time_zone                        = undef,
-  $read_only_mode                   = undef,
-  $disable_legacy_report_upload_url = undef,
-  $db_user                          = $puppetdashboard::params::db_user,
-  $db_name                          = $puppetdashboard::params::db_name,
-  $db_password                      = 'veryunsafeword',
-  $db_adapter                       = $puppetdashboard::params::db_adapter,
-  $secret_token                     = undef
+  $conf_dir                 = $puppetdashboard::params::config_dir,
+  $config_settings_source   = undef,
+  $config_database_source   = undef,
+  $config_settings_content  = undef,
+  $config_database_content  = undef,
+  $cn_name                  = $puppetdashboard::params::cn_name,
+  $ca_server                = $puppetdashboard::params::ca_server,
+  $inventory_server         = $puppetdashboard::params::inventory_server,
+  $file_bucket_server       = $puppetdashboard::params::file_bucket_server,
+  $time_zone                = undef,
+  $read_only_mode           = undef,
+  $legacy_report_upload_url = true,
+  $db_user                  = $puppetdashboard::params::db_user,
+  $db_name                  = $puppetdashboard::params::db_name,
+  $db_password              = 'veryunsafeword',
+  $db_adapter               = $puppetdashboard::params::db_adapter,
+  $secret_token             = undef
 ) inherits puppetdashboard::params {
 
   # require apache

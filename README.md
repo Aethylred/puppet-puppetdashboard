@@ -113,7 +113,7 @@ Some classes have been created as sub-classes to simplify the addition of future
 * **config_database_content**: This parameter sets the content, as per using the source parameter of a `file` resource, that is used to supply a `database.yml` file. The default value is undefined.
 * **time_zone**: This sets the default time zone the application will run in. The correct time zone can be discovered by running `rake time:zones:local` in the Puppet Dashboard install directory. The default is undefined.
 * **read_only_mode**: Setting this to `true` will put the Puppet Dashboard in to read-only mode. The default value is undefined.
-* **disable_legacy_report_upload_url**: Setting this to `true` will disable the legacy report upload mode. The default value is undefined.
+* **legacy_report_upload_url**: Setting this to `true` enables the legacy report upload mode. The default value is `true`.
 * **cn_name**: This sets the `cn_name` of the puppet dashboard in the `settings.yml` file. The default value is `dashboard`.
 * **ca_server**: This sets the `ca_server` for the puppet dashboard in the `settings.yml` file. The default value is `puppet`.
 * **inventory_server**: This sets the `inventory_server` for the puppet dashboard in the `settings.yml` file. The default value is `puppet`.

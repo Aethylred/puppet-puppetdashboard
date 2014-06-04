@@ -80,10 +80,10 @@ custom_logo_alt_text: 'Puppet Dashboard'
 # We will be deprecating using "http://dashboard_servername/reports" as the puppet master's reporturl.
 # Set this to 'true' once you have changed all your puppet masters to send reports to
 # "http://dashboard_servername/reports/upload"
-<% if @disable_legacy_report_upload_url -%>
-disable_legacy_report_upload_url: true
-<% else -%>
+<% if @legacy_report_upload_url -%>
 disable_legacy_report_upload_url: false
+<% else -%>
+disable_legacy_report_upload_url: true
 <% end -%>
 
 # Disables the UI and controller actions for editing nodes, classes, groups and reports.  Report submission is still allowed
