@@ -4,7 +4,8 @@ describe 'puppetdashboard::install::git', :type => :class do
     let :facts do
       {
         :osfamily               => 'Debian',
-        :operatingsystemrelease => '6',
+        :operatingsystem        => 'Debian',
+        :operatingsystemrelease => '6.0',
         :concat_basedir         => '/dne',
         :fqdn                   => 'test.example.org',
         :processorcount         => '2',

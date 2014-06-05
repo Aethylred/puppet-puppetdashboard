@@ -4,7 +4,8 @@ describe 'puppetdashboard', :type => :class do
     let :facts do
       {
         :osfamily               => 'Debian',
-        :operatingsystemrelease => '6',
+        :operatingsystem        => 'Debian',
+        :operatingsystemrelease => '6.0',
         :concat_basedir         => '/dne',
         :fqdn                   => 'test.example.org',
         :processorcount         => '2',
@@ -496,6 +497,9 @@ describe 'puppetdashboard', :type => :class do
             :db_adapter   => 'postgresql'
           }
         end
+        let :pre_condition do 
+          "include postgresql::server\nclass { 'apache': }"
+        end
         it { should contain_class('puppetdashboard::config').with(
           'db_adapter' => 'postgresql'
         ) }
@@ -506,6 +510,9 @@ describe 'puppetdashboard', :type => :class do
             :db_adapter   => 'postgresql',
             :provider     => 'git'
           }
+        end
+        let :pre_condition do 
+          "include postgresql::server\nclass { 'apache': }"
         end
         it { should contain_class('puppetdashboard::config').with(
           'db_adapter' => 'postgresql'

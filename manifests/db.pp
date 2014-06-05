@@ -25,11 +25,11 @@ class puppetdashboard::db (
       }
       'postgresql':{
         class { 'puppetdashboard::db::postgresql':
-          # db_user         => $db_user,
-          # db_user_host    => $db_user_host,
-          # db_name         => $db_name,
-          # db_password     => $db_password,
-          # db_passwd_hash  => $db_passwd_hash,
+          db_user         => $db_user,
+          db_user_host    => $db_user_host,
+          db_name         => $db_name,
+          db_password     => $db_password,
+          db_passwd_hash  => $db_passwd_hash,
           before          => Anchor['post_db_creation'],
         }
       }
