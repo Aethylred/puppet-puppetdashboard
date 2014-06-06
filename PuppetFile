@@ -1,4 +1,3 @@
-# This Puppetfile should set up Puppet enough to run the tests
 forge "http://forge.puppetlabs.com"
 
 mod 'puppetlabs/apache'
@@ -6,10 +5,13 @@ mod 'puppetlabs/stdlib'
 mod 'puppetlabs/vcsrepo'
 mod 'puppetlabs/apt'
 mod 'puppetlabs/nodejs'
+mod 'puppetlabs/puppetdb'
+mod 'puppetlabs/postgresql'
 mod 'Aethylred/git'
 mod 'puppetlabs/ruby',
   :git => 'https://github.com/Aethylred/puppetlabs-ruby.git',
-  :ref => 'versionfixes'
+  :ref => 'master'
 mod 'puppetlabs/mysql',
-  :git => 'https://github.com/Aethylred/puppetlabs-mysql.git',
-  :ref => 'dev_libs'
+  :git => 'https://github.com/puppetlabs/puppetlabs-mysql.git',
+  :ref => 'master'
+
