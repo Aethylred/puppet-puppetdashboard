@@ -41,6 +41,7 @@ describe 'puppetdashboard::config', :type => :class do
           'mode'    => '0660',
           'require' => 'File[puppet_dashboard_database]'
         ) }
+        it { should contain_file('puppet_dashboard_database').with_content(/^  host:     localhost$/)}
         it { should contain_file('puppet_dashboard_database').with_content(/^  database: puppetdashboard$/)}
         it { should contain_file('puppet_dashboard_database').with_content(/^  username: puppetdashboard$/)}
         it { should contain_file('puppet_dashboard_database').with_content(/^  password: veryunsafeword$/)}
@@ -54,7 +55,6 @@ describe 'puppetdashboard::config', :type => :class do
         it { should_not contain_file('puppet_dashboard_settings').with_content(/^disable_legacy_report_upload_url: true$/)}
         it { should contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: false$/)}
         it { should_not contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: true$/)}
-        it { should_not contain_file('puppet_dashboard_settings').with_content(/^host:.*$/)}
       end
       describe 'when using a custom install directory' do
         let :params do

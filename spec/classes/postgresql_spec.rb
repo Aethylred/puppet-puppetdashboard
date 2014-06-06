@@ -71,6 +71,7 @@ describe 'puppetdashboard::db::postgresql', :type => :class do
         }
       end
       it { should contain_postgresql__server__role('puppetdashboard').with(
+        'login'         => true,
         'password_hash' => 'md50c87d8af23afdc45acc4ab694d9a253c'
       ) }
     end

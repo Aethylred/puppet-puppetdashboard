@@ -48,6 +48,8 @@
 production:
 <% if @db_host -%>
   host:     <%= @db_host %>
+<% else -%>
+  host:     localhost
 <% end -%>
   database: <%= @db_name %>
   username: <%= @db_user %>

@@ -33,13 +33,15 @@ class{'ruby':
     latest_release  => true,
   }
 class { 'ruby::dev': }
-class {'postgresql::server': }
-# class {'mysql::bindings':
-#   ruby_enable               => true,
-#   ruby_package_ensure       => 'latest',
-#   client_dev                => true,
-#   client_dev_package_ensure => 'latest',
-# }
+class {'postgresql::server':
+  listen_addresses => 'localhost',
+}
+class {'mysql::bindings':
+  ruby_enable               => true,
+  ruby_package_ensure       => 'latest',
+  client_dev                => true,
+  client_dev_package_ensure => 'latest',
+}
 class {'apache':
   default_vhost => false,
 }

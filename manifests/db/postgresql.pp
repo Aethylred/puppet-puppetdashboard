@@ -10,7 +10,6 @@ class puppetdashboard::db::postgresql (
 
   # This class requires the puppetlabs postgresql module
   # https://forge.puppetlabs.com/puppetlabs/postgresql
-  require ::postgresql::server
 
   if $db_passwd_hash {
     $real_passwd_hash = $db_passwd_hash
@@ -27,18 +26,24 @@ class puppetdashboard::db::postgresql (
   }
 
   postgresql::server::role { $db_user:
+    login         => true,
     password_hash => $real_passwd_hash,
   }
 
   postgresql::server::database { $db_name:
     owner     => $db_user,
     encoding  => 'utf8',
+    require   => Postgresql::Server::Role[$db_user],
   }
 
   postgresql::server::database_grant {'dashboard_db_grant':
     privilege => 'ALL',
     role      => $db_user,
-    db        => $db_name
+    db        => $db_name,
+    require   => [
+      Postgresql::Server::Role[$db_user],
+      Postgresql::Server::Database[$db_name],
+    ],
   }
 
   postgresql::server::pg_hba_rule{"${db_user}_to_${db_name}_${pg_hba_type}":
