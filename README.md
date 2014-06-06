@@ -44,7 +44,7 @@ In all cases, these modules should be installed and be available on the Puppet M
 ### Required Puppet Module Dependencies
 * **apache**: The [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) is required for most classes in this module. This module is not required when calling the `puppetdashboard::db::mysql` class.
 * **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is required to set up the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `mysql` or `mysql2` database adapter (this is the default behaviour). This module can be used to set up the database on a remote server. This module is required with the `git` provider to install the development library dependencies.
-* **mysql**: The [Puppetlabs PostgreSQL Module](https://forge.puppetlabs.com/puppetlabs/postgresql) is required to set up the `puppetdashboard::db::postgresql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `postgresql` database adapter. This module could be used to set up the database on a remote server.
+* **postgresql**: The [Puppetlabs PostgreSQL Module](https://forge.puppetlabs.com/puppetlabs/postgresql) is required to set up the `puppetdashboard::db::postgresql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `postgresql` database adapter. This module could be used to set up the database on a remote server.
 * **stdlib**: The [Puppetlabs Standard Library Module](https://forge.puppetlabs.com/puppetlabs/stdlib)
 
 ### Optional Puppet Module Dependencies
