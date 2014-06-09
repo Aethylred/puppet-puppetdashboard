@@ -6,9 +6,16 @@
 
 # Start Puppet Dashboard webrick server?
 <% if @disable_webrick -%>
-START=no
+WEBRICK_START=no
 <% else -%>
-START=yes
+WEBRICK_START=yes
+<% end -%>
+
+# Start Puppet Dashboard workers?
+<% if @enable_workers -%>
+WORKERS_START=yes
+<% else -%>
+WORKERS_START=no
 <% end -%>
 
 # Location where puppet-dashboard is installed:
@@ -23,9 +30,14 @@ DASHBOARD_RUBY=<%= @ruby_bin %>
 # Rails environment in which puppet-dashboard runs:
 DASHBOARD_ENVIRONMENT=production
 
-# Network interface which puppet-dashboard web server is running at:
-DASHBOARD_IFACE=<%= @address %>
+# Network interface which puppet-dashboard server is running at:
+DASHBOARD_IFACE=<%= @servername %>
 
 # Port on which puppet-dashboard web server is running at, note that if the
 # puppet-dashboard user is not root, it has to be a > 1024:
 DASHBOARD_PORT=<%= @port %>
+
+#  Number of dashboard workers to start.  This will be the number of jobs that
+#  can be concurrently processed.  A simple recommendation would be to start
+#  with the number of cores you have available.
+NUM_DELAYED_JOB_WORKERS=<%= @number_of_workers %>

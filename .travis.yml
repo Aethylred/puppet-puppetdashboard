@@ -61,4 +61,4 @@ matrix:
       env: PUPPET_GEM_VERSION="~> 3.4.0"
 notifications:
   email: false
-  slack: nesi:caw10eH1tv8luoqP8CDrIddt
+#  slack: nesi:caw10eH1tv8luoqP8CDrIddt

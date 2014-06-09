@@ -29,7 +29,7 @@ end
 
 desc 'Check for evil line endings.'
 task :check_line_endings do
-  Dir['spec/**/*.rb','manifests/**/*.pp'].each do |path|
+  Dir['spec/**/*.rb','manifests/**/*.pp','tests/**/*.pp'].each do |path|
    sh "file #{path}|grep -v CRLF"
   end
 end

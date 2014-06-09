@@ -36,7 +36,7 @@ class puppetdashboard::db::initialise (
       File[
         'puppet_dashboard_database',
         'puppet_dashboard_settings',
-        'puppet-dashboard-workers-defaults'
+        'puppet-dashboard-defaults'
       ],
       Package['rake'],
     ],

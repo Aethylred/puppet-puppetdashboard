@@ -20,7 +20,7 @@ set -e
 . /lib/lsb/init-functions
 
 test -f /etc/default/rcS && . /etc/default/rcS
-test -f /etc/default/${name} && . /etc/default/${name}
+test -f /etc/default/puppet-dashboard && . /etc/default/puppet-dashboard
 
 # Set defaults in case they're not in the above defaults file:
 DASHBOARD_HOME=${DASHBOARD_HOME:-/usr/share/puppet-dashboard}
@@ -31,8 +31,8 @@ DASHBOARD_IFACE=${DASHBOARD_IFACE:-0.0.0.0}
 DASHBOARD_PORT=${DASHBOARD_PORT:-3000}
 
 check_dashboard_enabled_option() {
-    if [ ! "$START" = "yes" ]; then
-        log_warning_msg "Not starting Puppet Dashboard Workers, disabled via /etc/default/${name}"
+    if [ ! "$WORKERS_START" = "yes" ]; then
+        log_warning_msg "Not starting Puppet Dashboard Workers, disabled via /etc/default/puppet-dashboard"
         return 1
     else
         return 0

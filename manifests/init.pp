@@ -45,6 +45,13 @@ class puppetdashboard(
     fail('The parameters config_settings_source and config_settings_content are exclusive, only one can be set.')
   }
 
+  # Check if install_dir is set with package provider
+  if $install_dir != $puppetdashboard::params::install_dir and $provider != 'git' {
+    warning('Changing the install_dir parameter with the default provider may cause problems.')
+  }
+
+  $conf_dir = "${install_dir}/config"
+
   # Puppet dashboard can be installed from packages or directly from a git repository
   case $provider {
     'git': {
@@ -53,55 +60,44 @@ class puppetdashboard(
         ensure      => $ensure,
         install_dir => $install_dir,
         user        => $apache_user,
-      }
-      class { 'puppetdashboard::config':
-        conf_dir                  => "${install_dir}/config",
-        config_settings_source    => $config_settings_source,
-        config_database_source    => $config_database_source,
-        config_settings_content   => $config_settings_content,
-        config_database_content   => $config_database_content,
-        db_host                   => $db_host,
-        db_user                   => $db_user,
-        db_name                   => $db_name,
-        db_adapter                => $db_adapter,
-        db_password               => $db_password,
-        cn_name                   => $cn_name,
-        ca_server                 => $ca_server,
-        inventory_server          => $inventory_server,
-        file_bucket_server        => $file_bucket_server,
-        legacy_report_upload_url  => $legacy_report_upload_url,
-        read_only_mode            => $read_only_mode,
-        secret_token              => $secret_token,
-        apache_user               => $apache_user,
-        apache_group              => $apache_group,
-        require                   => Class['puppetdashboard::install::git']
+        before      => Class['puppetdashboard::config'],
       }
     }
     default: {
       # Do package install
       class { 'puppetdashboard::install::package':
-        ensure => $ensure,
-      }
-      class { 'puppetdashboard::config':
-        config_settings_source    => $config_settings_source,
-        config_database_source    => $config_database_source,
-        config_settings_content   => $config_settings_content,
-        config_database_content   => $config_database_content,
-        db_host                   => $db_host,
-        db_user                   => $db_user,
-        db_name                   => $db_name,
-        db_adapter                => $db_adapter,
-        db_password               => $db_password,
-        cn_name                   => $cn_name,
-        ca_server                 => $ca_server,
-        inventory_server          => $inventory_server,
-        file_bucket_server        => $file_bucket_server,
-        legacy_report_upload_url  => $legacy_report_upload_url,
-        read_only_mode            => $read_only_mode,
-        secret_token              => $secret_token,
-        require                   => Class['puppetdashboard::install::package'],
+        ensure  => $ensure,
+        before  => Class['puppetdashboard::config'],
       }
     }
+  }
+
+  class{'puppetdashboard::config':
+    install_dir               => $install_dir,
+    conf_dir                  => $conf_dir,
+    config_settings_source    => $config_settings_source,
+    config_database_source    => $config_database_source,
+    config_settings_content   => $config_settings_content,
+    config_database_content   => $config_database_content,
+    db_host                   => $db_host,
+    db_user                   => $db_user,
+    db_name                   => $db_name,
+    db_adapter                => $db_adapter,
+    db_password               => $db_password,
+    cn_name                   => $cn_name,
+    ca_server                 => $ca_server,
+    inventory_server          => $inventory_server,
+    file_bucket_server        => $file_bucket_server,
+    legacy_report_upload_url  => $legacy_report_upload_url,
+    read_only_mode            => $read_only_mode,
+    secret_token              => $secret_token,
+    servername                => $servername,
+    enable_workers            => $enable_workers,
+    disable_webrick           => $disable_webrick,
+    apache_user               => $apache_user,
+    port                      => $port,
+    ruby_bin                  => $::puppetdashboard::ruby_bin,
+    number_of_workers         => $number_of_workers,
   }
 
   Exec <| tag == 'post_config' |> ->
@@ -116,28 +112,34 @@ class puppetdashboard(
     db_password     => $db_password,
     db_passwd_hash  => $db_passwd_hash,
     install_dir     => $install_dir,
-    require         => Anchor['post_config_exec'],
+    require         => [
+      Anchor['post_config_exec'],
+      Class['puppetdashboard::config'],
+    ]
   }
 
   file { 'puppet_dashboard_log':
     path    => "${install_dir}/log",
     owner   => $apache_user,
     recurse => true,
-    require => Class['puppetdashboard::config'],
+    require => [
+      Anchor['post_config_exec'],
+      Class['puppetdashboard::config'],
+    ]
   }
 
   file { 'puppet_dashboard_tmp':
     path    => "${install_dir}/tmp",
     owner   => $apache_user,
     recurse => true,
-    require => Class['puppetdashboard::config'],
+    require => [
+      Anchor['post_config_exec'],
+      Class['puppetdashboard::config'],
+    ]
   }
 
   class { 'puppetdashboard::site::webrick':
     disable_webrick   => $disable_webrick,
-    install_dir       => $install_dir,
-    apache_user       => $apache_user,
-    port              => $port,
     require           => [
       Class['puppetdashboard::config'],
       Anchor['post_config_exec'],
@@ -174,10 +176,6 @@ class puppetdashboard(
 
   class { 'puppetdashboard::workers::debian':
     enable_workers    => $enable_workers,
-    install_dir       => $install_dir,
-    apache_user       => $apache_user,
-    port              => $port,
-    number_of_workers => $number_of_workers,
     require           => [
       Class[
         'puppetdashboard::config',

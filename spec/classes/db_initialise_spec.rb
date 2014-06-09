@@ -20,7 +20,7 @@ describe 'puppetdashboard::db::initialise', :type => :class do
           'require'     => [
             'File[puppet_dashboard_database]',
             'File[puppet_dashboard_settings]',
-            'File[puppet-dashboard-workers-defaults]',
+            'File[puppet-dashboard-defaults]',
             'Package[rake]',
           ]
         ) }
@@ -53,7 +53,7 @@ describe 'puppetdashboard::db::initialise', :type => :class do
           'require'     => [
             'File[puppet_dashboard_database]',
             'File[puppet_dashboard_settings]',
-            'File[puppet-dashboard-workers-defaults]',
+            'File[puppet-dashboard-defaults]',
             'Package[rake]',
           ]
         ) }

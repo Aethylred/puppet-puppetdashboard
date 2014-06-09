@@ -18,7 +18,8 @@ describe 'puppetdashboard', :type => :class do
       describe "with no parameters" do
         it { should contain_class('puppetdashboard::params') }
         it { should contain_class('puppetdashboard::install::package').with(
-          'ensure' => 'installed'
+          'ensure' => 'installed',
+          'before' => 'Class[Puppetdashboard::Config]'
         ) }
         it { should contain_class('puppetdashboard::db').with(
           'db_name'       => 'puppetdashboard',
@@ -29,16 +30,24 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::db').without_db_passwd_hash }
         it { should contain_class('puppetdashboard::db').without_db_user_host }
         it { should contain_class('puppetdashboard::config').with(
-          'conf_dir'                  => '/usr/share/puppet-dashboard/config',
-          'db_user'                   => 'puppetdashboard',
-          'db_name'                   => 'puppetdashboard',
-          'db_password'               => 'veryunsafeword',
-          'db_adapter'                => 'mysql',
-          'cn_name'                   => 'dashboard',
-          'ca_server'                 => 'puppet',
-          'inventory_server'          => 'puppet',
-          'file_bucket_server'        => 'puppet',
-          'legacy_report_upload_url'  => true
+            'install_dir'               => '/usr/share/puppet-dashboard',
+    'conf_dir'                  => '/usr/share/puppet-dashboard/config',
+    'db_user'                   => 'puppetdashboard',
+    'db_name'                   => 'puppetdashboard',
+    'db_adapter'                => 'mysql',
+    'db_password'               => 'veryunsafeword',
+    'cn_name'                   => 'dashboard',
+    'ca_server'                 => 'puppet',
+    'inventory_server'          => 'puppet',
+    'file_bucket_server'        => 'puppet',
+    'legacy_report_upload_url'  => true,
+    'servername'                => 'test.example.org',
+    'enable_workers'            => true,
+    'disable_webrick'           => true,
+    'apache_user'               => 'www-data',
+    'port'                      => '80',
+    'ruby_bin'                  => '/usr/bin/ruby',
+    'number_of_workers'         => '2'
         ) }
         it { should contain_class('puppetdashboard::config').without(
           'config_settings_source'
@@ -68,10 +77,6 @@ describe 'puppetdashboard', :type => :class do
         ) }
         it { should contain_class('puppetdashboard::workers::debian').with(
           'enable_workers'    => true,
-          'install_dir'       => '/usr/share/puppet-dashboard',
-          'apache_user'       => 'www-data',
-          'port'              => '80',
-          'number_of_workers' => '2',
           'require'           => [
             'Class[Puppetdashboard::Config]',
             'Class[Puppetdashboard::Db]',
@@ -83,9 +88,6 @@ describe 'puppetdashboard', :type => :class do
         ) }
         it { should contain_class('puppetdashboard::site::webrick').with(
           'disable_webrick'   => true,
-          'install_dir'       => '/usr/share/puppet-dashboard',
-          'apache_user'       => 'www-data',
-          'port'              => '80',
           'require'           => [
             'Class[Puppetdashboard::Config]',
             'Anchor[post_config_exec]',
@@ -98,13 +100,19 @@ describe 'puppetdashboard', :type => :class do
           'path'    => '/usr/share/puppet-dashboard/log',
           'owner'   => 'www-data',
           'recurse' => true,
-          'require' => 'Class[Puppetdashboard::Config]'
+          'require' => [
+            'Anchor[post_config_exec]',
+            'Class[Puppetdashboard::Config]'
+          ]
         ) }
         it { should contain_file('puppet_dashboard_tmp').with(
           'path'    => '/usr/share/puppet-dashboard/tmp',
           'owner'   => 'www-data',
           'recurse' => true,
-          'require' => 'Class[Puppetdashboard::Config]'
+          'require' => [
+            'Anchor[post_config_exec]',
+            'Class[Puppetdashboard::Config]'
+          ]
         ) }
       end
       describe "with the git provider, provider => 'git'" do
@@ -116,98 +124,15 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::params') }
         it { should contain_class('puppetdashboard::install::git').with(
           'ensure'      => 'installed',
-          'install_dir' => '/usr/share/puppet-dashboard'
-        ) }
-        it { should contain_class('puppetdashboard::config').with(
-          'conf_dir'                  => '/usr/share/puppet-dashboard/config',
-          'db_user'                   => 'puppetdashboard',
-          'db_name'                   => 'puppetdashboard',
-          'db_password'               => 'veryunsafeword',
-          'db_adapter'                => 'mysql',
-          'cn_name'                   => 'dashboard',
-          'ca_server'                 => 'puppet',
-          'inventory_server'          => 'puppet',
-          'file_bucket_server'        => 'puppet',
-          'legacy_report_upload_url'  => true
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'config_settings_source'
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'config_database_source'
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'config_settings_content'
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'config_database_content'
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'read_only_mode'
-        ) }
-        it { should contain_class('puppetdashboard::config').without(
-          'secret_token'
-        ) }
-        it { should contain_class('puppetdashboard::db').with(
-          'db_name'       => 'puppetdashboard',
-          'db_user'       => 'puppetdashboard',
-          'db_password'   => 'veryunsafeword',
-          'install_dir'   => '/usr/share/puppet-dashboard'
-        ) }
-        it { should contain_class('puppetdashboard::db').without_db_passwd_hash }
-        it { should contain_class('puppetdashboard::db').without_db_host }
-        it { should contain_class('puppetdashboard::site::apache').with(
-          'docroot'     => '/usr/share/puppet-dashboard/public',
-          'port'        => '80',
-          'servername'  => 'test.example.org',
-          'error_log_file'  => 'dashboard.test.example.org_error.log'
-        ) }
-        it { should contain_class('puppetdashboard::workers::debian').with(
-          'enable_workers'    => true,
-          'install_dir'       => '/usr/share/puppet-dashboard',
-          'apache_user'       => 'www-data',
-          'port'              => '80',
-          'number_of_workers' => '2',
-          'require'           => [
-            'Class[Puppetdashboard::Config]',
-            'Class[Puppetdashboard::Db]',
-            'Anchor[post_config_exec]',
-            'File[puppet_dashboard_log]',
-            'File[puppet_dashboard_tmp]',
-            'File[/usr/share/puppet-dashboard]'
-          ]
-        ) }
-        it { should contain_class('puppetdashboard::site::webrick').with(
-          'disable_webrick'   => true,
-          'install_dir'       => '/usr/share/puppet-dashboard',
-          'apache_user'       => 'www-data',
-          'port'              => '80',
-          'require'           => [
-            'Class[Puppetdashboard::Config]',
-            'Anchor[post_config_exec]',
-            'File[puppet_dashboard_log]',
-            'File[puppet_dashboard_tmp]',
-            'File[/usr/share/puppet-dashboard]'
-          ]
-        ) }
-        it { should contain_file('puppet_dashboard_log').with(
-          'path'    => '/usr/share/puppet-dashboard/log',
-          'owner'   => 'www-data',
-          'recurse' => true,
-          'require' => 'Class[Puppetdashboard::Config]'
-        ) }
-        it { should contain_file('puppet_dashboard_tmp').with(
-          'path'    => '/usr/share/puppet-dashboard/tmp',
-          'owner'   => 'www-data',
-          'recurse' => true,
-          'require' => 'Class[Puppetdashboard::Config]'
+          'install_dir' => '/usr/share/puppet-dashboard',
+          'before'      => 'Class[Puppetdashboard::Config]'
         ) }
       end
-      describe "with the git provider, and a custom install directory" do
+      describe "with the git provider, and custom install and config directories" do
         let :params do
           {
             :provider     => 'git',
-            :install_dir  => '/opt/dashboard'
+            :install_dir  => '/opt/dashboard',
           }
         end
         it { should contain_class('puppetdashboard::params') }
@@ -218,19 +143,14 @@ describe 'puppetdashboard', :type => :class do
           'install_dir' => '/opt/dashboard'
         ) }
         it { should contain_class('puppetdashboard::config').with(
-          'conf_dir'                  => '/opt/dashboard/config'
-        ) }
-        it { should contain_class('puppetdashboard::workers::debian').with(
-          'install_dir'       => '/opt/dashboard'
-        ) }
-        it { should contain_class('puppetdashboard::site::webrick').with(
-          'install_dir'       => '/opt/dashboard'
+          'install_dir' => '/opt/dashboard',
+          'conf_dir'    => '/opt/dashboard/config'
         ) }
         it { should contain_file('puppet_dashboard_log').with(
-          'path'    => '/opt/dashboard/log'
+          'path' => '/opt/dashboard/log'
         ) }
         it { should contain_file('puppet_dashboard_tmp').with(
-          'path'    => '/opt/dashboard/tmp'
+          'path' => '/opt/dashboard/tmp'
         ) }
       end
       describe "when not managing the database" do
@@ -277,10 +197,7 @@ describe 'puppetdashboard', :type => :class do
           }
         end
         it { should contain_class('puppetdashboard::workers::debian').with(
-          'enable_workers'    => false,
-          'apache_user'       => 'nobody',
-          'port'              => '8080',
-          'number_of_workers' => '24'
+          'enable_workers'    => false
         ) }
       end
       describe "when using a custom webrick settings" do
@@ -292,9 +209,7 @@ describe 'puppetdashboard', :type => :class do
           }
         end
         it { should contain_class('puppetdashboard::site::webrick').with(
-          'disable_webrick'   => false,
-          'apache_user'       => 'nobody',
-          'port'              => '8080'
+          'disable_webrick'   => false
         ) }
       end
       describe "when using a custom database, user, and password" do
@@ -354,10 +269,7 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::db').with(
           'install_dir' => '/opt/dashboard'
         ) }
-        it { should contain_class('puppetdashboard::workers::debian').with(
-          'install_dir'       => '/opt/dashboard'
-        ) }
-        it { should contain_file('puppet_dashboard_log').with(
+         it { should contain_file('puppet_dashboard_log').with(
           'path'    => '/opt/dashboard/log'
         ) }
         it { should contain_file('puppet_dashboard_tmp').with(

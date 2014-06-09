@@ -31,7 +31,7 @@ DASHBOARD_IFACE=${DASHBOARD_IFACE:-0.0.0.0}
 DASHBOARD_PORT=${DASHBOARD_PORT:-3000}
 
 check_dashboard_enabled_option() {
-    if [ ! "$START" = "yes" ]; then
+    if [ ! "$WEBRICK_START" = "yes" ]; then
         log_warning_msg "Not starting Puppet Dashboard, disabled via /etc/default/puppet-dashboard"
         return 1
     else

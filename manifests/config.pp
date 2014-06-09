@@ -1,5 +1,6 @@
 # Manages the puppet dashboard configuration files
 class puppetdashboard::config (
+  $install_dir              = $::puppetdashboard::params::install_dir,
   $conf_dir                 = $::puppetdashboard::params::config_dir,
   $config_settings_source   = undef,
   $config_database_source   = undef,
@@ -19,7 +20,14 @@ class puppetdashboard::config (
   $db_adapter               = $::puppetdashboard::params::db_adapter,
   $apache_user              = $::puppetdashboard::params::apache_user,
   $apache_group             = $::puppetdashboard::params::apache_group,
-  $secret_token             = undef
+  $secret_token             = undef,
+  $servername               = $::fqdn,
+  $port                     = $::puppetdashboard::params::apache_port,
+  $enable_workers           = true,
+  $disable_webrick          = true,
+  $apache_user              = $::puppetdashboard::params::apache_user,
+  $ruby_bin                 = $::puppetdashboard::params::ruby_bin,
+  $number_of_workers        = $::processorcount
 ) inherits ::puppetdashboard::params {
 
   # Considering making subclasses for each config file.
@@ -96,6 +104,14 @@ class puppetdashboard::config (
     target  => '/etc/puppet-dashboard/database.yml',
     mode    => '0640',
     require => File['puppet_dashboard_database'],
+  }
+
+    file { 'puppet-dashboard-defaults':
+    ensure      => 'file',
+    path        => '/etc/default/puppet-dashboard',
+    mode        => '0644',
+    content     => template('puppetdashboard/puppet-dashboard.erb'),
+    notify      => Service['puppet-dashboard','puppet-dashboard-workers'],
   }
 
 }
