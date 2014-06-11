@@ -10,7 +10,7 @@ mod 'puppetlabs/postgresql'
 mod 'Aethylred/git'
 mod 'puppetlabs/ruby',
   :git => 'https://github.com/Aethylred/puppetlabs-ruby.git',
-  :ref => 'master'
+  :ref => 'rakebundle'
 mod 'puppetlabs/mysql',
   :git => 'https://github.com/puppetlabs/puppetlabs-mysql.git',
   :ref => 'master'

@@ -28,26 +28,31 @@ class puppetdashboard::install::git (
     require => Vcsrepo[$install_dir],
   }
 
-  @exec {'puppet_dashboard_bundle_install':
-    command     => 'bundle install --deployment',
-    unless      => 'bundle check',
+  @ruby::bundle {'puppet_dashboard_install':
+    command     => 'install',
+    option      => '--deployment',
+    rails_env   => 'production',
     cwd         => $install_dir,
     user        => $user,
-    path        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
-    environment => ['HOME=/var/www','RAILS_ENV=production'],
-    require     => Vcsrepo[$install_dir],
+    environment => ['HOME=/var/www'],
+    tries       => 2,
     timeout     => 900,
     tag         => 'post_config',
+    require     => [
+      Vcsrepo[$install_dir],
+      Package[$puppetdashboard::params::gem_dependencies]
+    ],
   }
 
-  @exec {'puppet_dashboard_bundle_precompile_assets':
-    command     => 'bundle exec rake assets:precompile',
+  @ruby::rake {'puppet_dashboard_precompile_assets':
+    task        => 'assets:precompile',
+    bundle      => true,
+    rails_env   => 'production',
     creates     => "${install_dir}/tmp/cache",
     cwd         => $install_dir,
     user        => $user,
-    path        => ['/usr/bin','/bin','/usr/sbin','/sbin'],
-    environment => ['HOME=/var/www','RAILS_ENV=production'],
-    require     => Exec['puppet_dashboard_bundle_install'],
+    environment => ['HOME=/var/www'],
+    require     => Ruby::Bundle['puppet_dashboard_install'],
     timeout     => 900,
     tag         => 'post_config',
   }

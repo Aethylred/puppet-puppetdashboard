@@ -34,7 +34,9 @@ class puppetdashboard(
   $apache_group             = $::puppetdashboard::params::apache_group,
   $disable_webrick          = true,
   $enable_workers           = true,
-  $secret_token             = undef
+  $secret_token             = undef,
+  $repo_url                 = $::puppetdashboard::params::repo_url,
+  $repo_ref                 = $::puppetdashboard::params::repo_ref
 ) inherits puppetdashboard::params {
 
   # Check exclusive parameters
@@ -60,6 +62,8 @@ class puppetdashboard(
         ensure      => $ensure,
         install_dir => $install_dir,
         user        => $apache_user,
+        repo_url    => $repo_url,
+        repo_ref    => $repo_ref,
         before      => Class['puppetdashboard::config'],
       }
     }
@@ -100,7 +104,9 @@ class puppetdashboard(
     number_of_workers         => $number_of_workers,
   }
 
-  Exec <| tag == 'post_config' |> ->
+  Exec <| tag == 'post_config' |> -> Anchor['post_config_exec']
+  Ruby::Bundle <| tag == 'post_config' |> -> Anchor['post_config_exec']
+  Ruby::Rake <| tag == 'post_config' |> -> Anchor['post_config_exec']
   anchor { 'post_config_exec': }
 
   class { 'puppetdashboard::db':
@@ -158,7 +164,6 @@ class puppetdashboard(
       servername      => $servername,
       error_log_file  => $error_log_file,
       access_log_file => $access_log_file,
-      before          => Service['puppet-dashboard-workers'],
       require         => [
         Class[
           'puppetdashboard::config',

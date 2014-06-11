@@ -17,12 +17,12 @@ class puppetdashboard::workers::debian (
       enable      => true,
       hasstatus   => true,
       hasrestart  => true,
-      require     => [
-        Package['rake'],
-        Exec['puppetdashboard_dbmigrate'],
+      subscribe   => [
+        Service['httpd'],
         File['puppet-dashboard-workers-init'],
         File['puppet-dashboard-defaults'],
       ],
+      require     => Ruby::Rake['puppetdashboard_dbmigrate'],
     }
   } else {
     service { 'puppet-dashboard-workers':
@@ -30,11 +30,12 @@ class puppetdashboard::workers::debian (
       enable      => false,
       hasstatus   => true,
       hasrestart  => true,
-      require     => [
-        Package['rake'],
-        Exec['puppetdashboard_dbmigrate'],
+      subscribe   => [
+        Service['httpd'],
         File['puppet-dashboard-workers-init'],
+        File['puppet-dashboard-defaults'],
       ],
+      require     => Ruby::Rake['puppetdashboard_dbmigrate'],
     }
   }
 

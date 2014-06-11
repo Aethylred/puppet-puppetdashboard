@@ -17,7 +17,11 @@ class puppetdashboard::site::webrick (
       enable      => false,
       hasstatus   => true,
       hasrestart  => true,
-      require     => File['puppet-dashboard-webrick-init'],
+      subscribe   => [
+        File['puppet-dashboard-webrick-init'],
+        File['puppet-dashboard-defaults'],
+      ],
+      require     => Ruby::Rake['puppetdashboard_dbmigrate'],
     }
   } else {
     service { 'puppet-dashboard':
@@ -25,7 +29,11 @@ class puppetdashboard::site::webrick (
       enable      => true,
       hasstatus   => true,
       hasrestart  => true,
-      require     => File['puppet-dashboard-webrick-init'],
+      subscribe   => [
+        File['puppet-dashboard-webrick-init'],
+        File['puppet-dashboard-defaults'],
+      ],
+      require     => Ruby::Rake['puppetdashboard_dbmigrate'],
     }
   }
 

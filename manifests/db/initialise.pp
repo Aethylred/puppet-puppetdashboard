@@ -10,27 +10,22 @@ class puppetdashboard::db::initialise (
     $timestamp = 'Nil, Empty String, Zero or Undefined.'
   }
 
-  if versioncmp($::dashboard_version, '1.2.23') > 0 {
-    $rake_command     = 'bundle exec rake'
-    $db_setup_command = 'db:setup'
+  if versioncmp($::dashboard_version, '1.2.23') > 0 or ($puppetdashboard::provider == 'git' and versioncmp($puppetdashboard::install::git::repo_ref, '1.2.23') > 0) {
+    $bundle_rake   = true
+    $db_setup_task = 'db:setup'
+    $rake_command  = 'bundle exec rake'
   } else {
-    $rake_command     = 'rake'
-    $db_setup_command = 'db:migrate'
+    $bundle_rake   = false
+    $db_setup_task = 'db:migrate'
+    $rake_command  = 'rake'
   }
 
-  exec { 'puppetdashboard_dbmigrate':
+  ruby::rake { 'puppetdashboard_dbmigrate':
+    task        => $db_setup_task,
+    bundle      => $bundle_rake,
+    rails_env   => 'production',
     cwd         => $install_dir,
-    path        => [
-      '/usr/bin',
-      '/bin',
-      '/usr/sbin',
-      '/sbin'
-    ],
-    environment => [
-      'HOME=/root',
-      'RAILS_ENV=production'
-    ],
-    command     => "${rake_command} ${db_setup_command}",
+    environment => ['HOME=/root'],
     unless      => "${rake_command} db:version && test `${rake_command} db:version 2> /dev/null|tail -1|cut -c 18-` = '${timestamp}'",
     require     => [
       File[
@@ -38,7 +33,6 @@ class puppetdashboard::db::initialise (
         'puppet_dashboard_settings',
         'puppet-dashboard-defaults'
       ],
-      Package['rake'],
     ],
   }
 }

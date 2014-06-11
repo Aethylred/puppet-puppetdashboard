@@ -24,7 +24,16 @@ class puppetdashboard::params {
 
   case $::osfamily {
     Debian:{
-      $ruby_bin = '/usr/bin/ruby'
+      $ruby_bin         = '/usr/bin/ruby'
+      $gem_dependencies = [
+        'libpq-dev',
+        'libsqlite3-dev',
+        'passenger-common1.9.1',
+        'libxml2-dev',
+        'libxslt1-dev',
+        'libstdc++6',
+        'openssl'
+      ]
     }
     default:{
       fail("The NeSI Puppet Dashboard Puppet module does not support ${::osfamily} family of operating systems")

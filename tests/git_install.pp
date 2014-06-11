@@ -58,21 +58,12 @@ package{'libpq-dev': ensure => 'latest'}
 package{'libsqlite3-dev': ensure => 'latest'}
 package{'libxml2-dev': ensure => 'latest'}
 package{'libxslt1-dev': ensure => 'latest'}
+package{'libstdc++6': ensure => 'latest'}
+package{'openssl': ensure => 'latest'}
 
 # Finally install the dashboard
 class { 'puppetdashboard':
   provider      => 'git',
   db_adapter    => 'mysql2',
   secret_token  => '1088f6270d11a08fddfeb863fac0c23122efa8248789950ca3f73db64b4152036a2fae8fb4bc9683d3a859eac39ec7200227f203ada7df64a9a43b19e7cfc313',
-  require       => [
-    Package[
-      'libpq-dev',
-      'libsqlite3-dev',
-      'passenger-common1.9.1',
-      'libxml2-dev',
-      'libxslt1-dev',
-      'ruby-bundler',
-      'rake'
-    ],
-  ],
 }
