@@ -34,23 +34,37 @@ ca_port: 8140
 key_length: 1024
 
 # The "inventory service" allows you to connect to a puppet master to retrieve and node facts
-enable_inventory_service: false
+<% if @inventory_server -%>
+enable_inventory_service: true
 
 # Hostname of the inventory server.
 inventory_server: '<%= @inventory_server %>'
+<% else -%>
+enable_inventory_service: false
+
+# Hostname of the inventory server.
+inventory_server: 'puppet'
+<% end -%>
 
 # Port for the inventory server.
-inventory_port: 8140
+inventory_port: <%= @inventory_server_port %>
 
 # Set this to true to allow Dashboard to display diffs on files that
 # are archived in the file bucket.
-use_file_bucket_diffs: false
+<% if @file_bucket_server -%>
+use_file_bucket_diffs: true
 
 # Hostname of the file bucket server.
 file_bucket_server: '<%= @file_bucket_server %>'
+<% else -%>
+use_file_bucket_diffs: false
+
+# Hostname of the file bucket server.
+file_bucket_server: 'puppet'
+<% end -%>
 
 # Port for the file bucket server.
-file_bucket_port: 8140
+file_bucket_port: <%= @file_bucket_server_port %>
 
 # Amount of time in seconds since last report before a node is considered no longer reporting
 no_longer_reporting_cutoff: 3600

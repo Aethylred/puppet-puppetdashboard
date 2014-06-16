@@ -3,24 +3,24 @@
 class puppetdashboard::params {
 
   # OS independent variables
-  $package            = 'puppet-dashboard'
-  $db_user            = 'puppetdashboard'
-  $db_name            = 'puppetdashboard'
-  $db_adapter         = 'mysql'
-  $install_dir        = '/usr/share/puppet-dashboard'
-  $config_dir         = "${install_dir}/config"
-  $cn_name            = 'dashboard'
-  $ca_server          = 'puppet'
-  $inventory_server   = 'puppet'
-  $file_bucket_server = 'puppet'
-  $docroot            = '/usr/share/puppet-dashboard/public'
-  $error_log_file     = "dashboard.${::fqdn}_error.log"
-  $access_log_file    = "dashboard.${::fqdn}_access.log"
-  $apache_user        = $::apache::user
-  $apache_group       = $::apache::group
-  $apache_port        = '80'
-  $repo_url           = 'https://github.com/sodabrew/puppet-dashboard.git'
-  $repo_ref           = '2.0.0-beta2'
+  $package                  = 'puppet-dashboard'
+  $db_user                  = 'puppetdashboard'
+  $db_name                  = 'puppetdashboard'
+  $db_adapter               = 'mysql'
+  $install_dir              = '/usr/share/puppet-dashboard'
+  $config_dir               = "${install_dir}/config"
+  $cn_name                  = 'dashboard'
+  $ca_server                = 'puppet'
+  $inventory_server_port    = '8140'
+  $file_bucket_server_port  = '8140'
+  $docroot                  = '/usr/share/puppet-dashboard/public'
+  $error_log_file           = "dashboard.${::fqdn}_error.log"
+  $access_log_file          = "dashboard.${::fqdn}_access.log"
+  $apache_user              = $::apache::user
+  $apache_group             = $::apache::group
+  $apache_port              = '80'
+  $repo_url                 = 'https://github.com/sodabrew/puppet-dashboard.git'
+  $repo_ref                 = '2.0.0-beta2'
 
   case $::osfamily {
     Debian:{
