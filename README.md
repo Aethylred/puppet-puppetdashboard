@@ -39,6 +39,8 @@ class { 'puppetdashboard':
 
 The Puppet-Dashboard Module has been written such that its component classes can be installed on different servers. Hence the dependencies are not across all classes and allows the installation of the database on a database server without a web service, while the web application can be installed on a web server with without a database service. The current version of the Puppet Dashboard does not yet support a remote database.
 
+The included PuppetFile can be used with [librarian-puppet](https://github.com/rodjek/librarian-puppet) to set up the module dependencies.
+
 In all cases, these modules should be installed and be available on the Puppet Master, though not necessarily installed on each host using classes and resources from the Puppet-Dashboard Module.
 
 ### Required Puppet Module Dependencies
@@ -46,6 +48,7 @@ In all cases, these modules should be installed and be available on the Puppet M
 * **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is required to set up the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `mysql` or `mysql2` database adapter (this is the default behaviour). This module can be used to set up the database on a remote server. This module is required with the `git` provider to install the development library dependencies.
 * **postgresql**: The [Puppetlabs PostgreSQL Module](https://forge.puppetlabs.com/puppetlabs/postgresql) is required to set up the `puppetdashboard::db::postgresql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `postgresql` database adapter. This module could be used to set up the database on a remote server.
 * **stdlib**: The [Puppetlabs Standard Library Module](https://forge.puppetlabs.com/puppetlabs/stdlib)
+* **puppetlabs/ruby**: Currently this module requires a patched version of the [Puppetlabs Ruby Module](https://github.com/puppetlabs/puppetlabs-ruby) which can be found [here](https://github.com/Aethylred/puppetlabs-ruby/tree/rakebundle).
 
 ### Optional Puppet Module Dependencies
 These modules can make using the puppetdashboard module easier, and some are required for the git provider (check the git provider documentation for details) :
@@ -53,7 +56,7 @@ These modules can make using the puppetdashboard module easier, and some are req
 * **puppetlabs/apt**
 * **puppetlabs/nodejs**
 * **Aethylred/git**: Installs git.
-* **puppetlabs/ruby**
+
 
 #### Apache Web Server Configuration
 
