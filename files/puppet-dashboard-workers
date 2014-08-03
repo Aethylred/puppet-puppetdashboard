@@ -68,6 +68,7 @@ start_puppet_dashboard_workers() {
                 export RUBYLIB='${RUBYLIB:-}';
                 export RAILS_ENV=production;
                 ${DASHBOARD_HOME}/script/delayed_job -p dashboard -n ${NUM_DELAYED_JOB_WORKERS:-2} -m start;"
+    sleep 2
     check_puppet_dashboard_worker_status
 }
 
