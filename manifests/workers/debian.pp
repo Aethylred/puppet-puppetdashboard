@@ -17,11 +17,20 @@ class puppetdashboard::workers::debian (
     notify      => Service['puppet-dashboard-workers'],
   }
 
+  file { "${install_dir}/script/delayed_worker":
+    ensure  => present,
+    mode    => '0755',
+    owner   => 'root',
+    group   => 'root',
+    require => File[$install_dir],
+  }
+
   file { 'puppet-dashboard-workers-init':
-    ensure      => 'file',
-    path        => '/etc/init.d/puppet-dashboard-workers',
-    mode        => '0755',
-    source      => 'puppet:///modules/puppetdashboard/puppet-dashboard-workers',
+    ensure  => 'file',
+    path    => '/etc/init.d/puppet-dashboard-workers',
+    mode    => '0755',
+    source  => 'puppet:///modules/puppetdashboard/puppet-dashboard-workers',
+    require => File["${install_dir}/script/delayed_worker"],
   }
 
   if $enable_workers {
