@@ -3,14 +3,14 @@
 class puppetdashboard(
   $ensure                   = installed,
   $provider                 = undef,
-  $install_dir              = $puppetdashboard::params::install_dir,
+  $install_dir              = $::puppetdashboard::params::install_dir,
   $manage_vhost             = true,
   $manage_db                = true,
   $db_host                  = undef,
-  $db_name                  = $puppetdashboard::params::db_name,
-  $db_user                  = $puppetdashboard::params::db_user,
+  $db_name                  = $::puppetdashboard::params::db_name,
+  $db_user                  = $::puppetdashboard::params::db_user,
   $db_user_host             = undef,
-  $db_adapter               = $puppetdashboard::params::db_adapter,
+  $db_adapter               = $::puppetdashboard::params::db_adapter,
   $db_password              = 'veryunsafeword',
   $db_passwd_hash           = undef,
   $config_settings_source   = undef,
@@ -20,17 +20,18 @@ class puppetdashboard(
   $time_zone                = undef,
   $read_only_mode           = undef,
   $legacy_report_upload_url = true,
-  $cn_name                  = $puppetdashboard::params::cn_name,
-  $ca_server                = $puppetdashboard::params::ca_server,
-  $inventory_server         = $puppetdashboard::params::inventory_server,
-  $file_bucket_server       = $puppetdashboard::params::file_bucket_server,
-  $docroot                  = $puppetdashboard::params::docroot,
-  $port                     = $puppetdashboard::params::apache_port,
+  $cn_name                  = $::puppetdashboard::params::cn_name,
+  $ca_server                = $::puppetdashboard::params::ca_server,
+  $inventory_server         = $::puppetdashboard::params::inventory_server,
+  $file_bucket_server       = $::puppetdashboard::params::file_bucket_server,
+  $docroot                  = $::puppetdashboard::params::docroot,
+  $port                     = $::puppetdashboard::params::apache_port,
   $servername               = $::fqdn,
-  $error_log_file           = $puppetdashboard::params::error_log_file,
-  $access_log_file           = $puppetdashboard::params::access_log_file,
+  $error_log_file           = $::puppetdashboard::params::error_log_file,
+  $access_log_file          = $::puppetdashboard::params::access_log_file,
   $number_of_workers        = $::processorcount,
-  $apache_user              = $puppetdashboard::params::apache_user,
+  $apache_user              = $::puppetdashboard::params::apache_user,
+  $apache_group             = $::puppetdashboard::params::apache_group,
   $disable_webrick          = true,
   $enable_workers           = true,
   $secret_token             = undef
@@ -48,12 +49,12 @@ class puppetdashboard(
   case $provider {
     'git': {
       # Do git install
-      class{'puppetdashboard::install::git':
+      class { 'puppetdashboard::install::git':
         ensure      => $ensure,
         install_dir => $install_dir,
         user        => $apache_user,
       }
-      class{'puppetdashboard::config':
+      class { 'puppetdashboard::config':
         conf_dir                  => "${install_dir}/config",
         config_settings_source    => $config_settings_source,
         config_database_source    => $config_database_source,
@@ -71,15 +72,17 @@ class puppetdashboard(
         legacy_report_upload_url  => $legacy_report_upload_url,
         read_only_mode            => $read_only_mode,
         secret_token              => $secret_token,
+        apache_user               => $apache_user,
+        apache_group              => $apache_group,
         require                   => Class['puppetdashboard::install::git']
       }
     }
     default: {
       # Do package install
-      class{'puppetdashboard::install::package':
+      class { 'puppetdashboard::install::package':
         ensure => $ensure,
       }
-      class{'puppetdashboard::config':
+      class { 'puppetdashboard::config':
         config_settings_source    => $config_settings_source,
         config_database_source    => $config_database_source,
         config_settings_content   => $config_settings_content,
@@ -102,7 +105,7 @@ class puppetdashboard(
   }
 
   Exec <| tag == 'post_config' |> ->
-  anchor{'post_config_exec': }
+  anchor { 'post_config_exec': }
 
   class { 'puppetdashboard::db':
     manage_db       => $manage_db,
@@ -116,21 +119,21 @@ class puppetdashboard(
     require         => Anchor['post_config_exec'],
   }
 
-  file {'puppet_dashboard_log':
+  file { 'puppet_dashboard_log':
     path    => "${install_dir}/log",
     owner   => $apache_user,
     recurse => true,
     require => Class['puppetdashboard::config'],
   }
 
-  file {'puppet_dashboard_tmp':
+  file { 'puppet_dashboard_tmp':
     path    => "${install_dir}/tmp",
     owner   => $apache_user,
     recurse => true,
     require => Class['puppetdashboard::config'],
   }
 
-  class{'puppetdashboard::site::webrick':
+  class { 'puppetdashboard::site::webrick':
     disable_webrick   => $disable_webrick,
     install_dir       => $install_dir,
     apache_user       => $apache_user,
@@ -169,7 +172,7 @@ class puppetdashboard(
     }
   }
 
-  class{'puppetdashboard::workers::debian':
+  class { 'puppetdashboard::workers::debian':
     enable_workers    => $enable_workers,
     install_dir       => $install_dir,
     apache_user       => $apache_user,

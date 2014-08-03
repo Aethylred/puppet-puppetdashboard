@@ -10,7 +10,7 @@ describe 'puppetdashboard::config', :type => :class do
       }
     end
     describe 'with default apache' do
-      let :pre_condition do 
+      let :pre_condition do
         "class { 'apache': }"
       end
       describe "with no parameters" do
@@ -18,27 +18,27 @@ describe 'puppetdashboard::config', :type => :class do
         it { should contain_file('puppet_dashboard_settings').with(
           'ensure'  => 'file',
           'path'    => '/etc/puppet-dashboard/settings.yml',
-          'owner'   => 'www-data',
+          'owner'   => 'root',
           'group'   => 'www-data',
-          'mode'    => '0660'
+          'mode'    => '0640'
         ) }
         it { should contain_file('puppet_dashboard_database').with(
           'ensure'  => 'file',
           'path'    => '/etc/puppet-dashboard/database.yml',
-          'owner'   => 'www-data',
+          'owner'   => 'root',
           'group'   => 'www-data',
-          'mode'    => '0660'
+          'mode'    => '0640'
         ) }
         it { should contain_file('/usr/share/puppet-dashboard/config/settings.yml').with(
           'ensure'  => 'link',
           'target'  => '/etc/puppet-dashboard/settings.yml',
-          'mode'    => '0660',
+          'mode'    => '0640',
           'require' => 'File[puppet_dashboard_settings]'
         ) }
         it { should contain_file('/usr/share/puppet-dashboard/config/database.yml').with(
           'ensure'  => 'link',
           'target'  => '/etc/puppet-dashboard/database.yml',
-          'mode'    => '0660',
+          'mode'    => '0640',
           'require' => 'File[puppet_dashboard_database]'
         ) }
         it { should contain_file('puppet_dashboard_database').with_content(/^  host:     localhost$/)}
