@@ -53,11 +53,11 @@ class { 'apache::mod::passenger':
   rails_autodetect              => 'on',
 }
 
-# apache::mod::passenger fails to install this!
-package{'passenger-common1.9.1':
-  ensure  => 'latest',
-  require => Apt::Ppa['ppa:brightbox/ruby-ng'],
-}
+# apache::mod::passenger fails to install this, not required for Ubuntu 14.04
+# package{'passenger-common1.9.1':
+#   ensure  => 'latest',
+#   require => Apt::Ppa['ppa:brightbox/ruby-ng'],
+# }
 # dependent libraries for gems
 package{'libpq-dev': ensure => 'latest'}
 package{'libsqlite3-dev': ensure => 'latest'}

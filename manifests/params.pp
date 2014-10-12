@@ -25,17 +25,46 @@ class puppetdashboard::params {
   case $::osfamily {
     Debian:{
       $ruby_bin         = '/usr/bin/ruby'
-      $gem_dependencies = [
-        'libpq-dev',
-        'libsqlite3-dev',
-        'passenger-common1.9.1',
-        'libxml2-dev',
-        'libxslt1-dev',
-        'libstdc++6',
-        'openssl'
-      ]
+      case $::operatingsystem {
+        'ubuntu': {
+          case $::lsbdistcodename {
+            'trusty': {
+              $gem_dependencies = [
+                'libpq-dev',
+                'libsqlite3-dev',
+                'libxml2-dev',
+                'libxslt1-dev',
+                'libstdc++6',
+                'openssl'
+              ]
+            }
+            default: {
+              $gem_dependencies = [
+                'libpq-dev',
+                'libsqlite3-dev',
+                'passenger-common1.9.1',
+                'libxml2-dev',
+                'libxslt1-dev',
+                'libstdc++6',
+                'openssl'
+              ]
+            }
+          }
+        }
+        default: {
+          $gem_dependencies = [
+            'libpq-dev',
+            'libsqlite3-dev',
+            'passenger-common1.9.1',
+            'libxml2-dev',
+            'libxslt1-dev',
+            'libstdc++6',
+            'openssl'
+          ]
+        }
+      }
     }
-    default:{
+    default: {
       fail("The NeSI Puppet Dashboard Puppet module does not support ${::osfamily} family of operating systems")
     }
   }

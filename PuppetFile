@@ -1,4 +1,4 @@
-forge "http://forge.puppetlabs.com"
+forge "http://forgeapi.puppetlabs.com"
 
 mod 'puppetlabs/apache'
 mod 'puppetlabs/stdlib'
@@ -8,9 +8,7 @@ mod 'puppetlabs/nodejs'
 mod 'puppetlabs/puppetdb'
 mod 'puppetlabs/postgresql'
 mod 'Aethylred/git'
-mod 'puppetlabs/ruby',
-  :git => 'https://github.com/Aethylred/puppetlabs-ruby.git',
-  :ref => 'rakebundle'
+mod 'puppetlabs/ruby', '0.3.0'
 mod 'puppetlabs/mysql',
   :git => 'https://github.com/puppetlabs/puppetlabs-mysql.git',
   :ref => 'master'

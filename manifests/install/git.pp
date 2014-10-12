@@ -10,7 +10,7 @@ class puppetdashboard::install::git (
   vcsrepo { $install_dir:
     ensure    => 'present',
     provider  => 'git',
-    user      => $user,
+#    user      => $user,
     source    => $repo_url,
     revision  => $repo_ref,
   }
@@ -19,8 +19,9 @@ class puppetdashboard::install::git (
     ensure  => 'directory',
     path    => $install_dir,
     owner   => $user,
+    ignore  => '.git',
     recurse => true,
-    before  => Vcsrepo[$install_dir]
+    require => Vcsrepo[$install_dir]
   }
 
   file { '/etc/puppet-dashboard':
@@ -33,12 +34,13 @@ class puppetdashboard::install::git (
     option      => '--deployment',
     rails_env   => 'production',
     cwd         => $install_dir,
-    user        => $user,
-    environment => ['HOME=/var/www'],
+#    user        => $user,
+#    environment => ['HOME=/var/www'],
     tries       => 2,
     timeout     => 900,
     tag         => 'post_config',
     require     => [
+      File['dashboard_install_dir'],
       Vcsrepo[$install_dir],
       Package[$puppetdashboard::params::gem_dependencies]
     ],
@@ -50,8 +52,8 @@ class puppetdashboard::install::git (
     rails_env   => 'production',
     creates     => "${install_dir}/tmp/cache",
     cwd         => $install_dir,
-    user        => $user,
-    environment => ['HOME=/var/www'],
+#    user        => $user,
+#    environment => ['HOME=/var/www'],
     require     => Ruby::Bundle['puppet_dashboard_install'],
     timeout     => 900,
     tag         => 'post_config',
