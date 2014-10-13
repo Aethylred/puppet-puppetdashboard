@@ -9,7 +9,5 @@ mod 'puppetlabs/puppetdb'
 mod 'puppetlabs/postgresql'
 mod 'Aethylred/git'
 mod 'puppetlabs/ruby', '0.3.0'
-mod 'puppetlabs/mysql',
-  :git => 'https://github.com/puppetlabs/puppetlabs-mysql.git',
-  :ref => 'master'
+mod 'puppetlabs/mysql'
 

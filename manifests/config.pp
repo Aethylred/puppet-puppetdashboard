@@ -113,7 +113,7 @@ class puppetdashboard::config (
     path        => '/etc/default/puppet-dashboard',
     mode        => '0644',
     content     => template('puppetdashboard/puppet-dashboard.erb'),
-    notify      => Service['puppet-dashboard','puppet-dashboard-workers'],
+    notify      => Service['puppet-dashboard','puppet_dashboard_workers'],
   }
 
 }

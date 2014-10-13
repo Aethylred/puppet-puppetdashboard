@@ -20,7 +20,7 @@ describe 'puppetdashboard::site::webrick', :type => :class do
           'enable'      => false,
           'hasstatus'   => true,
           'hasrestart'  => true,
-          'require'     => 'File[puppet-dashboard-webrick-init]'
+          'require'     => 'Ruby::Rake[puppetdashboard_dbmigrate]'
         ) }
       end
     end

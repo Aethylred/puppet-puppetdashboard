@@ -46,7 +46,7 @@ describe 'puppetdashboard::config', :type => :class do
           'ensure'      => 'file',
           'path'        => '/etc/default/puppet-dashboard',
           'mode'        => '0644',
-          'notify'      => ['Service[puppet-dashboard]','Service[puppet-dashboard-workers]']
+          'notify'      => ['Service[puppet-dashboard]','Service[puppet_dashboard_workers]']
         ) }
         it { should contain_file('puppet_dashboard_database').with_content(/^  host:     localhost$/)}
         it { should contain_file('puppet_dashboard_database').with_content(/^  database: puppetdashboard$/)}

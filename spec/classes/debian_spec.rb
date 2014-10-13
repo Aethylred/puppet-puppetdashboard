@@ -15,24 +15,24 @@ describe 'puppetdashboard::workers::debian', :type => :class do
       end
       describe "with no parameters" do
         it { should contain_class('puppetdashboard::params') }
-        it { should contain_file('puppet-dashboard-workers-init').with(
+        it { should contain_file('puppet_dashboard_workers_init').with(
           'ensure'      => 'file',
-          'path'        => '/etc/init.d/puppet-dashboard-workers',
+          'path'        => '/etc/init.d/puppet_dashboard_workers',
           'mode'        => '0755',
-          'source'      => 'puppet:///modules/puppetdashboard/puppet-dashboard-workers'
+          'source'      => 'puppet:///modules/puppetdashboard/puppet_dashboard_workers'
         ) }
 
-        it { should contain_service('puppet-dashboard-workers').with(
+        it { should contain_service('puppet_dashboard_workers').with(
           'ensure'      => 'running',
           'enable'      => true,
           'hasstatus'   => true,
           'hasrestart'  => true,
-          'require'     => [
-            'Package[rake]',
-            'Exec[puppetdashboard_dbmigrate]',
-            'File[puppet-dashboard-workers-init]',
-            'File[puppet-dashboard-defaults]'
-          ]
+          'subscribe'   => [
+            'Service[httpd]',
+            'File[puppet_dashboard_workers_init]',
+            'File[puppet_dashboard_defaults]'
+          ],
+          'require'     => 'Ruby::Rake[puppetdashboard_dbmigrate]'
         ) }
       end
       describe "when disabling the worker service" do
@@ -41,7 +41,7 @@ describe 'puppetdashboard::workers::debian', :type => :class do
             :enable_workers   => false
           }
         end
-        it { should contain_service('puppet-dashboard-workers').with(
+        it { should contain_service('puppet_dashboard_workers').with(
           'ensure'      => 'stopped',
           'enable'      => false
         ) }

@@ -38,8 +38,8 @@ describe 'puppetdashboard', :type => :class do
     'db_password'               => 'veryunsafeword',
     'cn_name'                   => 'dashboard',
     'ca_server'                 => 'puppet',
-    'inventory_server'          => 'puppet',
-    'file_bucket_server'        => 'puppet',
+    'inventory_server'          => nil,
+    'file_bucket_server'        => nil,
     'legacy_report_upload_url'  => true,
     'servername'                => 'test.example.org',
     'enable_workers'            => true,
@@ -72,8 +72,7 @@ describe 'puppetdashboard', :type => :class do
           'port'            => '80',
           'servername'      => 'test.example.org',
           'error_log_file'  => 'dashboard.test.example.org_error.log',
-          'access_log_file' => 'dashboard.test.example.org_access.log',
-          'before'          => 'Service[puppet-dashboard-workers]'
+          'access_log_file' => 'dashboard.test.example.org_access.log'
         ) }
         it { should contain_class('puppetdashboard::workers::debian').with(
           'enable_workers'    => true,
