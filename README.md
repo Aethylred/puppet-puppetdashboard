@@ -13,12 +13,23 @@ The purpose of this module is to install the [Puppet Dashboard](http://projects.
 The following Puppet snippet will do a default install of the Puppet Dashboard as the default site on port 80:
 
 ```puppet
+class{'ruby':
+    version         => '1.8.7',
+    latest_release  => true,
+  }
+class { 'ruby::dev': }
 class {'mysql::server':
   override_options => {
     'mysqld' => {
       'max_allowed_packet' => '32M',
     }
   }
+}
+class {'mysql::bindings':
+  ruby_enable               => true,
+  ruby_package_ensure       => 'latest',
+  client_dev                => true,
+  client_dev_package_ensure => 'latest',
 }
 class {'apache':
   default_vhost => false,
@@ -45,15 +56,15 @@ In all cases, these modules should be installed and be available on the Puppet M
 
 ### Required Puppet Module Dependencies
 * **apache**: The [Puppetlabs Apache Module](https://github.com/puppetlabs/puppetlabs-apache) is required for most classes in this module. This module is not required when calling the `puppetdashboard::db::mysql` class.
-* **mysql**: The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is required to set up the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `mysql` or `mysql2` database adapter (this is the default behaviour). This module can be used to set up the database on a remote server. This module is required with the `git` provider to install the development library dependencies.
-* **postgresql**: The [Puppetlabs PostgreSQL Module](https://forge.puppetlabs.com/puppetlabs/postgresql) is required to set up the `puppetdashboard::db::postgresql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `postgresql` database adapter. This module could be used to set up the database on a remote server.
+* **mysql** (>2.3.1 <3.0.0): The [Puppetlabs Mysql Module](https://forge.puppetlabs.com/puppetlabs/mysql) is required to set up the `puppetdashboard::db::mysql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `mysql` or `mysql2` database adapter (this is the default behaviour). This module can be used to set up the database on a remote server. This module is required with the `git` provider to install the development library dependencies.
+* **postgresql** (>=3.4.0 <5.0.0): The [Puppetlabs PostgreSQL Module](https://forge.puppetlabs.com/puppetlabs/postgresql) is required to set up the `puppetdashboard::db::postgresql` class is used, or if the `manage_db` parameter is `true` when calling the `puppetdashboard` class with the `postgresql` database adapter. This module could be used to set up the database on a remote server.
 * **stdlib**: The [Puppetlabs Standard Library Module](https://forge.puppetlabs.com/puppetlabs/stdlib)
-* **puppetlabs/ruby**: Currently this module requires a patched version of the [Puppetlabs Ruby Module](https://github.com/puppetlabs/puppetlabs-ruby) which can be found [here](https://github.com/Aethylred/puppetlabs-ruby/tree/rakebundle).
+* **puppetlabs/ruby**: Is required and is used to manage Ruby as well as rake and bundle tasks.
 
 ### Optional Puppet Module Dependencies
 These modules can make using the puppetdashboard module easier, and some are required for the git provider (check the git provider documentation for details) :
 * **puppetlabs/vcsrepo**: Required by the git provider.
-* **puppetlabs/apt**
+* **puppetlabs/apt**: To add package repositories if packages not available (e.g. Ruby 2.0.0 for Ubuntu 12.04)
 * **puppetlabs/nodejs**
 * **Aethylred/git**: Installs git.
 
@@ -291,6 +302,7 @@ Make sure the installed Ruby, Ruby development libraries, and Rubygems are all c
 * Secure access to Puppet Dashboard via HTTPS, ideally this should still allow read-only access via HTTP.
 * [Optimse and maintain the Puppet Dashboard Database](http://docs.puppetlabs.com/dashboard/manual/1.2/maintaining.html)
 * Beaker acceptance tests
+* Remove dependency on MySQL when PostgreSQL is used (and visa versa)
 
 ## Acknowledgements
 

@@ -16,9 +16,7 @@ class{'ruby':
     version         => '1.8.7',
     latest_release  => true,
   }
-class { 'ruby::dev':
-  require => Class['ruby'],
-}
+class { 'ruby::dev': }
 # gems has to be _reverted_ to 1.8.25
 exec{'gem update --system 1.8.25':
   path    => ['/usr/bin','/bin'],
@@ -30,6 +28,12 @@ class {'mysql::server':
       'max_allowed_packet' => '32M',
     }
   }
+}
+class {'mysql::bindings':
+  ruby_enable               => true,
+  ruby_package_ensure       => 'latest',
+  client_dev                => true,
+  client_dev_package_ensure => 'latest',
 }
 class {'apache':
   default_vhost => false,
