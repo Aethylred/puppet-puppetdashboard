@@ -8,7 +8,7 @@ class puppetdashboard::site::webrick (
     path        => '/etc/init.d/puppet-dashboard',
     mode        => '0755',
     source      => 'puppet:///modules/puppetdashboard/puppet-dashboard',
-    require     => File['puppet-dashboard-defaults'],
+    require     => File['puppet_dashboard_defaults'],
   }
 
   if $disable_webrick {
@@ -19,7 +19,7 @@ class puppetdashboard::site::webrick (
       hasrestart  => true,
       subscribe   => [
         File['puppet-dashboard-webrick-init'],
-        File['puppet-dashboard-defaults'],
+        File['puppet_dashboard_defaults'],
       ],
       require     => Ruby::Rake['puppetdashboard_dbmigrate'],
     }
@@ -31,7 +31,7 @@ class puppetdashboard::site::webrick (
       hasrestart  => true,
       subscribe   => [
         File['puppet-dashboard-webrick-init'],
-        File['puppet-dashboard-defaults'],
+        File['puppet_dashboard_defaults'],
       ],
       require     => Ruby::Rake['puppetdashboard_dbmigrate'],
     }

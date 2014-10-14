@@ -1,6 +1,6 @@
 {
   "name": "Aethylred-puppetdashboard",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Aaron Hicks <aethylred@gmail.com>",
   "license": "Licensed under GPL3",
   "summary": "A Puppet module to manage the Puppet Dashboard",

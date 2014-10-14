@@ -42,7 +42,7 @@ describe 'puppetdashboard::config', :type => :class do
           'mode'    => '0640',
           'require' => 'File[puppet_dashboard_database]'
         ) }
-        it { should contain_file('puppet-dashboard-defaults').with(
+        it { should contain_file('puppet_dashboard_defaults').with(
           'ensure'      => 'file',
           'path'        => '/etc/default/puppet-dashboard',
           'mode'        => '0644',
@@ -62,14 +62,14 @@ describe 'puppetdashboard::config', :type => :class do
         it { should_not contain_file('puppet_dashboard_settings').with_content(/^disable_legacy_report_upload_url: true$/)}
         it { should contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: false$/)}
         it { should_not contain_file('puppet_dashboard_settings').with_content(/^enable_read_only_mode: true$/)}
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^WORKERS_START=yes$/) }
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^WEBRICK_START=no$/) }
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_HOME=\/usr\/share\/puppet-dashboard$/) }
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_USER=www-data$/) }
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_RUBY=\/usr\/bin\/ruby$/) }
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_IFACE=test.example.org$/) }
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_PORT=80$/) }
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^NUM_DELAYED_JOB_WORKERS=2$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^WORKERS_START=yes$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^WEBRICK_START=no$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_HOME=\/usr\/share\/puppet-dashboard$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_USER=www-data$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_RUBY=\/usr\/bin\/ruby$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_IFACE=test.example.org$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_PORT=80$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^NUM_DELAYED_JOB_WORKERS=2$/) }
       end
       describe 'when using a custom install directory' do
         let :params do
@@ -80,7 +80,7 @@ describe 'puppetdashboard::config', :type => :class do
         end
         it { should contain_file('/opt/dashboard/config/settings.yml')}
         it { should contain_file('/opt/dashboard/config/database.yml')}
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_HOME=\/opt\/dashboard$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_HOME=\/opt\/dashboard$/) }
       end
       describe 'when given content for settings.yml' do
         let :params do
@@ -226,7 +226,7 @@ describe 'puppetdashboard::config', :type => :class do
             :number_of_workers   => '24'
           }
         end
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^^NUM_DELAYED_JOB_WORKERS=24$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^^NUM_DELAYED_JOB_WORKERS=24$/) }
       end
       describe "when given an apache user" do
         let :params do
@@ -234,7 +234,7 @@ describe 'puppetdashboard::config', :type => :class do
             :apache_user   => 'nobody'
           }
         end
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_USER=nobody$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_USER=nobody$/) }
       end
       describe "when given a Ruby binary path" do
         let :params do
@@ -242,7 +242,7 @@ describe 'puppetdashboard::config', :type => :class do
             :ruby_bin   => '/bin/ruby2'
           }
         end
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_RUBY=\/bin\/ruby2$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_RUBY=\/bin\/ruby2$/) }
       end
       describe "when given a servername" do
         let :params do
@@ -250,7 +250,7 @@ describe 'puppetdashboard::config', :type => :class do
             :servername   => '127.0.0.1'
           }
         end
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^DASHBOARD_IFACE=127\.0\.0\.1$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^DASHBOARD_IFACE=127\.0\.0\.1$/) }
       end
       describe "when enable workers is false" do
         let :params do
@@ -258,7 +258,7 @@ describe 'puppetdashboard::config', :type => :class do
             :enable_workers   => false
           }
         end
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^WORKERS_START=no$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^WORKERS_START=no$/) }
       end
       describe "when disable webrick is false" do
         let :params do
@@ -266,7 +266,7 @@ describe 'puppetdashboard::config', :type => :class do
             :disable_webrick   => false
           }
         end
-        it { should contain_file('puppet-dashboard-defaults').with_content(/^WEBRICK_START=yes$/) }
+        it { should contain_file('puppet_dashboard_defaults').with_content(/^WEBRICK_START=yes$/) }
       end
     end
   end

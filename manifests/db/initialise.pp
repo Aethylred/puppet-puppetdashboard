@@ -31,7 +31,7 @@ class puppetdashboard::db::initialise (
       File[
         'puppet_dashboard_database',
         'puppet_dashboard_settings',
-        'puppet-dashboard-defaults'
+        'puppet_dashboard_defaults'
       ],
     ],
   }
