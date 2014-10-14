@@ -3,9 +3,9 @@ bundler_args: --without development
 # before_install:
 #   - sudo apt-get install -qq augeas-tools augeas-lenses libaugeas-dev libaugeas-ruby
 before_script:
-  - bundle exec rake validate_puppet_syntax
   - bundle exec rake validate_ruby_syntax
   - bundle exec rake check_line_endings
+  - bundle exec rake syntax
   - bundle exec rake lint
 script:
   - bundle exec rake spec SPEC_OPTS='--format documentation'
@@ -33,6 +33,9 @@ matrix:
     - rvm: 1.8.7
     - env: PUPPET_GEM_VERSION="~> 3.0.0"
     - env: PUPPET_GEM_VERSION="~> 3.1.0"
+    - env: PUPPET_GEM_VERSION="~> 3.5.0" STRICT_VARIABLES="yes"
+    - env: PUPPET_GEM_VERSION="~> 3.6.0" STRICT_VARIABLES="yes"
+    - env: PUPPET_GEM_VERSION="~> 3.7.0" STRICT_VARIABLES="yes"
   exclude:
     - rvm: 2.0.0
       env: PUPPET_GEM_VERSION="~> 3.0.0"
