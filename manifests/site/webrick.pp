@@ -4,36 +4,36 @@ class puppetdashboard::site::webrick (
 ) inherits puppetdashboard::params {
 
   file { 'puppet-dashboard-webrick-init':
-    ensure      => 'file',
-    path        => '/etc/init.d/puppet-dashboard',
-    mode        => '0755',
-    source      => 'puppet:///modules/puppetdashboard/puppet-dashboard',
-    require     => File['puppet_dashboard_defaults'],
+    ensure  => 'file',
+    path    => '/etc/init.d/puppet-dashboard',
+    mode    => '0755',
+    source  => 'puppet:///modules/puppetdashboard/puppet-dashboard',
+    require => File['puppet_dashboard_defaults'],
   }
 
   if $disable_webrick {
     service { 'puppet-dashboard':
-      ensure      => 'stopped',
-      enable      => false,
-      hasstatus   => true,
-      hasrestart  => true,
-      subscribe   => [
+      ensure     => 'stopped',
+      enable     => false,
+      hasstatus  => true,
+      hasrestart => true,
+      subscribe  => [
         File['puppet-dashboard-webrick-init'],
         File['puppet_dashboard_defaults'],
       ],
-      require     => Ruby::Rake['puppetdashboard_dbmigrate'],
+      require    => Ruby::Rake['puppetdashboard_dbmigrate'],
     }
   } else {
     service { 'puppet-dashboard':
-      ensure      => 'running',
-      enable      => true,
-      hasstatus   => true,
-      hasrestart  => true,
-      subscribe   => [
+      ensure     => 'running',
+      enable     => true,
+      hasstatus  => true,
+      hasrestart => true,
+      subscribe  => [
         File['puppet-dashboard-webrick-init'],
         File['puppet_dashboard_defaults'],
       ],
-      require     => Ruby::Rake['puppetdashboard_dbmigrate'],
+      require    => Ruby::Rake['puppetdashboard_dbmigrate'],
     }
   }
 

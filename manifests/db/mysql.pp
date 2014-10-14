@@ -35,11 +35,11 @@ class puppetdashboard::db::mysql (
   }
 
   mysql_grant { "${real_db_user}/${db_name}.*":
-    ensure      => 'present',
-    options     => ['GRANT'],
-    privileges  => ['ALL'],
-    table       => "${db_name}.*",
-    user        => $real_db_user,
+    ensure     => 'present',
+    options    => ['GRANT'],
+    privileges => ['ALL'],
+    table      => "${db_name}.*",
+    user       => $real_db_user,
   }
 
   # IMPROVEMENT: A future option to consider is repimplemeting to create the database as an exported resource to be collected on a remote MySQL server. Would require the dashboard to support a remote server...

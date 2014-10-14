@@ -19,7 +19,8 @@ PuppetLint::RakeTask.new :lint do |config|
   config.disable_checks = [
     '80chars',
     'class_parameter_defaults',
-    'class_inherits_from_params_class'
+    'class_inherits_from_params_class',
+    'autoloader_layout'
   ]
 
   # Should the task fail if there were any warnings, defaults to false

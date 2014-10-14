@@ -8,11 +8,10 @@ class puppetdashboard::install::git (
 ) inherits puppetdashboard::params {
 
   vcsrepo { $install_dir:
-    ensure    => 'present',
-    provider  => 'git',
-#    user      => $user,
-    source    => $repo_url,
-    revision  => $repo_ref,
+    ensure   => 'present',
+    provider => 'git',
+    source   => $repo_url,
+    revision => $repo_ref,
   }
 
   file { 'dashboard_install_dir':
@@ -30,16 +29,14 @@ class puppetdashboard::install::git (
   }
 
   @ruby::bundle {'puppet_dashboard_install':
-    command     => 'install',
-    option      => '--deployment',
-    rails_env   => 'production',
-    cwd         => $install_dir,
-#    user        => $user,
-#    environment => ['HOME=/var/www'],
-    tries       => 2,
-    timeout     => 900,
-    tag         => 'post_config',
-    require     => [
+    command   => 'install',
+    option    => '--deployment',
+    rails_env => 'production',
+    cwd       => $install_dir,
+    tries     => 2,
+    timeout   => 900,
+    tag       => 'post_config',
+    require   => [
       File['dashboard_install_dir'],
       Vcsrepo[$install_dir],
       Package[$puppetdashboard::params::gem_dependencies]
@@ -47,16 +44,14 @@ class puppetdashboard::install::git (
   }
 
   @ruby::rake {'puppet_dashboard_precompile_assets':
-    task        => 'assets:precompile',
-    bundle      => true,
-    rails_env   => 'production',
-    creates     => "${install_dir}/tmp/cache",
-    cwd         => $install_dir,
-#    user        => $user,
-#    environment => ['HOME=/var/www'],
-    require     => Ruby::Bundle['puppet_dashboard_install'],
-    timeout     => 900,
-    tag         => 'post_config',
+    task      => 'assets:precompile',
+    bundle    => true,
+    rails_env => 'production',
+    creates   => "${install_dir}/tmp/cache",
+    cwd       => $install_dir,
+    require   => Ruby::Bundle['puppet_dashboard_install'],
+    timeout   => 900,
+    tag       => 'post_config',
   }
 
 }

@@ -31,9 +31,9 @@ class puppetdashboard::db::postgresql (
   }
 
   postgresql::server::database { $db_name:
-    owner     => $db_user,
-    encoding  => 'utf8',
-    require   => Postgresql::Server::Role[$db_user],
+    owner    => $db_user,
+    encoding => 'utf8',
+    require  => Postgresql::Server::Role[$db_user],
   }
 
   postgresql::server::database_grant {'dashboard_db_grant':

@@ -72,40 +72,40 @@ class puppetdashboard(
     default: {
       # Do package install
       class { 'puppetdashboard::install::package':
-        ensure  => $ensure,
-        before  => Class['puppetdashboard::config'],
+        ensure => $ensure,
+        before => Class['puppetdashboard::config'],
       }
     }
   }
 
   class{'puppetdashboard::config':
-    install_dir               => $install_dir,
-    conf_dir                  => $conf_dir,
-    config_settings_source    => $config_settings_source,
-    config_database_source    => $config_database_source,
-    config_settings_content   => $config_settings_content,
-    config_database_content   => $config_database_content,
-    db_host                   => $db_host,
-    db_user                   => $db_user,
-    db_name                   => $db_name,
-    db_adapter                => $db_adapter,
-    db_password               => $db_password,
-    cn_name                   => $cn_name,
-    ca_server                 => $ca_server,
-    inventory_server          => $inventory_server,
-    file_bucket_server        => $file_bucket_server,
-    inventory_server_port     => $inventory_server_port,
-    file_bucket_server_port   => $file_bucket_server_port,
-    legacy_report_upload_url  => $legacy_report_upload_url,
-    read_only_mode            => $read_only_mode,
-    secret_token              => $secret_token,
-    servername                => $servername,
-    enable_workers            => $enable_workers,
-    disable_webrick           => $disable_webrick,
-    apache_user               => $apache_user,
-    port                      => $port,
-    ruby_bin                  => $::puppetdashboard::ruby_bin,
-    number_of_workers         => $number_of_workers,
+    install_dir              => $install_dir,
+    conf_dir                 => $conf_dir,
+    config_settings_source   => $config_settings_source,
+    config_database_source   => $config_database_source,
+    config_settings_content  => $config_settings_content,
+    config_database_content  => $config_database_content,
+    db_host                  => $db_host,
+    db_user                  => $db_user,
+    db_name                  => $db_name,
+    db_adapter               => $db_adapter,
+    db_password              => $db_password,
+    cn_name                  => $cn_name,
+    ca_server                => $ca_server,
+    inventory_server         => $inventory_server,
+    file_bucket_server       => $file_bucket_server,
+    inventory_server_port    => $inventory_server_port,
+    file_bucket_server_port  => $file_bucket_server_port,
+    legacy_report_upload_url => $legacy_report_upload_url,
+    read_only_mode           => $read_only_mode,
+    secret_token             => $secret_token,
+    servername               => $servername,
+    enable_workers           => $enable_workers,
+    disable_webrick          => $disable_webrick,
+    apache_user              => $apache_user,
+    port                     => $port,
+    ruby_bin                 => $::puppetdashboard::ruby_bin,
+    number_of_workers        => $number_of_workers,
   }
 
   Exec <| tag == 'post_config' |> -> Anchor['post_config_exec']
@@ -114,15 +114,15 @@ class puppetdashboard(
   anchor { 'post_config_exec': }
 
   class { 'puppetdashboard::db':
-    manage_db       => $manage_db,
-    db_user         => $db_user,
-    db_user_host    => $db_user_host,
-    db_name         => $db_name,
-    db_adapter      => $db_adapter,
-    db_password     => $db_password,
-    db_passwd_hash  => $db_passwd_hash,
-    install_dir     => $install_dir,
-    require         => [
+    manage_db      => $manage_db,
+    db_user        => $db_user,
+    db_user_host   => $db_user_host,
+    db_name        => $db_name,
+    db_adapter     => $db_adapter,
+    db_password    => $db_password,
+    db_passwd_hash => $db_passwd_hash,
+    install_dir    => $install_dir,
+    require        => [
       Anchor['post_config_exec'],
       Class['puppetdashboard::config'],
     ]
@@ -149,8 +149,8 @@ class puppetdashboard(
   }
 
   class { 'puppetdashboard::site::webrick':
-    disable_webrick   => $disable_webrick,
-    require           => [
+    disable_webrick => $disable_webrick,
+    require         => [
       Class['puppetdashboard::config'],
       Anchor['post_config_exec'],
       File[
@@ -184,8 +184,8 @@ class puppetdashboard(
   }
 
   class { 'puppetdashboard::workers::debian':
-    enable_workers    => $enable_workers,
-    require           => [
+    enable_workers => $enable_workers,
+    require        => [
       Class[
         'puppetdashboard::config',
         'puppetdashboard::db'

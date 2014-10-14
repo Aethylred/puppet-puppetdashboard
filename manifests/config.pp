@@ -47,12 +47,12 @@ class puppetdashboard::config (
     }
   } elsif $config_settings_source {
     file { 'puppet_dashboard_settings':
-      ensure  => file,
-      path    => '/etc/puppet-dashboard/settings.yml',
-      owner   => 'root',
-      group   => $apache_group,
-      mode    => '0640',
-      source  => $config_settings_source,
+      ensure => file,
+      path   => '/etc/puppet-dashboard/settings.yml',
+      owner  => 'root',
+      group  => $apache_group,
+      mode   => '0640',
+      source => $config_settings_source,
     }
   } else {
     file { 'puppet_dashboard_settings':
@@ -76,12 +76,12 @@ class puppetdashboard::config (
     }
   } elsif $config_database_source {
     file { 'puppet_dashboard_database':
-      ensure  => file,
-      path    => '/etc/puppet-dashboard/database.yml',
-      owner   => 'root',
-      group   => $apache_group,
-      mode    => '0640',
-      source  => $config_database_source,
+      ensure => file,
+      path   => '/etc/puppet-dashboard/database.yml',
+      owner  => 'root',
+      group  => $apache_group,
+      mode   => '0640',
+      source => $config_database_source,
     }
   } else {
     file { 'puppet_dashboard_database':
@@ -109,11 +109,11 @@ class puppetdashboard::config (
   }
 
     file { 'puppet_dashboard_defaults':
-    ensure      => 'file',
-    path        => '/etc/default/puppet-dashboard',
-    mode        => '0644',
-    content     => template('puppetdashboard/puppet-dashboard.erb'),
-    notify      => Service['puppet-dashboard','puppet_dashboard_workers'],
+    ensure  => 'file',
+    path    => '/etc/default/puppet-dashboard',
+    mode    => '0644',
+    content => template('puppetdashboard/puppet-dashboard.erb'),
+    notify  => Service['puppet-dashboard','puppet_dashboard_workers'],
   }
 
 }

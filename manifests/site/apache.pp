@@ -13,7 +13,8 @@ class puppetdashboard::site::apache (
     port            => $port,
     docroot         => $docroot,
     directories     => [
-      { path              => $docroot,
+      {
+        path              => $docroot,
         passenger_enabled => 'on',
       },
     ],

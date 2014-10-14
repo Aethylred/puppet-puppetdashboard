@@ -15,22 +15,22 @@ class puppetdashboard::db (
     case $db_adapter {
       'mysql','mysql2':{
         class { 'puppetdashboard::db::mysql':
-          db_user         => $db_user,
-          db_user_host    => $db_user_host,
-          db_name         => $db_name,
-          db_password     => $db_password,
-          db_passwd_hash  => $db_passwd_hash,
-          before          => Anchor['post_db_creation'],
+          db_user        => $db_user,
+          db_user_host   => $db_user_host,
+          db_name        => $db_name,
+          db_password    => $db_password,
+          db_passwd_hash => $db_passwd_hash,
+          before         => Anchor['post_db_creation'],
         }
       }
       'postgresql':{
         class { 'puppetdashboard::db::postgresql':
-          db_user         => $db_user,
-          db_user_host    => $db_user_host,
-          db_name         => $db_name,
-          db_password     => $db_password,
-          db_passwd_hash  => $db_passwd_hash,
-          before          => Anchor['post_db_creation'],
+          db_user        => $db_user,
+          db_user_host   => $db_user_host,
+          db_name        => $db_name,
+          db_password    => $db_password,
+          db_passwd_hash => $db_passwd_hash,
+          before         => Anchor['post_db_creation'],
         }
       }
       default:{
