@@ -1,6 +1,6 @@
 {
   "name": "Aethylred-puppetdashboard",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Aaron Hicks <aethylred@gmail.com>",
   "license": "Licensed under GPL3",
   "summary": "A Puppet module to manage the Puppet Dashboard",
@@ -10,14 +10,20 @@
   "tags": ["puppet", "dashboard"],
   "operatingsystem_support": [
     {
-    "operatingsystem":"RedHat",
-    "operatingsystemrelease":[ "5.0", "6.0" ]
-    },
-    {
     "operatingsystem": "Ubuntu",
     "operatingsystemrelease": [ "12.04", "14.04" ]
     }
-   ],
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
   "dependencies": [
     { "name": "puppetlabs/stdlib", "version_requirement": ">=3.2.0 <5.0.0" },
     { "name": "puppetlabs/apache", "version_requirement": ">=1.0.0 <2.0.0" },

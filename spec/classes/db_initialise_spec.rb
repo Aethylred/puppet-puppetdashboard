@@ -21,7 +21,8 @@ describe 'puppetdashboard::db::initialise', :type => :class do
           'require'     => [
             'File[puppet_dashboard_database]',
             'File[puppet_dashboard_settings]',
-            'File[puppet_dashboard_defaults]'
+            'File[puppet_dashboard_defaults]',
+            'Class[Ruby]'
           ]
         ) }
       end
@@ -54,7 +55,8 @@ describe 'puppetdashboard::db::initialise', :type => :class do
           'require'     => [
             'File[puppet_dashboard_database]',
             'File[puppet_dashboard_settings]',
-            'File[puppet_dashboard_defaults]'
+            'File[puppet_dashboard_defaults]',
+            'Class[Ruby]'
           ]
         ) }
     end

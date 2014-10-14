@@ -43,7 +43,8 @@ describe 'puppetdashboard::install::git', :type => :class do
           'Package[libxml2-dev]',
           'Package[libxslt1-dev]',
           'Package[libstdc++6]',
-          'Package[openssl]'
+          'Package[openssl]',
+          'Class[Ruby]'
         ]
       ) }
       it { should contain_ruby__rake('puppet_dashboard_precompile_assets').with(
@@ -52,7 +53,10 @@ describe 'puppetdashboard::install::git', :type => :class do
         'rails_env'   => 'production',
         'creates'     => '/usr/share/puppet-dashboard/tmp/cache',
         'cwd'         => '/usr/share/puppet-dashboard',
-        'require'     => 'Ruby::Bundle[puppet_dashboard_install]',
+        'require'     => [
+          'Ruby::Bundle[puppet_dashboard_install]',
+          'Class[Ruby]'
+        ],
         'timeout'     => 900,
         'tag'         => 'post_config'
       ) }
@@ -86,7 +90,8 @@ describe 'puppetdashboard::install::git', :type => :class do
           'Package[libxml2-dev]',
           'Package[libxslt1-dev]',
           'Package[libstdc++6]',
-          'Package[openssl]'
+          'Package[openssl]',
+          'Class[Ruby]'
         ]
       ) }
       it { should contain_ruby__rake('puppet_dashboard_precompile_assets').with(
@@ -95,7 +100,10 @@ describe 'puppetdashboard::install::git', :type => :class do
         'rails_env'   => 'production',
         'creates'     => '/opt/dashboard/tmp/cache',
         'cwd'         => '/opt/dashboard',
-        'require'     => 'Ruby::Bundle[puppet_dashboard_install]',
+        'require'     => [
+          'Ruby::Bundle[puppet_dashboard_install]',
+          'Class[Ruby]'
+        ],
         'timeout'     => 900,
         'tag'         => 'post_config'
       ) }
