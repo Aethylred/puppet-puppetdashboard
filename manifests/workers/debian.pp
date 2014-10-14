@@ -5,15 +5,16 @@ class puppetdashboard::workers::debian (
 
   file { 'puppet_dashboard_workers_init':
     ensure      => 'file',
-    path        => '/etc/init.d/puppet_dashboard_workers',
+    path        => '/etc/init.d/puppet-dashboard-workers',
     mode        => '0755',
-    source      => 'puppet:///modules/puppetdashboard/puppet_dashboard_workers',
+    source      => 'puppet:///modules/puppetdashboard/puppet-dashboard-workers',
     require     => File['puppet_dashboard_defaults'],
   }
 
   if $enable_workers {
     service { 'puppet_dashboard_workers':
       ensure      => 'running',
+      name        => 'puppet-dashboard-workers',
       enable      => true,
       hasstatus   => true,
       hasrestart  => true,
@@ -27,6 +28,7 @@ class puppetdashboard::workers::debian (
   } else {
     service { 'puppet_dashboard_workers':
       ensure      => 'stopped',
+      name        => 'puppet-dashboard-workers',
       enable      => false,
       hasstatus   => true,
       hasrestart  => true,

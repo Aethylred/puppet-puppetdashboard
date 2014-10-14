@@ -17,13 +17,14 @@ describe 'puppetdashboard::workers::debian', :type => :class do
         it { should contain_class('puppetdashboard::params') }
         it { should contain_file('puppet_dashboard_workers_init').with(
           'ensure'      => 'file',
-          'path'        => '/etc/init.d/puppet_dashboard_workers',
+          'path'        => '/etc/init.d/puppet-dashboard-workers',
           'mode'        => '0755',
-          'source'      => 'puppet:///modules/puppetdashboard/puppet_dashboard_workers'
+          'source'      => 'puppet:///modules/puppetdashboard/puppet-dashboard-workers'
         ) }
 
         it { should contain_service('puppet_dashboard_workers').with(
           'ensure'      => 'running',
+          'name'        => 'puppet-dashboard-workers',
           'enable'      => true,
           'hasstatus'   => true,
           'hasrestart'  => true,
