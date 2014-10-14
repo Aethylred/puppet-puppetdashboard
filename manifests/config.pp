@@ -108,7 +108,7 @@ class puppetdashboard::config (
     require => File['puppet_dashboard_database'],
   }
 
-    file { 'puppet-dashboard-defaults':
+    file { 'puppet_dashboard_defaults':
     ensure      => 'file',
     path        => '/etc/default/puppet-dashboard',
     mode        => '0644',
