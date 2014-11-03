@@ -1,11 +1,24 @@
 # This class installs the puppet dashboard using a git repository
 class puppetdashboard::install::git (
-  $ensure       = installed,
-  $user         = $puppetdashboard::params::apache_user,
-  $install_dir  = $puppetdashboard::params::install_dir,
-  $repo_url     = $puppetdashboard::params::repo_url,
-  $repo_ref     = $puppetdashboard::params::repo_ref
+  $ensure      = installed,
+  $user        = $::puppetdashboard::params::apache_user,
+  $install_dir = $::puppetdashboard::params::install_dir,
+  $repo_url    = $::puppetdashboard::params::repo_url,
+  $repo_ref    = $::puppetdashboard::params::repo_ref,
+  $db_adapter  = $::puppetdashboard::db_adapter
 ) inherits puppetdashboard::params {
+
+  case $db_adapter{
+    'postgresql': {
+      $without_str = '--without test development mysql'
+    }
+    'mysql', 'mysql2': {
+      $without_str = '--without test development postgresql'
+    }
+    default:{
+      $without_str = '--without test development'
+    }
+  }
 
   vcsrepo { $install_dir:
     ensure   => 'present',
@@ -30,7 +43,7 @@ class puppetdashboard::install::git (
 
   @ruby::bundle {'puppet_dashboard_install':
     command   => 'install',
-    option    => '--deployment',
+    option    => "--deployment ${without_str}",
     rails_env => 'production',
     cwd       => $install_dir,
     tries     => 2,

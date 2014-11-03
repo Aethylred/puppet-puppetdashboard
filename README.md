@@ -100,6 +100,12 @@ class {'mysql::server':
     }
   }
 }
+class {'mysql::bindings':
+  ruby_enable               => true,
+  ruby_package_ensure       => 'latest',
+  client_dev                => true,
+  client_dev_package_ensure => 'latest',
+}
 ```
 
 #### PostgreSQL Database Server Configuration
@@ -113,6 +119,9 @@ Using the [Puppetlabs PostgreSQL Module](https://forge.puppetlabs.com/puppetlabs
 ```puppet
 class {'postgresql::server':
   listen_addresses => 'localhost',
+}
+class {'postgresql::lib::devel':
+  link_pg_config => false,
 }
 ```
 
@@ -132,8 +141,8 @@ Some classes have been created as sub-classes to simplify the addition of future
 * **manage_vhost**: If this is `true` then an Apache virtual host will be defined using the Puppetlabs Apache Module. The default value is `true`.
 * **manage_db**: If this is `true` then a database will be created according to the adapter defined with `db_adapter` and initialised with the Puppet Dashboard database schema. The default value is `true`.
 * **db_host**: This value sets the host name of a remote database server. By default this is undefined, and will result in a local database being used.
-* **db_name**: This value is used as the name of the Puppet Dashboard MySQL database. The default value is `puppetdashboard`.
-* **db_user**: This value is used as the name of the Puppet Dashboard MySQL database user. The default value is `puppetdashboard`.
+* **db_name**: This value is used as the name of the Puppet Dashboard database. The default value is `puppetdashboard`.
+* **db_user**: This value is used as the name of the Puppet Dashboard database user. The default value is `puppetdashboard`.
 * **db_user_host**: This value is used to inform the database server from where a the database user will be connecting from, and set up access rules according to the database adapter set with `db_adapter`. By default this is undefined, which will result in `localhost` being used.
 * **db_adapter**: The is used to specify which database adapter to be used by the Puppet Dashboard application. Current valid adapters are `mysql`,`mysql2`, and `postgresql`. Note that the `mysql` adapter is only supported by version 1.2.23 (installed by the `package` provider), and `mysql2` and `postgresql`  are supported by later versions (installed by the `git` provider). The default is `mysql`.
 * **db_password**: This value is used to set the password of the database user. It is strongly recommended that passwords are not included in a Puppet manifest in clear text, consider storing them separately in Hiera. The default value is `veryunsafeword`.
@@ -288,6 +297,12 @@ class {'mysql::server':
     }
   }
 }
+class {'mysql::bindings':
+  ruby_enable               => true,
+  ruby_package_ensure       => 'latest',
+  client_dev                => true,
+  client_dev_package_ensure => 'latest',
+}
 class { 'puppetdashboard':
   manage_vhost    => false,
   disable_webrick => false,
@@ -302,7 +317,6 @@ Make sure the installed Ruby, Ruby development libraries, and Rubygems are all c
 * Secure access to Puppet Dashboard via HTTPS, ideally this should still allow read-only access via HTTP.
 * [Optimse and maintain the Puppet Dashboard Database](http://docs.puppetlabs.com/dashboard/manual/1.2/maintaining.html)
 * Beaker acceptance tests
-* Remove dependency on MySQL when PostgreSQL is used (and visa versa)
 
 ## Acknowledgements
 
@@ -313,18 +327,6 @@ This module is derived from the [puppet-blank](https://github.com/Aethylred/pupp
 This module has been developed for the use with Open Source Puppet (Apache 2.0 license) for automating server & service deployment.
 
 * http://puppetlabs.com/puppet/puppet-open-source/
-
-### rspec-puppet-augeas
-
-This module includes the [Travis](https://travis-ci.org) configuration to use [`rspec-puppet-augeas`](https://github.com/domcleal/rspec-puppet-augeas) to test and verify changes made to files using the [`augeas` resource](http://docs.puppetlabs.com/references/latest/type.html#augeas) available in Puppet. Check the `rspec-puppet-augeas` [documentation](https://github.com/domcleal/rspec-puppet-augeas/blob/master/README.md) for usage.
-
-This will require a copy of the original input files to `spec/fixtures/augeas` using the same filesystem layout that the resource expects:
-
-    $ tree spec/fixtures/augeas/
-    spec/fixtures/augeas/
-    `-- etc
-        `-- ssh
-            `-- sshd_config
 
 ## Gnu General Public License
 

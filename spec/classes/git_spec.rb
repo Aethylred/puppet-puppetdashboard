@@ -28,7 +28,7 @@ describe 'puppetdashboard::install::git', :type => :class do
       ) }
       it { should contain_ruby__bundle('puppet_dashboard_install').with(
         'command'     => 'install',
-        'option'      => '--deployment',
+        'option'      => '--deployment --without test development',
         'rails_env'   => 'production',
         'cwd'         => '/usr/share/puppet-dashboard',
         'tries'       => 2,
@@ -38,11 +38,7 @@ describe 'puppetdashboard::install::git', :type => :class do
           'File[dashboard_install_dir]',
           'Vcsrepo[/usr/share/puppet-dashboard]',
           'Package[libpq-dev]',
-          'Package[libsqlite3-dev]',
           'Package[passenger-common1.9.1]',
-          'Package[libxml2-dev]',
-          'Package[libxslt1-dev]',
-          'Package[libstdc++6]',
           'Package[openssl]',
           'Class[Ruby]'
         ]
@@ -75,7 +71,7 @@ describe 'puppetdashboard::install::git', :type => :class do
       ) }
       it { should contain_ruby__bundle('puppet_dashboard_install').with(
         'command'     => 'install',
-        'option'      => '--deployment',
+        'option'      => '--deployment --without test development',
         'rails_env'   => 'production',
         'cwd'         => '/opt/dashboard',
         'tries'       => 2,
@@ -85,11 +81,7 @@ describe 'puppetdashboard::install::git', :type => :class do
           'File[dashboard_install_dir]',
           'Vcsrepo[/opt/dashboard]',
           'Package[libpq-dev]',
-          'Package[libsqlite3-dev]',
           'Package[passenger-common1.9.1]',
-          'Package[libxml2-dev]',
-          'Package[libxslt1-dev]',
-          'Package[libstdc++6]',
           'Package[openssl]',
           'Class[Ruby]'
         ]
@@ -120,6 +112,36 @@ describe 'puppetdashboard::install::git', :type => :class do
         'provider'  => 'git',
         'source'    => 'git@example.org/dashboard.git',
         'revision'  => 'master'
+      ) }
+    end
+    describe 'when using a PostgreSQL database' do
+      let :params do
+        {
+          :db_adapter => 'postgresql'
+        }
+      end
+      it { should contain_ruby__bundle('puppet_dashboard_install').with(
+        'option'      => '--deployment --without test development mysql',
+      ) }
+    end
+    describe 'when using a MySQL (mysql adapter) database' do
+      let :params do
+        {
+          :db_adapter => 'mysql'
+        }
+      end
+      it { should contain_ruby__bundle('puppet_dashboard_install').with(
+        'option'      => '--deployment --without test development postgresql',
+      ) }
+    end
+    describe 'when using a MySQL (mysql2 adapter) database' do
+      let :params do
+        {
+          :db_adapter => 'mysql2'
+        }
+      end
+      it { should contain_ruby__bundle('puppet_dashboard_install').with(
+        'option'      => '--deployment --without test development postgresql',
       ) }
     end
   end

@@ -1,18 +1,16 @@
 # This manifests only works for Ubuntu 14.04
-Apt::Ppa['ppa:brightbox/ruby-ng'] ->
 Class['ruby'] ->
 Class['ruby::dev'] ->
-Class['mysql::bindings','apache::mod::passenger'] ->
+Class['apache::mod::passenger'] ->
 Class['puppetdashboard']
 
 Class['git','nodejs'] ->
 Class['puppetdashboard']
 
 #
-include apt
-apt::ppa{ 'ppa:brightbox/ruby-ng': }
 include nodejs
 include git
+
 # Using a ruby module from: https://github.com/Aethylred/puppetlabs-ruby
 class{'ruby':
     version         => '1.9.1',
@@ -20,15 +18,14 @@ class{'ruby':
     latest_release  => true,
   }
 class { 'ruby::dev': }
+
 class {'postgresql::server':
   listen_addresses => 'localhost',
 }
-class {'mysql::bindings':
-  ruby_enable               => true,
-  ruby_package_ensure       => 'latest',
-  client_dev                => true,
-  client_dev_package_ensure => 'latest',
+class {'postgresql::lib::devel':
+  link_pg_config => false,
 }
+
 class {'apache':
   default_vhost => false,
 }
@@ -45,12 +42,8 @@ class { 'apache::mod::passenger':
 #   ensure  => 'latest',
 #   require => Apt::Ppa['ppa:brightbox/ruby-ng'],
 # }
+
 # dependent libraries for gems
-package{'libpq-dev': ensure => 'latest'}
-package{'libsqlite3-dev': ensure => 'latest'}
-package{'libxml2-dev': ensure => 'latest'}
-package{'libxslt1-dev': ensure => 'latest'}
-package{'libstdc++6': ensure => 'latest'}
 package{'openssl': ensure => 'latest'}
 
 # Finally install the dashboard

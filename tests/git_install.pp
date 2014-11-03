@@ -54,11 +54,6 @@ package{'passenger-common1.9.1':
   require => Apt::Ppa['ppa:brightbox/ruby-ng'],
 }
 # dependent libraries for gems
-package{'libpq-dev': ensure => 'latest'}
-package{'libsqlite3-dev': ensure => 'latest'}
-package{'libxml2-dev': ensure => 'latest'}
-package{'libxslt1-dev': ensure => 'latest'}
-package{'libstdc++6': ensure => 'latest'}
 package{'openssl': ensure => 'latest'}
 
 # Finally install the dashboard

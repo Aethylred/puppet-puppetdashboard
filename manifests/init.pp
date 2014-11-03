@@ -66,6 +66,7 @@ class puppetdashboard(
         user        => $apache_user,
         repo_url    => $repo_url,
         repo_ref    => $repo_ref,
+        db_adapter  => $db_adapter,
         before      => Class['puppetdashboard::config'],
       }
     }
