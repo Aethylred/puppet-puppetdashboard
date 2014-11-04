@@ -121,7 +121,7 @@ describe 'puppetdashboard::install::git', :type => :class do
         }
       end
       it { should contain_ruby__bundle('puppet_dashboard_install').with(
-        'option'      => '--deployment --without test development mysql',
+        'option'      => '--deployment --without test development mysql'
       ) }
     end
     describe 'when using a MySQL (mysql adapter) database' do
@@ -131,7 +131,7 @@ describe 'puppetdashboard::install::git', :type => :class do
         }
       end
       it { should contain_ruby__bundle('puppet_dashboard_install').with(
-        'option'      => '--deployment --without test development postgresql',
+        'option'      => '--deployment --without test development postgresql'
       ) }
     end
     describe 'when using a MySQL (mysql2 adapter) database' do
@@ -141,7 +141,7 @@ describe 'puppetdashboard::install::git', :type => :class do
         }
       end
       it { should contain_ruby__bundle('puppet_dashboard_install').with(
-        'option'      => '--deployment --without test development postgresql',
+        'option'      => '--deployment --without test development postgresql'
       ) }
     end
   end
