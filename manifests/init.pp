@@ -20,8 +20,15 @@ class puppetdashboard(
   $time_zone                = undef,
   $read_only_mode           = undef,
   $legacy_report_upload_url = true,
+  $request_certs            = false,
+  $sign_certs               = false,
   $cn_name                  = $::puppetdashboard::params::cn_name,
   $ca_server                = $::puppetdashboard::params::ca_server,
+  $ca_crl_path              = $::puppetdashboard::params::ca_crl_path,
+  $ca_certificate_path      = $::puppetdashboard::params::ca_certificate_path,
+  $certificate_path         = $::puppetdashboard::params::certificate_path,
+  $private_key_path         = $::puppetdashboard::params::private_key_path,
+  $public_key_path          = $::puppetdashboard::params::public_key_path,
   $inventory_server         = undef,
   $inventory_server_port    = $::puppetdashboard::params::inventory_server_port,
   $file_bucket_server       = undef,
@@ -93,6 +100,11 @@ class puppetdashboard(
     db_password              => $db_password,
     cn_name                  => $cn_name,
     ca_server                => $ca_server,
+    ca_crl_path              => $ca_crl_path,
+    ca_certificate_path      => $ca_certificate_path,
+    certificate_path         => $certificate_path,
+    private_key_path         => $private_key_path,
+    public_key_path          => $public_key_path,
     inventory_server         => $inventory_server,
     file_bucket_server       => $file_bucket_server,
     inventory_server_port    => $inventory_server_port,
@@ -147,6 +159,47 @@ class puppetdashboard(
       Anchor['post_config_exec'],
       Class['puppetdashboard::config'],
     ]
+  }
+
+  if $request_certs {
+    ruby::rake{'puppetdashboard_create_certs':
+      task      => 'cert:create_key_pair',
+      bundle    => true,
+      rails_env => 'production',
+      cwd       => $install_dir,
+      creates   => "${install_dir}/${private_key_path}",
+      require   => Anchor['post_config_exec'],
+    }
+    ruby::rake{'puppetdashboard_request_certs':
+      task        => 'cert:request',
+      bundle      => true,
+      rails_env   => 'production',
+      cwd         => $install_dir,
+      refreshonly => true,
+      subscribe   => Ruby::Rake['puppetdashboard_create_certs']
+    }
+    if $sign_certs {
+      if $::fqdn == $ca_server {
+        exec{'sign_dashboard_cert':
+          path    => ['/usr/bin','/bin'],
+          command => "puppet cert sign ${cn_name}",
+          unless  => "puppet cert list ${cn_name}|grep '+'",
+          before  => Ruby::Rake['puppetdashboard_retrieve_certs'],
+          require => Ruby::Rake['puppetdashboard_request_certs'],
+        }
+      } else {
+        warning('This does not seem to be the ca_server...')
+      }
+    }
+    ruby::rake{'puppetdashboard_retrieve_certs':
+      task      => 'cert:retrieve',
+      bundle    => true,
+      rails_env => 'production',
+      cwd       => $install_dir,
+      creates   => "${install_dir}/${certificate_path}",
+      require   => Ruby::Rake['puppetdashboard_create_certs'],
+      notify    => Service['httpd'],
+    }
   }
 
   class { 'puppetdashboard::site::webrick':

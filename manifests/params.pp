@@ -11,6 +11,11 @@ class puppetdashboard::params {
   $config_dir               = "${install_dir}/config"
   $cn_name                  = 'dashboard'
   $ca_server                = 'puppet'
+  $ca_crl_path              = 'certs/dashboard.ca_crl.pem'
+  $ca_certificate_path      = 'certs/dashboard.ca_cert.pem'
+  $certificate_path         = 'certs/dashboard.cert.pem'
+  $private_key_path         = 'certs/dashboard.private_key.pem'
+  $public_key_path          = 'certs/dashboard.public_key.pem'
   $inventory_server_port    = '8140'
   $file_bucket_server_port  = '8140'
   $docroot                  = '/usr/share/puppet-dashboard/public'

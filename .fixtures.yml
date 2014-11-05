@@ -21,9 +21,9 @@ fixtures:
     mysql:
       repo: 'puppetlabs-mysql'
       ref:  '2.3.1'
-    puppet:   
-      repo:   'Aethylred-puppet'
-      ref:    '1.2.2'
+    puppet:
+      repo: 'Aethylred-puppet'
+      ref:  '1.4.1'
   repositories:
     # none
   symlinks:

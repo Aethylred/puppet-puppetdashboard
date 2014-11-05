@@ -113,6 +113,10 @@ describe 'puppetdashboard', :type => :class do
             'Class[Puppetdashboard::Config]'
           ]
         ) }
+        it { should_not contain_ruby__rake('puppetdashboard_create_certs') }
+        it { should_not contain_ruby__rake('puppetdashboard_request_certs') }
+        it { should_not contain_ruby__rake('puppetdashboard_retrieve_certs') }
+        it { should_not contain_exec('sign_dashboard_cert') }
       end
       describe "with the git provider, provider => 'git'" do
         let :params do
@@ -428,6 +432,115 @@ describe 'puppetdashboard', :type => :class do
         it { should contain_class('puppetdashboard::config').with(
           'db_adapter' => 'postgresql'
         ) }
+      end
+      describe "when requesting a certificate from the CA" do
+        let :params do
+          {
+            :request_certs => true
+          }
+        end
+        let :pre_condition do 
+          "class { 'apache': }"
+        end
+        it { should contain_ruby__rake('puppetdashboard_create_certs').with(
+          'task'      => 'cert:create_key_pair',
+          'bundle'    => true,
+          'rails_env' => 'production',
+          'cwd'       => '/usr/share/puppet-dashboard',
+          'creates'   => '/usr/share/puppet-dashboard/certs/dashboard.private_key.pem',
+          'require'   => ['Anchor[post_config_exec]','Class[Ruby]']
+        ) }
+        it { should contain_ruby__rake('puppetdashboard_request_certs').with(
+          'task'        => 'cert:request',
+          'bundle'      => true,
+          'rails_env'   => 'production',
+          'cwd'         => '/usr/share/puppet-dashboard',
+          'refreshonly' => true,
+          'subscribe'   => 'Ruby::Rake[puppetdashboard_create_certs]'
+        ) }
+        it { should contain_ruby__rake('puppetdashboard_retrieve_certs').with(
+          'task'      => 'cert:retrieve',
+          'bundle'    => true,
+          'rails_env' => 'production',
+          'cwd'       => '/usr/share/puppet-dashboard',
+          'creates'   => '/usr/share/puppet-dashboard/certs/dashboard.cert.pem',
+          'require'   => ['Ruby::Rake[puppetdashboard_create_certs]','Class[Ruby]'],
+          'notify'    => 'Service[httpd]'
+        ) }
+        it { should_not contain_exec('sign_dashboard_cert') }
+      end
+      describe "when requesting a certificate from the CA and signing them" do
+        let :params do
+          {
+            :ca_server     => 'test.example.org',
+            :request_certs => true,
+            :sign_certs    => true
+          }
+        end
+        let :pre_condition do 
+          "class { 'apache': }"
+        end
+        it { should contain_ruby__rake('puppetdashboard_create_certs').with(
+          'task'      => 'cert:create_key_pair',
+          'bundle'    => true,
+          'rails_env' => 'production',
+          'cwd'       => '/usr/share/puppet-dashboard',
+          'creates'   => '/usr/share/puppet-dashboard/certs/dashboard.private_key.pem',
+          'require'   => ['Anchor[post_config_exec]','Class[Ruby]']
+        ) }
+        it { should contain_ruby__rake('puppetdashboard_request_certs').with(
+          'task'        => 'cert:request',
+          'bundle'      => true,
+          'rails_env'   => 'production',
+          'cwd'         => '/usr/share/puppet-dashboard',
+          'refreshonly' => true,
+          'subscribe'   => 'Ruby::Rake[puppetdashboard_create_certs]'
+        ) }
+        it { should contain_ruby__rake('puppetdashboard_retrieve_certs').with(
+          'task'      => 'cert:retrieve',
+          'bundle'    => true,
+          'rails_env' => 'production',
+          'cwd'       => '/usr/share/puppet-dashboard',
+          'creates'   => '/usr/share/puppet-dashboard/certs/dashboard.cert.pem',
+          'require'   => ['Ruby::Rake[puppetdashboard_create_certs]','Class[Ruby]'],
+          'notify'    => 'Service[httpd]'
+        ) }
+        it { should contain_exec('sign_dashboard_cert').with(
+          'path'    => ['/usr/bin','/bin'],
+          'command' => 'puppet cert sign dashboard',
+          'unless'  => "puppet cert list dashboard|grep '+'",
+          'before'  => 'Ruby::Rake[puppetdashboard_retrieve_certs]',
+          'require' => 'Ruby::Rake[puppetdashboard_request_certs]'
+        ) }
+      end
+      describe "when trying to sign certs when not the CA server" do
+        let :params do
+          {
+            :request_certs => true,
+            :sign_certs    => true
+          }
+        end
+        let :pre_condition do 
+          "class { 'apache': }"
+        end
+        it { should contain_ruby__rake('puppetdashboard_create_certs') }
+        it { should contain_ruby__rake('puppetdashboard_request_certs') }
+        it { should contain_ruby__rake('puppetdashboard_retrieve_certs') }
+        it { should_not contain_exec('sign_dashboard_cert') }
+      end
+      describe "when trying to sign certs without requesting them" do
+        let :params do
+          {
+            :sign_certs    => true
+          }
+        end
+        let :pre_condition do 
+          "class { 'apache': }"
+        end
+        it { should_not contain_ruby__rake('puppetdashboard_create_certs') }
+        it { should_not contain_ruby__rake('puppetdashboard_request_certs') }
+        it { should_not contain_ruby__rake('puppetdashboard_retrieve_certs') }
+        it { should_not contain_exec('sign_dashboard_cert') }
       end
     end
   end

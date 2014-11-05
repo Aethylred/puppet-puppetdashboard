@@ -14,15 +14,15 @@
 # CN that is used in Dashboard's certificate.
 cn_name: '<%= @cn_name %>'
 
-ca_crl_path: 'certs/dashboard.ca_crl.pem'
+ca_crl_path: '<%= @ca_crl_path %>'
 
-ca_certificate_path: 'certs/dashboard.ca_cert.pem'
+ca_certificate_path: '<%= @ca_certificate_path %>'
 
-certificate_path: 'certs/dashboard.cert.pem'
+certificate_path: '<%= @certificate_path %>'
 
-private_key_path: 'certs/dashboard.private_key.pem'
+private_key_path: '<%= @private_key_path %>'
 
-public_key_path: 'certs/dashboard.public_key.pem'
+public_key_path: '<%= @public_key_path %>'
 
 # Hostname of the certificate authority.
 ca_server: '<%= @ca_server %>'
